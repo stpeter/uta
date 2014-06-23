@@ -124,11 +124,16 @@
       
       <section title="Always Use TLS">
       <t>
-      Combining unprotected and TLS-protected communication opens the way to SSL Stripping and similar attacks. Clients and Servers
-      SHOULD prefer strict TLS configuration, as opposed to dynamic upgrade from unencrypted to TLS-protected traffic, such as STARTTLS.
-      </t>
+	Combining unprotected and TLS-protected communication opens the way to SSL Stripping and similar attacks.
+	In cases where an
+	application protocol allows implementations or deployments a choice
+	between strict TLS configuration and dynamic upgrade from
+	unencrypted to TLS-protected traffic (such as STARTTLS), clients and
+	servers SHOULD prefer strict TLS configuration.
+	</t>
       <t>
-      When applicable, Web servers SHOULD advertise that they are committed to TLS-only clients, using the HTTP Strict Transport
+      When applicable, Web servers SHOULD advertise that they are willing to accept TLS-only clients,
+      using the HTTP Strict Transport
       Security (HSTS) header <xref target="RFC6797"/>.
       </t>
       </section>
@@ -270,12 +275,12 @@ PFS is generally achieved by using the Diffie-Hellman scheme to derive session k
       <list style='symbols'>
       <t>Certificate Revocation Lists (CRLs) are non-scalable and therefore often unused.</t>
       <t>The On-Line Certification Status Prorocol (OCSP) presents both scaling and privacy issues when used for heavy traffic
-      Web servers. In addition, clients typically "soft-fail", meaning they do not abort the TLS connection is the OCSP server
+      Web servers. In addition, clients typically "soft-fail", meaning they do not abort the TLS connection if the OCSP server
       does not respond.</t>
       <t>OCSP stapling (Sec. 8 of <xref target="RFC6066"/>) resolves the operational issues with OCSP, but is still ineffective
       in the presence of a MITM atacker, because they can simply ignore the client's request.</t>
       <t>Proprietary mechanisms that embed revocation lists in the Web browser's configuration database cannot scale beyond
-      the most heavily used Web servers.</t>
+      a small number of the most heavily used Web servers.</t>
       </list>
       </t>
       <t>
