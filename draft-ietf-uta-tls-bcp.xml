@@ -29,7 +29,7 @@
 <?rfc toc="yes"?>
 <?rfc tocdepth="4"?>
 
-<rfc docName="draft-ietf-uta-tls-bcp-01" ipr="trust200902" category="bcp">
+<rfc docName="draft-ietf-uta-tls-bcp-02" ipr="trust200902" category="bcp">
   <front>
     <title abbrev="TLS Recommendations">Recommendations for Secure Use of TLS and DTLS</title>
     <author initials="Y." surname="Sheffer" fullname="Yaron Sheffer">
@@ -115,7 +115,8 @@
             </t>
           </list>
         </t>
-        <t>As of the date of this writing, the latest version of TLS is 1.2.  When TLS is updated to a newer version, this document will be updated to recommend support for the latest version.  If this document is not updated in a timely manner, it can be assumed that support for the latest version of TLS is recommended.</t>
+        <t>This BCP applies to TLS 1.2. It is not safe for readers to assume that the recommendations in this BCP apply
+	to any future version of TLS.</t>
       </section>
 
       <section title="Fallback to SSL" anchor="rec-fallback">
