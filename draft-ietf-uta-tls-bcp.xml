@@ -120,7 +120,7 @@
       </section>
 
       <section title="Fallback to SSL" anchor="rec-fallback">
-        <t>Some client implementations revert to SSLv3 if the server rejected higher versions of SSL/TLS.  This fallback can be forced by a MITM attacker.  Moreover, IP scans [[reference?]] show that SSLv3-only servers amount to only about 3% of the current web server population.  Therefore, by default clients SHOULD NOT fall back from TLS to SSLv3.</t>
+        <t>Some client implementations revert to SSLv3 if the server rejected higher versions of SSL/TLS.  This fallback can be forced by a MITM attacker.  Moreover, IP scans show that SSLv3-only servers amount to only about 3% of the current web server population.  Therefore, by default clients SHOULD NOT fall back from TLS to SSLv3.</t>
       </section>
       
       <section title="Always Use TLS">
