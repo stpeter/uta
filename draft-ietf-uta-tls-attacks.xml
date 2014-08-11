@@ -206,7 +206,7 @@ This document describes protocol attacks in an informational manner, and in itse
 Its companion documents certainly do.</t>
     </section>
     <section title="IANA Considerations" anchor="sec_IANA_Considerations">
-      <t>This document requires no IANA actions.</t>
+      <t>This document requires no IANA actions. [Note to RFC Editor: please remove this whole section before publication.]</t>
     </section>
     <section title="Acknowledgements" anchor="d1e530">
       <t>
