@@ -129,7 +129,7 @@ The former attack can be mitigated by disabling TLS compression. We are not awar
       care to explicitly eliminate them.
       </t>
       </section>
-      <section title="Diffe-Hellman Parameters">
+      <section title="Diffie-Hellman Parameters">
       <t>
       TLS allows to define ephemeral Diffie-Hellman and Elliptic Curve Diffie-Hellman parameters in its respective
       key exchange modes. This results in an outstanding attack, detailed in <xref target="Cross-Protocol"/>.
@@ -208,7 +208,7 @@ Its companion documents certainly do.</t>
     <section title="IANA Considerations" anchor="sec_IANA_Considerations">
       <t>This document requires no IANA actions. [Note to RFC Editor: please remove this whole section before publication.]</t>
     </section>
-    <section title="Acknowledgements" anchor="d1e530">
+    <section title="Acknowledgments" anchor="d1e530">
       <t>
 We would like to thank Stephen Farrell, Simon Josefsson, John Mattsson, Yoav Nir,
 Kenny Paterson, Patrick Pelletier, Tom Ritter 
