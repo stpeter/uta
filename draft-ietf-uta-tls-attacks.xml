@@ -147,9 +147,9 @@ The former attack can be mitigated by disabling TLS compression. We are not awar
       </section>
       <section title="Triple Hanshake">
       <t>
-      The triple handshake [[TRIPLE-HS, add the reference when published]]
-      enables an attacker to cause two TLS
-connections to share keying material. This enables a multitude of attacks,
+      The triple handshake attack [[TRIPLE-HS, add the reference when published]]
+      enables the attacker to cause two TLS
+connections to share keying material. This leads to a multitude of attacks,
 e.g. Man-in-the-Middle, breaking safe renegotiation and breaking channel
 binding via TLS Exporter <xref target="RFC5705"/> or "tls-unique"
 <xref target="RFC5929"/>.
