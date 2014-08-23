@@ -171,7 +171,7 @@
       is a matter of local policy.
       </t>
       </section>
-
+      
     </section>
 
     <section title="Recommendations: Cipher Suites" anchor="detail">
@@ -238,7 +238,7 @@
       <section title="Cipher Suite Negotiation Details" anchor="detail-neg">
         <t>Clients SHOULD include TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 as the first proposal to any server, unless they have prior knowledge that the server cannot respond to a TLS 1.2 client_hello message.</t>
         <t>Servers SHOULD prefer this cipher suite whenever it is proposed, even if it is not the first proposal.</t>
-        <t>Both clients and servers SHOULD include the “Supported Elliptic Curves” extension <xref target="RFC4492"/>.</t>
+        <t>Both clients and servers SHOULD include the "Supported Elliptic Curves" extension <xref target="RFC4492"/>.</t>
         <t>Clients are of course free to offer stronger cipher suites, e.g. using AES-256; when they do, the server SHOULD prefer the stronger cipher suite unless there are compelling reasons (e.g., seriously degraded performance) to choose otherwise.</t>
         <t>Note that other profiles of TLS 1.2 exist that use different cipher suites. For example, <xref target="RFC6460"/> defines a profile that uses the TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256 and TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384 cipher suites.</t>
         <t>This document is not an application profile standard, in the sense of Sec. 9 of <xref target="RFC5246"/>. As a result, clients and servers are still REQUIRED to support the mandatory TLS cipher suite, TLS_RSA_WITH_AES_128_CBC_SHA.</t>
@@ -275,7 +275,26 @@
     <section title="Security Considerations" anchor="sec">
     <t>This entire document discusses security practices, and this section adds a few security considerations and includes further
     discussion of particular recommendations.</t>
-      <section title="AES-GCM" anchor="sec-aes">
+      <section title="Host Name Validation">
+	<t>
+	Application authors should take note that TLS implementations
+	frequently do not validate host names, and must therefore determine if
+	the TLS implementation they are using does, and if not write their own
+	validation code or consider changing the TLS implementation.
+	</t>
+	<t>
+	It is noted that the requirements regarding host name validation (and in general,
+	binding between the TLS layer and the protocol that runs above it) vary between different
+	protocols. For HTTPS, these requirements are defined by Sec. 3 of <xref target="RFC2818"/>.
+	</t>
+	<t>
+	Readers are referred to <xref target="RFC6125"/> for further details regarding 
+	generic host name validation in the TLS context. In addition, the RFC contains a long 
+	list of example protocols, some of which implement a policy very different from HTTPS.
+	</t>
+      </section>
+
+	<section title="AES-GCM" anchor="sec-aes">
         <t>
 Please refer to <xref target="RFC5246"/>, Sec. 11 for general security considerations when using TLS 1.2, and to <xref target="RFC5288"/>, Sec. 6 for security considerations that apply specifically to AES-GCM when used with TLS.</t>
       </section>
@@ -295,6 +314,24 @@ PFS ensures in such cases that the session keys cannot be determined even by an 
         <t>
 PFS is generally achieved by using the Diffie-Hellman scheme to derive session keys. The Diffie-Hellman scheme has both parties maintain private secrets and send parameters over the network as modular powers over certain cyclic groups. The properties of the so-called Discrete Logarithm Problem (DLP) allow to derive the session keys without an eavesdropper being able to do so. There is currently no known attack against DLP if sufficiently large parameters are chosen.</t>
         <t>Unfortunately, many TLS/DTLS cipher suites were defined that do not feature PFS, e.g. TLS_RSA_WITH_AES_256_CBC_SHA256.  We thus advocate strict use of PFS-only ciphers.</t>
+      </section>
+      
+      <section title="Diffie Hellman Exponent Reuse">
+      <t>
+      For performance reasons, many TLS implementations reuse Diffie-Hellman and Elliptic Curve
+      Diffie-Hellman exponents
+      across multiple connections. Such reuse can result in major
+      security issues:
+      <list style="symbols">
+      <t>If exponents are reused for a long time (e.g., more than a few hours), an attacker
+      who gains access to the host can decrypt previous connections. In other words,
+      exponent reuse negates the effects to forward secrecy.</t>
+      <t>TLS implementations that reuse exponents should test the DH public key they
+      receive, in order to avoid some known attacks. These tests are not 
+      standardized in TLS as of this writing. See <xref target="RFC6989"/> for recipient tests
+      required of IKEv2 implementations that reuse DH exponents.</t>
+      </list>
+      </t>
       </section>
       <section title="Certificate Revocation">
       <t>
@@ -319,7 +356,7 @@ PFS is generally achieved by using the Diffie-Hellman scheme to derive session k
     </section>
 
     <section title="Acknowledgments" anchor="d1e1127">
-      <t>We would like to thank Stephen Farrell, Simon Josefsson, Johannes Merkle, Bodo Moeller, Yoav Nir, Kenny Paterson, Patrick Pelletier, Tom Ritter, Rich Salz, Aaron Zauner for their review. Thanks to Brian Smith whose “browser cipher suites” page is a great resource. Finally, thanks to all others who commented on the TLS, UTA and other lists and are not mentioned here by name.</t>
+      <t>We would like to thank Stephen Farrell, Simon Josefsson, Watson Ladd, Johannes Merkle, Bodo Moeller, Yoav Nir, Kenny Paterson, Patrick Pelletier, Tom Ritter, Rich Salz, Aaron Zauner for their review. Thanks to Brian Smith whose "browser cipher suites" page is a great resource. Finally, thanks to all others who commented on the TLS, UTA and other lists and are not mentioned here by name.</t>
     </section>
 
   </middle>
@@ -327,11 +364,13 @@ PFS is generally achieved by using the Diffie-Hellman scheme to derive session k
   <back>
     <references title="Normative References">
 <?rfc include="reference.RFC.2119.xml"?>
+<?rfc include="reference.RFC.2818.xml"?>
 <?rfc include="reference.RFC.4492.xml"?>
 <?rfc include="reference.RFC.5246.xml"?>
 <?rfc include="reference.RFC.5288.xml"?>
 <?rfc include="reference.RFC.5289.xml"?>
 <?rfc include="reference.RFC.5746.xml"?>
+<?rfc include="reference.RFC.6125.xml"?>
 <?rfc include="reference.RFC.6176.xml"?>
     </references>
 
@@ -347,6 +386,7 @@ PFS is generally achieved by using the Diffie-Hellman scheme to derive session k
 <?rfc include="reference.RFC.6101.xml"?>
 <?rfc include="reference.RFC.6460.xml"?>
 <?rfc include="reference.RFC.6797.xml"?>
+<?rfc include="reference.RFC.6989.xml"?>
 
 <reference anchor="triple-handshake" target="https://secure-resumption.com/"><front><title>Triple Handshakes Considered Harmful:
 Breaking and Fixing Authentication over TLS</title>
@@ -372,8 +412,9 @@ Note to RFC Editor: please remove this section before publication.</t>
 	    <t>Triple Handshake mitigation.</t>
 	    <t>MUST NOT negotiate algorithms lower than 112 bits of security.</t>
 	    <t>MUST implement SNI, but use per local policy.</t>
-	    <t>Changed SHOULD NOT negotiate or fall back to SSLv3 to MUST NOT.
-	    Yes, this is more appropriate for a BCP today.</t>
+	    <t>Changed SHOULD NOT negotiate or fall back to SSLv3 to MUST NOT.</t>
+	    <t>Added hostname validation.</t>
+	    <t>Non-normative discussion of DH exponent reuse.</t>
           </list>
         </t>
       </section>
