@@ -60,7 +60,7 @@ Over the last few years there have been several major attacks on TLS <xref targe
       <t>
 This situation motivated the creation of the UTA working group, which is tasked with the creation of generic and protocol-specific recommendations for the use of TLS and DTLS.</t>
       <t>
-“Attacks always get better; they never get worse” (ironically, this saying is attributed to the NSA). This list of attacks describes our knowledge as of this writing. It seems likely that new attacks will be invented in the future.</t>
+"Attacks always get better; they never get worse" (ironically, this saying is attributed to the NSA). This list of attacks describes our knowledge as of this writing. It seems likely that new attacks will be invented in the future.</t>
       <t>
 For a more detailed discussion of the attacks listed here, the interested reader is referred to <xref target="Attacks-iSec"/>.</t>
     </section>
@@ -78,12 +78,25 @@ While there are widely deployed mitigations for some of the attacks listed below
       the client accesses a Web server using a mixture of HTTP and HTTPS.
       </t>
       </section>
-      <section title="BEAST" anchor="d1e392">
+      <section title="STARTTLS Command Injection Attack (CVE-2011-0411)">
+      <t>
+      Similarly, there are attacks on the transition between unprotected and TLS-protected traffic.
+      A number of IETF application protocols have used an application-level command,
+	usually STARTTLS, to upgrade a clear-text connection to use TLS. Multiple
+	implementations of STARTTLS had a flaw where an application-layer input buffer
+	retained commands that were pipelined with the STARTTLS command, such that
+	commands received prior to TLS negotiation are executed after TLS negotiation.
+	This problem is resolved by requiring the application-level command input
+	buffer to be empty before negotiating TLS. Note that this flaw lives in the
+	application layer code and does not impact the TLS protocol directly.
+      </t>
+      </section>
+      <section title="BEAST (CVE-2011-3389)" anchor="d1e392">
         <t>
 The BEAST attack <xref target="BEAST"/> uses issues with the TLS 1.0 implementation of CBC (that is, the predictable initialization vector) to decrypt parts of a packet, and specifically to decrypt HTTP cookies when HTTP is
 run over TLS.</t>
       </section>
-      <section title="Lucky Thirteen" anchor="d1e407">
+      <section title="Lucky Thirteen (CVE-2013-0169)" anchor="d1e407">
         <t>
 A consequence of the MAC-then-encrypt design in all current versions of TLS is the existence of padding oracle attacks <xref target="Padding-Oracle"/>. A recent incarnation of these attacks is the Lucky Thirteen attack <xref target="CBC-Attack"/>, a timing side-channel attack that allows the attacker to decrypt arbitrary ciphertext.</t>
 <t>
@@ -105,14 +118,17 @@ RC4 has long been
    These recent results are on the verge of becoming practically
    exploitable; currently they require 2^26 sessions or 13x2^30
    encryptions.  As a result, RC4 can no longer be seen as providing a
-   sufficient level of security for TLS sessions. For further details, the reader is refered to <xref target="I-D.ietf-tls-prohibiting-rc4"/>.
+   sufficient level of security for TLS sessions. For further details, the reader is referred to <xref target="I-D.ietf-tls-prohibiting-rc4"/>.
 </t>
       </section>
-      <section title="Compression Attacks: CRIME and BREACH" anchor="d1e468">
+      <section title="Compression Attacks: CRIME, TIME and BREACH" anchor="d1e468">
         <t>
-The CRIME attack <xref target="CRIME"/> allows an active attacker to decrypt ciphertext (specifically, cookies) when TLS is used with TLS level compression.</t>
+The CRIME attack <xref target="CRIME"/> (CVE-2012-4929) allows an active attacker to decrypt ciphertext (specifically, cookies) when TLS is used with TLS level compression.</t>
         <t>
-The TIME attack <xref target="TIME"/> and the later BREACH attack <xref target="BREACH"/> both make similar use of HTTP-level compression to decrypt secret data passed in the HTTP response. We note that compression of the HTTP message body is much more prevalent than compression at the TLS level.</t>
+The TIME attack <xref target="TIME"/> and the later BREACH attack <xref target="BREACH"/> (CVE-2013-3587,
+though the number has not been officially allocated) both make similar use of HTTP-level compression to
+decrypt secret data passed in the HTTP response. We note that compression of the HTTP message body is much
+more prevalent than compression at the TLS level.</t>
         <t>
 The former attack can be mitigated by disabling TLS compression. We are not aware of mitigations at the TLS protocol level to the latter attack, and so application-level mitigations are needed (see <xref target="BREACH"/>). For example, implementations of HTTP that use CSRF tokens will need to randomize them even when the recommendations of <xref target='I-D.ietf-uta-tls-bcp'/> are adopted.</t>
       </section>
@@ -125,27 +141,34 @@ The former attack can be mitigated by disabling TLS compression. We are not awar
       Klima attack that relies on a version-check oracle is only mitigated by TLS 1.1.
       </t>
       <t>
-      The use of RSA certificates often involves exploitable timing issues <xref target="Brumley03"/>, unless the implementation takes 
+      The use of RSA certificates often involves exploitable timing issues <xref target="Brumley03"/>
+      (CVE-2003-0147),
+      unless the implementation takes 
       care to explicitly eliminate them.
+      </t>
+      <t>
+      A recent certificate fuzzing tool <xref target="brubaker2014using"/> uncovered numerous
+      vulnerabilities in different TLS libraries, related to certificate validation.
       </t>
       </section>
       <section title="Diffie-Hellman Parameters">
       <t>
       TLS allows to define ephemeral Diffie-Hellman and Elliptic Curve Diffie-Hellman parameters in its respective
       key exchange modes. This results in an outstanding attack, detailed in <xref target="Cross-Protocol"/>.
-      In addition, clients that do not properly verify the received parameters are exposed to man in the middle (MITM) attacks.
+      In addition, clients that do not properly verify the received parameters are exposed to man in the middle 
+      (MITM) attacks.
       Unfortunately the TLS protocol
       does not require this verification, see <xref target="RFC6989"/> for the IPsec analogy.
       </t>
       </section>
-      <section title="Renegotiation">
+      <section title="Renegotiation (CVE-2009-3555)">
       <t>
       A major attack on the TLS renegotiation mechanism applies to all current versions
       of the protocol. The attack and the TLS extension that resolves it are
       described in <xref target="RFC5746"/>.
       </t>
       </section>
-      <section title="Triple Hanshake">
+      <section title="Triple Handshake (CVE-2014-1295)">
       <t>
       The triple handshake attack [[TRIPLE-HS, add the reference when published]]
       enables the attacker to cause two TLS
@@ -178,7 +201,7 @@ binding via TLS Exporter <xref target="RFC5705"/> or "tls-unique"
       <list style="symbols">
       <t>Implementations may omit validation of the server certificate altogether.
       For example, this is true of the default implementation of HTTP client libraries
-      in Python 2.</t>
+      in Python 2 (see e.g.  CVE-2013-2191).</t>
       <t>Implementations may not validate the server identity. This validation typically amounts
       to matching the protocol-level server name with the certificate's Subject
       Alternative Name field.</t>
@@ -211,8 +234,8 @@ Its companion documents certainly do.</t>
     <section title="Acknowledgments" anchor="d1e530">
       <t>
 We would like to thank Stephen Farrell, Simon Josefsson, John Mattsson, Yoav Nir,
-Kenny Paterson, Patrick Pelletier, Tom Ritter 
-and Rich Salz for their review of this document. We thank Andrei Popov for contributing text on RC4, Kohei Kasamatsu for text on Lucky13, Ilari Liusvaara for text on attacks and on DTLS.</t>
+Kenny Paterson, Patrick Pelletier, Tom Ritter, 
+Rich Salz and Aaron Zauner for their review of this document. We thank Andrei Popov for contributing text on RC4, Kohei Kasamatsu for text on Lucky13, Ilari Liusvaara for text on attacks and on DTLS.</t>
       <t>
 The document was prepared using the lyx2rfc tool, created by Nico Williams.</t>
     </section>
@@ -249,10 +272,21 @@ The document was prepared using the lyx2rfc tool, created by Nico Williams.</t>
 <reference anchor="Bleichenbacher98"><front><title>Chosen ciphertext attacks against protocols based on the RSA encryption standard pkcs1</title><author fullname="Daniel Bleichenbacher" initials="D." surname="Bleichenbacher" /><date year="1998" /></front></reference>
 <reference anchor="Klima03"><front><title>Attacking RSA-based sessions in SSL/TLS</title><author fullname="Vlastimil Klima" initials="V." surname="Klima" /><author fullname="Ondej Pokorny" initials="O." surname="Pokorny" /><author fullname="Tomas Rosa" initials="T." surname="Rosa" /><date year="2003" /></front></reference>
 <reference anchor="Brumley03"><front><title>Remote timing attacks are practical</title><author fullname="David Brumley" initials="D." surname="Brumley" /><author fullname="Dan Boneh" initials="D." surname="Boneh" /><date year="2003" /></front></reference>
+<reference anchor="brubaker2014using"><front><title>Using frankencerts for automated adversarial testing of certificate validation in SSL/TLS implementations</title><author fullname="Chad Brubaker" initials="C." surname="Brubaker" /><author fullname="Suman Jana" initials="S." surname="Jana" /><author fullname="Baishakhi Ray" initials="B." surname="Ray" /><author fullname="Sarfraz Khurshid" initials="S." surname="Khurshid" /><author fullname="Vitaly Shmatikov" initials="V." surname="Shmatikov" /><date year="2014" /></front></reference>
     </references>
     <section title="Appendix: Change Log" anchor="changes">
       <t>
 Note to RFC Editor: please remove this section before publication.</t>
+      <section title="draft-ietf-uta-tls-attacks-03" anchor="changes-03">
+        <t>
+          <list style='symbols'>
+            <t>Implemented WG Last Call comments.</t>
+            <t>Virtual host confusion.</t>
+	    <t>STARTTLS command injection.</t>
+	    <t>Added CVE numbers.</t>
+          </list>
+        </t>
+      </section>
       <section title="draft-ietf-uta-tls-attacks-02" anchor="changes-02">
         <t>
           <list style='symbols'>
