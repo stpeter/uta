@@ -10,7 +10,7 @@
 <?rfc compact="yes"?>
 <!DOCTYPE rfc SYSTEM "rfc2629.dtd" [
 ]>
-<rfc docName="draft-ietf-uta-tls-attacks-02" ipr="trust200902" category="info">
+<rfc docName="draft-ietf-uta-tls-attacks-03" ipr="trust200902" category="info">
   <front>
     <title abbrev="TLS Attacks">Summarizing Current Attacks on TLS and DTLS</title>
     <author initials="Y." surname="Sheffer" fullname="Yaron Sheffer">
@@ -74,8 +74,9 @@ While there are widely deployed mitigations for some of the attacks listed below
       Various attacks attempt to remove the use of SSL/TLS altogether, by modifying unencrypted protocols that request the use of TLS,
       specifically modifying HTTP traffic and HTML pages as they pass on 
       the wire. These attacks are known collectively as SSL Stripping, and were first introduced by Moxie Marlinspike
-      <xref target="SSL-Stripping"/>. In the context of Web traffic, these attacks are only effective if
-      the client accesses a Web server using a mixture of HTTP and HTTPS.
+      <xref target="SSL-Stripping"/>. In the context of Web traffic, these attacks are only effective if the
+	client initially accesses a Web server using HTTP. A commonly used mitigation is HTTP Strict
+	Transport Security (HSTS) <xref target="RFC6797"/>.
       </t>
       </section>
       <section title="STARTTLS Command Injection Attack (CVE-2011-0411)">
@@ -147,7 +148,7 @@ The former attack can be mitigated by disabling TLS compression. We are not awar
       care to explicitly eliminate them.
       </t>
       <t>
-      A recent certificate fuzzing tool <xref target="brubaker2014using"/> uncovered numerous
+      A recent certificate fuzzing tool <xref target="Brubaker2014using"/> uncovered numerous
       vulnerabilities in different TLS libraries, related to certificate validation.
       </t>
       </section>
@@ -177,6 +178,16 @@ e.g. Man-in-the-Middle, breaking safe renegotiation and breaking channel
 binding via TLS Exporter <xref target="RFC5705"/> or "tls-unique"
 <xref target="RFC5929"/>.
 
+      </t>
+      </section>
+      <section title="Virtual Host Confusion">
+      <t>
+	A recent article <xref target="Delignat14"/> describes a security issue whereby SSLv3 fallback
+	and improper handling of session caches on the server side can be abused
+	by an attacker to establish a malicious connection to a virtual host
+	other than originally intended and approved by the server. This attack
+	is especially serious in performance critical environments where sharing
+	of SSLv3 session caches is very common.
       </t>
       </section>
       <section title="Denial of Service">
@@ -234,8 +245,8 @@ Its companion documents certainly do.</t>
     <section title="Acknowledgments" anchor="d1e530">
       <t>
 We would like to thank Stephen Farrell, Simon Josefsson, John Mattsson, Yoav Nir,
-Kenny Paterson, Patrick Pelletier, Tom Ritter, 
-Rich Salz and Aaron Zauner for their review of this document. We thank Andrei Popov for contributing text on RC4, Kohei Kasamatsu for text on Lucky13, Ilari Liusvaara for text on attacks and on DTLS.</t>
+Kenny Paterson, Patrick Pelletier, Tom Ritter 
+and Rich Salz for their review of this document. We thank Andrei Popov for contributing text on RC4, Kohei Kasamatsu for text on Lucky13, Ilari Liusvaara for text on attacks and on DTLS, Aaron Zauner for text on virtual host confusion.</t>
       <t>
 The document was prepared using the lyx2rfc tool, created by Nico Williams.</t>
     </section>
@@ -249,6 +260,7 @@ The document was prepared using the lyx2rfc tool, created by Nico Williams.</t>
 <?rfc include="reference.RFC.5746.xml"?>
 <?rfc include="reference.RFC.5929.xml"?>
 <?rfc include="reference.RFC.6347.xml"?>
+<?rfc include="reference.RFC.6797.xml"?>
 <?rfc include="reference.RFC.6989.xml"?>
 <?rfc include="reference.I-D.ietf-uta-tls-bcp.xml"?>
 <?rfc include="reference.I-D.ietf-tls-prohibiting-rc4.xml"?>
@@ -272,7 +284,8 @@ The document was prepared using the lyx2rfc tool, created by Nico Williams.</t>
 <reference anchor="Bleichenbacher98"><front><title>Chosen ciphertext attacks against protocols based on the RSA encryption standard pkcs1</title><author fullname="Daniel Bleichenbacher" initials="D." surname="Bleichenbacher" /><date year="1998" /></front></reference>
 <reference anchor="Klima03"><front><title>Attacking RSA-based sessions in SSL/TLS</title><author fullname="Vlastimil Klima" initials="V." surname="Klima" /><author fullname="Ondej Pokorny" initials="O." surname="Pokorny" /><author fullname="Tomas Rosa" initials="T." surname="Rosa" /><date year="2003" /></front></reference>
 <reference anchor="Brumley03"><front><title>Remote timing attacks are practical</title><author fullname="David Brumley" initials="D." surname="Brumley" /><author fullname="Dan Boneh" initials="D." surname="Boneh" /><date year="2003" /></front></reference>
-<reference anchor="brubaker2014using"><front><title>Using frankencerts for automated adversarial testing of certificate validation in SSL/TLS implementations</title><author fullname="Chad Brubaker" initials="C." surname="Brubaker" /><author fullname="Suman Jana" initials="S." surname="Jana" /><author fullname="Baishakhi Ray" initials="B." surname="Ray" /><author fullname="Sarfraz Khurshid" initials="S." surname="Khurshid" /><author fullname="Vitaly Shmatikov" initials="V." surname="Shmatikov" /><date year="2014" /></front></reference>
+<reference anchor="Brubaker2014using"><front><title>Using frankencerts for automated adversarial testing of certificate validation in SSL/TLS implementations</title><author fullname="Chad Brubaker" initials="C." surname="Brubaker" /><author fullname="Suman Jana" initials="S." surname="Jana" /><author fullname="Baishakhi Ray" initials="B." surname="Ray" /><author fullname="Sarfraz Khurshid" initials="S." surname="Khurshid" /><author fullname="Vitaly Shmatikov" initials="V." surname="Shmatikov" /><date year="2014" /></front></reference>
+<reference anchor="Delignat14"><front><title>Virtual Host Confusion: Weaknesses and Exploits</title><author fullname="Antoine Delignat-Lavaud" initials="A." surname="Delignat-Lavaud" /><author fullname="Karthikeyan Bhargavan" initials="K." surname="Bhargavan" /><date year="2014"/></front><seriesInfo name="Black Hat" value="2014"/></reference>
     </references>
     <section title="Appendix: Change Log" anchor="changes">
       <t>
