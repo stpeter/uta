@@ -246,7 +246,7 @@ Its companion documents certainly do.</t>
       <t>
 We would like to thank Stephen Farrell, Simon Josefsson, John Mattsson, Yoav Nir,
 Kenny Paterson, Patrick Pelletier, Tom Ritter 
-and Rich Salz for their review of this document. We thank Andrei Popov for contributing text on RC4, Kohei Kasamatsu for text on Lucky13, Ilari Liusvaara for text on attacks and on DTLS, Aaron Zauner for text on virtual host confusion.</t>
+and Rich Salz for their review of this document. We thank Andrei Popov for contributing text on RC4, Kohei Kasamatsu for text on Lucky13, Ilari Liusvaara for text on attacks and on DTLS, Aaron Zauner for text on virtual host confusion, Chris Newman for text on STARTTLS command injection.</t>
       <t>
 The document was prepared using the lyx2rfc tool, created by Nico Williams.</t>
     </section>
