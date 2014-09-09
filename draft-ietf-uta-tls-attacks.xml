@@ -73,7 +73,7 @@ While there are widely deployed mitigations for some of the attacks listed below
       <t>
       Various attacks attempt to remove the use of SSL/TLS altogether, by modifying unencrypted protocols that request the use of TLS,
       specifically modifying HTTP traffic and HTML pages as they pass on 
-      the wire. These attacks are known collectively as SSL Stripping, and were first introduced by Moxie Marlinspike
+      the wire. These attacks are known collectively as SSL Stripping and were first introduced by Moxie Marlinspike
       <xref target="SSL-Stripping"/>. In the context of Web traffic, these attacks are only effective if the
 	client initially accesses a Web server using HTTP. A commonly used mitigation is HTTP Strict
 	Transport Security (HSTS) <xref target="RFC6797"/>.
@@ -103,7 +103,7 @@ A consequence of the MAC-then-encrypt design in all current versions of TLS is t
 <t>
 The Lucky Thirteen attack can be
    mitigated by using authenticated encryption like AES-GCM <xref target="RFC5288"/>
-   and encrypt-then-mac <xref target="I-D.ietf-tls-encrypt-then-mac"/> instead of the TLS default of
+   or encrypt-then-mac <xref target="I-D.ietf-tls-encrypt-then-mac"/> instead of the TLS default of
    MAC-then-encrypt.
 </t>
       </section>
@@ -155,7 +155,7 @@ The former attack can be mitigated by disabling TLS compression. We are not awar
       <section title="Diffie-Hellman Parameters">
       <t>
       TLS allows to define ephemeral Diffie-Hellman and Elliptic Curve Diffie-Hellman parameters in its respective
-      key exchange modes. This results in an outstanding attack, detailed in <xref target="Cross-Protocol"/>.
+      key exchange modes. This results in an attack detailed in <xref target="Cross-Protocol"/>.
       In addition, clients that do not properly verify the received parameters are exposed to man in the middle 
       (MITM) attacks.
       Unfortunately the TLS protocol
@@ -215,7 +215,11 @@ binding via TLS Exporter <xref target="RFC5705"/> or "tls-unique"
       in Python 2 (see e.g.  CVE-2013-2191).</t>
       <t>Implementations may not validate the server identity. This validation typically amounts
       to matching the protocol-level server name with the certificate's Subject
-      Alternative Name field.</t>
+      Alternative Name field.
+      Note: historically, although incorrect, this information is also
+      often found in the Common Name part of the Distinguished Name
+      instead.
+      </t>
       <t>Implementations may be validating the certificate chain incorrectly
       or not at all, or using an incorrect or outdated trust anchor list.</t>
       </list>
