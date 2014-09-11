@@ -40,7 +40,14 @@
     <author initials="P." surname="Saint-Andre" fullname="Peter Saint-Andre">
       <organization abbrev="&amp;yet">&amp;yet</organization>
       <address>
-        <email>ietf@stpeter.im</email>
+        <postal>
+          <street>P.O. Box 787</street>
+          <city>Parker</city>
+	  <region>CO</region>
+          <code>80134</code>
+          <country>USA</country>
+        </postal>
+        <email>peter@andyet.com</email>
       </address>
     </author>
     <date/>
@@ -202,7 +209,7 @@ binding via TLS Exporter <xref target="RFC5705"/> or "tls-unique"
       </section>
       <section title="Implementation Issues">
       <t>
-      Even when the protocol is fully specified, the are very common
+      Even when the protocol is fully specified, there are very common
       issues that often plague implementations. In particular, the integration of
       higher-level protocols, TLS and its PKI-based authentication is the source
       of misunderstandings and implementation "shortcuts". An extensive survey 
