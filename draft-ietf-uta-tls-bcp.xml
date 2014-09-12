@@ -1,21 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!DOCTYPE rfc SYSTEM "rfc2629.dtd" [
-<!ENTITY rfc2119 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml">
-<!ENTITY rfc2246 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2246.xml">
-<!ENTITY rfc4346 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4346.xml">
-<!ENTITY rfc4492 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4492.xml">
-<!ENTITY rfc5077 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5077.xml">
-<!ENTITY rfc5116 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5116.xml">
-<!ENTITY rfc5246 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5246.xml">
-<!ENTITY rfc5288 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5288.xml">
-<!ENTITY rfc5289 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5289.xml">
-<!ENTITY rfc6101 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6101.xml">
-<!ENTITY rfc6176 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6176.xml">
-<!ENTITY rfc6460 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6460.xml">
-<!ENTITY rfc7027 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7027.xml">
-<!ENTITY I-D.popov-tls-prohibiting-rc4 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.popov-tls-prohibiting-rc4.xml">
-<!ENTITY I-D.sheffer-uta-tls-attacks PUBLIC "" "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.sheffer-uta-tls-attacks.xml">
 ]>
 
 <?rfc compact="yes"?>
@@ -26,7 +11,7 @@
 <?rfc toc="yes"?>
 <?rfc tocdepth="4"?>
 
-<rfc docName="draft-ietf-uta-tls-bcp-00" ipr="trust200902" category="bcp">
+<rfc docName="draft-ietf-uta-tls-bcp-02" ipr="trust200902" category="bcp">
   <front>
     <title abbrev="TLS Recommendations">Recommendations for Secure Use of TLS and DTLS</title>
     <author initials="Y." surname="Sheffer" fullname="Yaron Sheffer">
@@ -69,9 +54,14 @@
   <middle>
 
     <section title="Introduction" anchor="d1e381">
-      <t>Transport Layer Security (TLS) and Datagram Transport Security Layer (DTLS) are widely used to protect data exchanged over application protocols such as HTTP, SMTP, IMAP, POP, SIP, and XMPP.  Over the last few years, several serious attacks on TLS have emerged, including attacks on its most commonly used cipher suites and modes of operation.  For instance, both AES-CBC and RC4, which together comprise most current usage, have been attacked in the context of TLS.  A companion document <xref target='I-D.sheffer-uta-tls-attacks'/> provides detailed information about these attacks.</t>
+      <t>Transport Layer Security (TLS) and Datagram Transport Security Layer (DTLS) are widely used to protect data exchanged over application protocols such as HTTP, SMTP, IMAP, POP, SIP, and XMPP.  Over the last few years, several serious attacks on TLS have emerged, including attacks on its most commonly used cipher suites and modes of operation.  For instance, both AES-CBC and RC4, which together comprise most current usage, have been attacked in the context of TLS.  A companion document <xref target='I-D.ietf-uta-tls-attacks'/> provides detailed information about these attacks.</t>
       <t>Because of these attacks, those who implement and deploy TLS and DTLS need updated guidance on how TLS can be used securely.  Note that this document provides guidance for deployed services, as well as software implementations.  In fact, this document calls for the deployment of algorithms that are widely implemented but not yet widely deployed.</t>
-      <t>The recommendations herein take into consideration the security of various mechanisms, their technical maturity and interoperability, and their prevalence in implementatios at the time of writing.  These recommendations apply to both TLS and DTLS.  TLS 1.3, when it is standardized and deployed in the field, should resolve the current vulnerabilities while providing significantly better functionality, and will very likely obsolete the current document.</t>
+      <t>The recommendations herein take into consideration the security of various mechanisms, their technical maturity and interoperability, and their prevalence in implementations at the time of writing.  These recommendations apply to both TLS and DTLS.  TLS 1.3, when it is standardized and deployed in the field, should resolve the current vulnerabilities while providing significantly better functionality, and will very likely obsolete this document.</t>
+      <t>
+      These are minimum recommendations for the general use of TLS.  Individual specifications may have 
+      stricter requirements related to one or more aspects of the protocol, based on their particular circumstances.
+      When that is the case, implementers MUST adhere to those stricter requirements.
+      </t>
       <t>Community knowledge about the strength of various algorithms and feasible attacks can change quickly, and experience shows that a security BCP is a point-in-time statement.  Readers are advised to seek out any errata or updates that apply to this document.</t>
     </section>
 
@@ -79,7 +69,9 @@
       <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in <xref target="RFC2119"/>.</t>
     </section>
 
-    <section title="Recommendations" anchor="rec">
+    <section title="General Recommendations" anchor="rec">
+    <t>This section provides general recommendations on the secure use of TLS. Recommendations related to cipher
+    suites are discussed in the following section.</t>
 
       <section title="Protocol Versions" anchor="rec-versions">
         <t>It is important both to stop using old, less secure versions of SSL/TLS and to start using modern, more secure versions. Therefore:</t>
@@ -87,19 +79,20 @@
           <list style='symbols'>
             <t>Implementations MUST NOT negotiate SSL version 2.
                <vspace blankLines='1'/>
-               Rationale: SSLv2 has serious security vulnerabilities <xref target='RFC6176'/>.
+               Rationale: SSLv2 is considered today as insecure <xref target='RFC6176'/>.
             </t>
-            <t>Implementations SHOULD NOT negotiate SSL version 3.
+            <t>Implementations MUST NOT negotiate SSL version 3.
                <vspace blankLines='1'/>
-               Rationale: SSLv3 <xref target='RFC6101'/> was an improvement over SSLv2 and plugged some significant security holes, but did not support strong cipher suites.
+               Rationale: SSLv3 <xref target='RFC6101'/> was an improvement over SSLv2 and plugged some significant security holes, but did not support strong cipher suites. In addition, SSLv3 does not support TLS extensions, some
+	       of which are considered security-critical today.
             </t>
-            <t>Implementations MAY negotiate TLS version 1.0 <xref target='RFC2246'/>.
+            <t>Implementations SHOULD NOT negotiate TLS version 1.0 <xref target='RFC2246'/>.
                <vspace blankLines='1'/>
-               Rationale: TLS 1.0 (published in 1999) includes a way to downgrade the connection to SSLv3 and does not support more modern, strong cipher suites.
+               Rationale: TLS 1.0 (published in 1999) does not support many modern, strong cipher suites.
             </t>
             <t>Implementations MAY negotiate TLS version 1.1 <xref target='RFC4346'/>.
                <vspace blankLines='1'/>
-               Rationale: TLS 1.1 (published in 2006) prevents downgrade attacks to SSL, but does not support certain stronger cipher suites.
+               Rationale: TLS 1.1 (published in 2006) is a security improvement over TLS 1.0, but still does not support certain stronger cipher suites.
             </t>
             <t>Implementations MUST support, and prefer to negotiate, TLS version 1.2 <xref target='RFC5246'/>.
                <vspace blankLines='1'/>
@@ -107,14 +100,88 @@
             </t>
           </list>
         </t>
-        <t>As of the date of this writing, the latest version of TLS is 1.2.  When TLS is updated to a newer version, this document will be updated to recommend support for the latest version.  If this document is not updated in a timely manner, it can be assumed that support for the latest version of TLS is recommended.</t>
+        <t>This BCP applies to TLS 1.2. It is not safe for readers to assume that the recommendations in this BCP apply
+	to any future version of TLS.</t>
       </section>
 
       <section title="Fallback to SSL" anchor="rec-fallback">
-        <t>Some client implementations revert to SSLv3 if the server rejected higher versions of SSL/TLS.  This fallback can be forced by a MITM attacker.  Moreover, IP scans [[reference?]] show that SSLv3-only servers amount to only about 3% of the current web server population.  Therefore, by default clients SHOULD NOT fall back from TLS to SSLv3.</t>
+        <t>Some client implementations revert to lower versions of TLS or even to SSLv3 if the server rejected higher versions of the protocol.
+	This fall back can be forced by a man in the middle (MITM) attacker. By default, such clients MUST NOT fall back to SSLv3.</t>
+	<t>
+	Rationale: TLS 1.0 and SSLv3 are significantly less secure than TLS 1.2, the version recommended by this document.
+	While TLS 1.0-only servers are
+	still quite common,  IP scans show that SSLv3-only servers amount to only about 3% of the current Web server population.
+	</t>
+      </section>
+      
+      <section title="Always Use TLS">
+      <t>
+      Combining unprotected and TLS-protected communication opens the way to SSL Stripping and similar attacks. Therefore:
+      <list style="symbols">
+      <t>
+	In cases where an
+	application protocol allows implementations or deployments a choice
+	between strict TLS configuration and dynamic upgrade from
+	unencrypted to TLS-protected traffic (such as STARTTLS), clients and
+	servers SHOULD prefer strict TLS configuration.
+	</t>
+      <t>
+      When applicable, Web servers SHOULD advertise that they are willing to accept TLS-only clients,
+      using the HTTP Strict Transport
+      Security (HSTS) header <xref target="RFC6797"/>.
+      </t>
+      </list>
+      </t>
       </section>
 
-      <section title="Cipher Suites" anchor="rec-cipher">
+      <section title="Compression" anchor="rec-compress">
+        <t>Implementations and deployments SHOULD disable TLS-level compression (<xref target="RFC5246"/>, Sec. 6.2.2),
+	because it has been subject to security attacks.</t>
+	<t>Implementers should note that compression at higher protocol levels can allow an active attacker to extract cleartext
+	information from the connection. The BREACH attack is one such case. These issues can only be mitigated outside
+	of TLS and are thus out of scope of the current document. See Sec. 2.5 of <xref target="I-D.ietf-uta-tls-attacks"/> for 
+	further details.</t>
+      </section>
+
+      <section title="Session Resumption" anchor="rec-resume">
+        <t>If TLS session resumption is used, care ought to be taken to do so safely. In particular, the resumption information (either session IDs <xref target='RFC5246'/> or session tickets <xref target='RFC5077'/>) MUST be authenticated and encrypted to prevent modification or eavesdropping by an attacker. Further recommendations apply to session tickets:
+	<list style="symbols">
+	<t>A strong cipher suite MUST be used when encrypting the ticket (as least as strong as the main TLS cipher suite).</t>
+	<t>Ticket keys MUST be changed regularly, e.g. once every week, so as not to negate the benefits of forward secrecy
+	(see <xref target='sec-pfs'/> for details on forward secrecy).</t>
+	<t>Session ticket validity SHOULD be limited to a reasonable duration (e.g. 1 day), for similar reasons.</t>
+	</list>
+	</t>
+      </section>
+      
+      <section title="Renegotiation">
+      <t>
+      Where handshake renegotiation is implemented, both clients and servers MUST implement the renegotiation_info extension, 
+      as defined in <xref target="RFC5746"/>.
+      </t>
+      <t>To counter the Triple Handshake attack, we adopt the recommendation from <xref target="triple-handshake"/>:
+      TLS clients SHOULD ensure that all certificates received over a connection are valid for the current server endpoint, and abort the handshake if they are not. In some usages, it may be simplest to refuse any change of certificates during renegotiation.
+      </t>
+      </section>
+
+      <section title="Server Name Indication">
+      <t>
+      TLS implementations MUST support the Server Name Indication (SNI) extension
+      for those higher level protocols which would benefit from it, including HTTPS.
+      However, unlike implementation, the use of SNI in particular circumstances
+      is a matter of local policy.
+      </t>
+      </section>
+      
+    </section>
+
+    <section title="Recommendations: Cipher Suites" anchor="detail">
+
+      <t>TLS and its implementations provide considerable flexibility in the selection of cipher suites. Unfortunately many available
+      cipher suites are insecure, and so misconfiguration can easily result in reduced security. This section
+      includes recommendations on the selection and negotiation of cipher suites.</t>
+
+      <section title="Cipher Suite Selection" anchor="rec-cipher">
         <t>It is important both to stop using old, insecure cipher suites and to start using modern, more secure cipher suites. Therefore:</t>
         <t>
           <list style='symbols'>
@@ -124,21 +191,24 @@
             </t>
             <t>Implementations MUST NOT negotiate RC4 cipher suites 
                <vspace blankLines='1'/>
-               Rationale: The RC4 stream cipher has a variety of cryptographic weaknesses, as documented in <xref target='I-D.popov-tls-prohibiting-rc4'/>.
+               Rationale: The RC4 stream cipher has a variety of cryptographic weaknesses, as documented in <xref target='I-D.ietf-tls-prohibiting-rc4'/>.
             </t>
             <t>Implementations MUST NOT negotiate cipher suites offering only so-called "export-level" encryption (including algorithms with 40 bits or 56 bits of security).
                <vspace blankLines='1'/>
                Rationale: These cipher suites are deliberately "dumbed down" and are very easy to break.
             </t>
-            <t>Implementations SHOULD NOT negotiate cipher suites that use algorithms offering less than 128 bits of security (even if they advertise more bits, such as the 168-bit 3DES cipher suites).
+	    <t>Applications MUST NOT negotiate cipher suites of less than 112 bits of security.</t>
+            <t>Implementations SHOULD NOT negotiate cipher suites that use algorithms offering less than 128 bits of security.
+	    Note that some legacy cipher suites (e.g. 168-bit 3DES) have an effective key length which is smaller 
+	    than their nominal key length (112 bits in the case of 3DES). Such cipher suites should be evaluated
+	    according to their effective key length.
                <vspace blankLines='1'/>
-               Rationale: Although these cipher suites are not actively subject to breakage, their useful life is short enough that stronger cipher suites are desirable.
+               Rationale: Although these cipher suites are not actively subject to breakage, their useful lifespan is
+	       short enough that stronger cipher suites are desirable. 128-bit ciphers are expected to remain secure 
+	       for at least several years,
+	       and 256-bit ciphers "until the next fundamental technology breakthrough".
             </t>
-            <t>Implementations SHOULD prefer cipher suites that use algorithms with at least 128 (and, if possible, 256) bits of security.
-               <vspace blankLines='1'/>
-               Rationale: Although the useful life of such cipher suites is unknown, it is probably at least several years for the 128-bit ciphers and "until the next fundamental technology breakthrough" for 256-bit ciphers.
-            </t>
-            <t>Implementations MUST support, and SHOULD prefer to negotiate, cipher suites offering forward secrecy, such as those in the "EDH", "DHE", and "ECDHE" families.
+            <t>Implementations MUST support, and SHOULD prefer to negotiate, cipher suites offering forward secrecy, such as those in the Ephemeral Diffie-Hellman and Elliptic Curve Ephemeral Diffie Hellman ("DHE" and "ECDHE") families.
                <vspace blankLines='1'/>
                Rationale: Forward secrecy (sometimes called "perfect forward secrecy") prevents the recovery of information that was encrypted with older session keys, thus limiting the amount of time during which attacks can be successful.
             </t>
@@ -154,48 +224,33 @@
           </list>
         </t>
         <t>We suggest that TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 be preferred in general.</t>
-        <t>Unfortunately, those cipher suites are supported only in TLS 1.2 since they are authenticated encryption (AEAD) algorithms <xref target="RFC5116"/>.  A future version of this document might recommend cipher suites for earlier versions of TLS.</t>
-        <t><xref target="RFC4492"/> allows clients and servers to negotiate ECDH parameters (curves).  Clients and servers SHOULD prefer verifiably random curves (specifically Brainpool P-256, brainpoolp256r1 <xref target="RFC7027"/>), and fall back to the commonly used NIST P-256 (secp256r1) curve <xref target="RFC4492"/>. In addition, clients SHOULD send an ec_point_formats extension with a single element, “uncompressed”.</t>
+        <t>It is noted that those cipher suites are supported only in TLS 1.2 since they are authenticated encryption (AEAD) algorithms <xref target="RFC5116"/>.</t>
+        <t><xref target="RFC4492"/> allows clients and servers to negotiate ECDH parameters (curves). For interoperability,
+	clients and servers SHOULD support 
+	the NIST P-256 (secp256r1) curve <xref target="RFC4492"/>. In addition, clients SHOULD send an ec_point_formats extension with
+	a single element, “uncompressed”.</t>
       </section>
 
       <section title="Public Key Length" anchor="rec-keylength">
-        <t>Because Diffie-Hellman keys of 1024 bits are estimated to be roughly equivalent to 80-bit symmetric keys, it is better to use longer keys for the "DH" family of cipher suites.  Unfortunately, some existing software cannot handle (or cannot easily handle) key lengths greater than 1024 bits.  The most common workaround for these systems is to prefer the "ECDHE" family of cipher suites instead of the "DH" family, then use longer keys.  Key lengths of at least 2048 bits are RECOMMENDED, since they are estimated to be roughly equivalent to 112-bit symmetric keys and might be sufficient for at least the next 10 years.  In addition to 2048-bit server certificates, the use of SHA-256 fingerprints is RECOMMENDED (see <xref target="CAB-Baseline"/> for more details).</t>
-        <t>Note: The foregoing recommendations are preliminary and will likely be corrected and enhanced in a future version of this document.</t>
+        <t>With a key exchange based on modular Diffie-Hellman ("DHE" cipher suites), key lengths of at least 2048 bits are RECOMMENDED.</t>
+<t> Rationale: because Diffie-Hellman keys of 1024 bits are estimated to be roughly equivalent to 80-bit symmetric keys, it is better to use longer keys for the "DHE" family of cipher suites.  Unfortunately, some existing software cannot handle (or cannot easily handle) key lengths greater than 1024 bits.  The most common workaround for these systems is to prefer the "ECDHE" family of cipher suites instead of the "DHE" family.  For modular groups, key lengths of at least 2048 bits are estimated to be roughly equivalent to 112-bit symmetric keys and might be sufficient for at least the next 10 years.
+</t>
+<t>Servers SHOULD authenticate using 2048-bit certificates. In addition, the use of SHA-256 fingerprints is RECOMMENDED (see <xref target="CAB-Baseline"/> for more details). Clients SHOULD indicate to servers that they request SHA-256, by using the "Signature Algorithms" extension defined in TLS 1.2. </t>
       </section>
-
-      <section title="Compression" anchor="rec-compress">
-        <t>Implementations and deployments SHOULD disable TLS-level compression (<xref target="RFC5246"/>, Sec. 6.2.2).</t>
-      </section>
-
-      <section title="Session Resumption" anchor="rec-resume">
-        <t>If TLS session resumption is used, care ought to be taken to do so safely. In particular, the resumption information (either session IDs <xref target='RFC5246'/> or session tickets <xref target='RFC5077'/>) needs to be authenticated and encrypted to prevent modification or eavesdropping by an attacker.  For session tickets, a strong cipher suite SHOULD be used when encrypting the ticket (as least as strong as the main TLS cipher suite); ticket keys MUST be changed regularly, e.g. once every week, so as not to negate the effect of forward secrecy.  Session ticket validity SHOULD be limited to a reasonable duration (e.g. 1 day), so as not to negate the benefits of forward secrecy.</t>
-      </section>
-
-    </section>
-
-    <section title="Detailed Guidelines" anchor="detail">
-
-      <t>The following sections provide more detailed information about the recommendations listed above.</t>
-
       <section title="Cipher Suite Negotiation Details" anchor="detail-neg">
         <t>Clients SHOULD include TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 as the first proposal to any server, unless they have prior knowledge that the server cannot respond to a TLS 1.2 client_hello message.</t>
-        <t>Servers SHOULD prefer this cipher suite (or a similar but stronger one) whenever it is proposed, even if it is not the first proposal.</t>
-        <t>Both clients and servers SHOULD include the “Supported Elliptic Curves” extension <xref target="RFC4492"/>.</t>
+        <t>Servers SHOULD prefer this cipher suite whenever it is proposed, even if it is not the first proposal.</t>
+        <t>Both clients and servers SHOULD include the "Supported Elliptic Curves" extension <xref target="RFC4492"/>.</t>
         <t>Clients are of course free to offer stronger cipher suites, e.g. using AES-256; when they do, the server SHOULD prefer the stronger cipher suite unless there are compelling reasons (e.g., seriously degraded performance) to choose otherwise.</t>
         <t>Note that other profiles of TLS 1.2 exist that use different cipher suites. For example, <xref target="RFC6460"/> defines a profile that uses the TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256 and TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384 cipher suites.</t>
-        <t>This document is not an application profile standard, in the sense of Sec. 9 of <xref target="RFC5246"/>. As a result, clients and servers are still required to support the TLS mandatory cipher suite, TLS_RSA_WITH_AES_128_CBC_SHA.</t>
+        <t>This document is not an application profile standard, in the sense of Sec. 9 of <xref target="RFC5246"/>. As a result, clients and servers are still REQUIRED to support the mandatory TLS cipher suite, TLS_RSA_WITH_AES_128_CBC_SHA.</t>
       </section>
 
-      <section title="Alternative Cipher Suites" anchor="detail-alt">
-        <t>Elliptic Curves Cryptography is not universally deployed for several reasons, including its complexity compared to modular arithmetic and longstanding IPR concerns. On the other hand, there are two related issues hindering effective use of modular Diffie-Hellman cipher suites in TLS:</t>
-        <t>
-          <list style="symbols">
-            <t>There are no protocol mechanisms to negotiate the DH groups or parameter lengths supported by client and server.</t>
-            <t>There are widely deployed client implementations that reject received DH parameters, if they are longer than 1024 bits.</t>
-          </list>
-        </t>
-        <t>We note that with DHE and ECDHE cipher suites, the TLS master key only depends on the Diffie Hellman parameters and not on the strength the the RSA certificate; moreover, 1024 bits DH parameters are generally considered insufficient at this time.</t>
-        <t>Because of the above, we recommend using (in priority order):</t>
+      <section title="Modular vs. Elliptic Curve DH Cipher Suites" anchor="detail-alt">
+      <t>Not all TLS implementations support both modular and EC Diffie-Hellman groups, as
+      required by <xref target="rec-cipher"/>. Some implementations are severely limited in
+      the length of DH values. When such implementations need to be accommodated,
+      we recommend using (in priority order):</t>
         <t>
           <list style="numbers">
             <t>Elliptic Curve DHE with negotiated parameters <xref target='RFC5289'/></t>
@@ -203,21 +258,50 @@
             <t>The same cipher suite, with 1024-bit parameters.</t>
           </list>
         </t>
+        <t>Rationale: Elliptic Curve Cryptography is not universally deployed for several reasons, including its complexity compared to modular arithmetic and longstanding IPR concerns. On the other hand, there are two related issues hindering effective use of modular Diffie-Hellman cipher suites in TLS:</t>
+        <t>
+          <list style="symbols">
+            <t>There are no protocol mechanisms to negotiate the DH groups or parameter lengths supported by client and server.</t>
+            <t>There are widely deployed client implementations that reject received DH parameters if they are longer than 1024 bits.</t>
+          </list>
+        </t>
+        <t>We note that with DHE and ECDHE cipher suites, the TLS master key only depends on the Diffie Hellman parameters and not on the strength of the RSA certificate; moreover, 1024 bit modular DH parameters are generally considered insufficient at this time.</t>
         <t>With modular ephemeral DH, deployers SHOULD carefully evaluate interoperability vs. security considerations when configuring their TLS endpoints.</t>
       </section>
     </section>
 
     <section title="IANA Considerations" anchor="sec_IANA_Considerations">
-      <t>This document requests no actions of IANA.</t>
+      <t>This document requests no actions of IANA. [Note to RFC Editor: please remove this whole section before publication.]</t>
     </section>
 
     <section title="Security Considerations" anchor="sec">
-      <section title="AES-GCM" anchor="sec-aes">
+    <t>This entire document discusses security practices, and this section adds a few security considerations and includes further
+    discussion of particular recommendations.</t>
+      <section title="Host Name Validation">
+	<t>
+	Application authors should take note that TLS implementations
+	frequently do not validate host names, and must therefore determine if
+	the TLS implementation they are using does, and if not write their own
+	validation code or consider changing the TLS implementation.
+	</t>
+	<t>
+	It is noted that the requirements regarding host name validation (and in general,
+	binding between the TLS layer and the protocol that runs above it) vary between different
+	protocols. For HTTPS, these requirements are defined by Sec. 3 of <xref target="RFC2818"/>.
+	</t>
+	<t>
+	Readers are referred to <xref target="RFC6125"/> for further details regarding 
+	generic host name validation in the TLS context. In addition, the RFC contains a long 
+	list of example protocols, some of which implement a policy very different from HTTPS.
+	</t>
+      </section>
+
+	<section title="AES-GCM" anchor="sec-aes">
         <t>
 Please refer to <xref target="RFC5246"/>, Sec. 11 for general security considerations when using TLS 1.2, and to <xref target="RFC5288"/>, Sec. 6 for security considerations that apply specifically to AES-GCM when used with TLS.</t>
       </section>
       <section title="Forward Secrecy" anchor="sec-pfs">
-        <t>Forward secrecy (also often called Perfect Forward Secrecy or "PFS") is a defense against an attacker who records encrypted conversations where the session keys are only encrypted with the communicating parties' long-term keys. Should the attacker be able to obtain these long-term keys at some point later in the future, he will be able to decrypt the session keys and thus the entire conversation. In the context of TLS and DTLS, such compromise of long-term keys is not entirely implausible. It can happen, for example, due to:</t>
+        <t>Forward secrecy (also often called Perfect Forward Secrecy or "PFS") is a defense against an attacker who records encrypted conversations where the session keys are only encrypted with the communicating parties' long-term keys. Should the attacker be able to obtain these long-term keys at some point later in time, he will be able to decrypt the session keys and thus the entire conversation. In the context of TLS and DTLS, such compromise of long-term keys is not entirely implausible. It can happen, for example, due to:</t>
         <t>
           <list style="symbols">
             <t>A client or server being attacked by some other attack vector, and the private key retrieved.</t>
@@ -230,48 +314,130 @@ Please refer to <xref target="RFC5246"/>, Sec. 11 for general security considera
         <t>
 PFS ensures in such cases that the session keys cannot be determined even by an attacker who obtains the long-term keys some time after the conversation. It also protects against an attacker who is in possession of the long-term keys, but remains passive during the conversation.</t>
         <t>
-PFS is generally achieved by using the Diffie-Hellman scheme to derive session keys. The Diffie-Hellman scheme has both parties maintain private secrets and send parameters over the network as modular powers over certain cyclic groups. The properties of the so-called Discrete Logarithm Problem (DLP) allow to derive the session keys without an eavesdropper being able to do so. There is currently no known attack against DLP if sufficiently large parameters are chosen.</t>
-        <t>Unfortunately, many TLS/DTLS cipher suites were defined that do not enable PFS, e.g. TLS_RSA_WITH_AES_256_CBC_SHA256.  We thus advocate strict use of PFS-only ciphers.</t>
+PFS is generally achieved by using the Diffie-Hellman scheme to derive session keys. The Diffie-Hellman scheme has both parties maintain private secrets and send parameters over the network as modular powers over certain cyclic groups. The properties of the so-called Discrete Logarithm Problem (DLP) allow to derive the session keys without an eavesdropper being able to do so. There is currently no known attack against DLP if sufficiently large parameters are chosen. A variant of the Diffie-Hellman scheme uses Elliptic Curves instead of the originally proposed modular arithmetics.</t>
+        <t>Unfortunately, many TLS/DTLS cipher suites were defined that do not feature PFS, e.g. TLS_RSA_WITH_AES_256_CBC_SHA256.  We thus advocate strict use of PFS-only ciphers.</t>
+      </section>
+      
+      <section title="Diffie Hellman Exponent Reuse">
+      <t>
+      For performance reasons, many TLS implementations reuse Diffie-Hellman and Elliptic Curve
+      Diffie-Hellman exponents
+      across multiple connections. Such reuse can result in major
+      security issues:
+      <list style="symbols">
+      <t>If exponents are reused for a long time (e.g., more than a few hours), an attacker
+      who gains access to the host can decrypt previous connections. In other words,
+      exponent reuse negates the effects of forward secrecy.</t>
+      <t>TLS implementations that reuse exponents should test the DH public key they
+      receive, in order to avoid some known attacks. These tests are not 
+      standardized in TLS at the time of writing. See <xref target="RFC6989"/> for recipient tests
+      required of IKEv2 implementations that reuse DH exponents.</t>
+      </list>
+      </t>
+      </section>
+      <section title="Certificate Revocation">
+      <t>
+      Unfortunately there is currently no effective, Internet-scale mechanism to affect certificate revocation:
+      <list style='symbols'>
+      <t>Certificate Revocation Lists (CRLs) are non-scalable and therefore rarely used.</t>
+      <t>The On-Line Certification Status Protocol (OCSP) presents both scaling and privacy issues when used for heavy traffic
+      Web servers. In addition, clients typically "soft-fail", meaning they do not abort the TLS connection if the OCSP server
+      does not respond.</t>
+      <t>OCSP stapling (Sec. 8 of <xref target="RFC6066"/>) resolves the operational issues with OCSP, but is still ineffective
+      in the presence of a MITM attacker because they can simply ignore the client's
+      request for a stapled OCSP response.</t>
+      <t>OCSP stapling as defined in <xref target="RFC6066"/> does not extend to intermediate
+      certificates used in a certificate chain. <xref target="RFC6961"/> addresses this shortcoming,
+      but is a recent addition without much deployment.</t>
+      <t>Proprietary mechanisms that embed revocation lists in the Web browser's configuration database cannot scale beyond
+      a small number of the most heavily used Web servers.</t>
+      </list>
+      </t>
+      <t>
+      The current consensus appears to be that OCSP stapling, combined with a "must staple" mechanism similar to HSTS, would
+      finally resolve this problem; in particular when used together with the extension defined in
+      <xref target="RFC6961"/>. But such a mechanism has not been standardized yet.
+      </t>
       </section>
 
     </section>
 
-    <section title="Acknowledgements" anchor="d1e1127">
-      <t>We would like to thank Stephen Farrell, Simon Josefsson, Yoav Nir, Kenny Paterson, Patrick Pelletier, and Rich Salz for their review. Thanks to Brian Smith whose “browser cipher suites” page is a great resource. Finally, thanks to all others who commented on the TLS and other lists and are not mentioned here by name.</t>
+    <section title="Acknowledgments" anchor="d1e1127">
+      <t>We would like to thank Stephen Farrell, Simon Josefsson, Watson Ladd, Johannes Merkle, Bodo Moeller, Yoav Nir, Kenny Paterson, Patrick Pelletier, Tom Ritter, Rich Salz, Aaron Zauner for their review. Thanks to Brian Smith whose "browser cipher suites" page is a great resource. Finally, thanks to all others who commented on the TLS, UTA and other lists and are not mentioned here by name.</t>
     </section>
 
   </middle>
 
   <back>
-    <references title="Normative References">&rfc2119;
-&rfc4492;
-&rfc5246;
-&rfc5288;
-&rfc5289;
-&rfc6176;
-&rfc7027;
+    <references title="Normative References">
+<?rfc include="reference.RFC.2119.xml"?>
+<?rfc include="reference.RFC.2818.xml"?>
+<?rfc include="reference.RFC.4492.xml"?>
+<?rfc include="reference.RFC.5246.xml"?>
+<?rfc include="reference.RFC.5288.xml"?>
+<?rfc include="reference.RFC.5289.xml"?>
+<?rfc include="reference.RFC.5746.xml"?>
+<?rfc include="reference.RFC.6125.xml"?>
+<?rfc include="reference.RFC.6176.xml"?>
     </references>
 
     <references title="Informative References">
 
-&I-D.popov-tls-prohibiting-rc4;
-&I-D.sheffer-uta-tls-attacks;
-&rfc2246;
-&rfc4346;
-&rfc5077;
-&rfc5116;
-&rfc6101;
-&rfc6460;
+<?rfc include="reference.I-D.ietf-tls-prohibiting-rc4.xml"?>
+<?rfc include="reference.I-D.ietf-uta-tls-attacks.xml"?>
+<?rfc include="reference.RFC.2246.xml"?>
+<?rfc include="reference.RFC.4346.xml"?>
+<?rfc include="reference.RFC.5077.xml"?>
+<?rfc include="reference.RFC.5116.xml"?>
+<?rfc include="reference.RFC.6066.xml"?>
+<?rfc include="reference.RFC.6101.xml"?>
+<?rfc include="reference.RFC.6460.xml"?>
+<?rfc include="reference.RFC.6797.xml"?>
+<?rfc include="reference.RFC.6961.xml"?>
+<?rfc include="reference.RFC.6989.xml"?>
 
-<reference anchor="CAB-Baseline" target="https://www.cabforum.org/documents.html"><front><title>Baseline Requirements for the Issuance and Management of Publicly-Trusted Certificates Version 1.1.6</title><author fullname="CA/Browser Forum"></author><date year="2013"/></front></reference>
+<reference anchor="triple-handshake" target="https://secure-resumption.com/"><front><title>Triple Handshakes Considered Harmful:
+Breaking and Fixing Authentication over TLS</title>
+<author initials="A." surname="Delignat-Lavaud" fullname="Antoine Delignat-Lavaud"></author>
+<author initials="K." surname="Bhargavan" fullname="Karthikeyan Bhargavan"></author>
+<author initials="A." surname="Pironti" fullname="Alfredo Pironti"></author><date year="2014"/>
+</front></reference>
+<reference anchor="CAB-Baseline" target="https://www.cabforum.org/documents.html"><front><title>Baseline Requirements for the Issuance and Management of Publicly-Trusted Certificates Version 1.1.6</title><author fullname="CA/Browser Forum"
+initials="" surname="CA/Browser Forum"></author><date year="2013"/></front></reference>
 <reference anchor="Heninger2012"><front><title>Mining Your Ps and Qs: Detection of Widespread Weak Keys in Network Devices</title><author initials="N." surname="Heninger" fullname="Nadia Heninger"/><author initials="Z." surname="Durumeric" fullname="Zakir Durumeric"/><author initials="E." surname="Wustrow" fullname="Eric Wustrow"/><author initials="J.A." surname="Halderman" fullname="J. Alex Halderman"/><date year="2012"/></front><seriesInfo name="Usenix Security Symposium" value="2012"/></reference>
-<reference anchor="Kleinjung2010"><front><title>Factorization of a 768-Bit RSA Modulus</title><author initials="T." surname="Kleinjung" fullname="Thorsten Kleinjung"/><date year="2010"/></front><seriesInfo name="CRYPTO" value="10"/></reference>
+<reference anchor="Kleinjung2010" target="https://eprint.iacr.org/2010/006.pdf"><front><title>Factorization of a 768-Bit RSA Modulus</title><author initials="T." surname="Kleinjung" fullname="Thorsten Kleinjung"/><date year="2010"/></front><seriesInfo name="CRYPTO" value="10"/></reference>
 <reference anchor="Soghoian2011"><front><title>Certified lies: Detecting and defeating government interception attacks against SSL.</title><author initials="C." surname="Soghoian" fullname="Christopher Soghoian"/><author initials="S." surname="Stamm" fullname="Sid Stamm"/><date year="2011"/></front><seriesInfo name="Proc. 15th Int. Conf. Financial Cryptography and Data Security" value=""/></reference>
 </references>
 
-    <section title="Appendix: Change Log" anchor="changes">
+    <section title="Change Log" anchor="changes">
       <t>
 Note to RFC Editor: please remove this section before publication.</t>
+      <section title="draft-ietf-tls-bcp-02" anchor="changes-02">
+        <t>
+          <list style="symbols">
+            <t>Rearranged some sections for clarity and re-styled the text so that normative text is followed by rationale where possible.</t>
+	    <t>Removed the recommendation to use Brainpool curves.</t>
+	    <t>Triple Handshake mitigation.</t>
+	    <t>MUST NOT negotiate algorithms lower than 112 bits of security.</t>
+	    <t>MUST implement SNI, but use per local policy.</t>
+	    <t>Changed SHOULD NOT negotiate or fall back to SSLv3 to MUST NOT.</t>
+	    <t>Added hostname validation.</t>
+	    <t>Non-normative discussion of DH exponent reuse.</t>
+          </list>
+        </t>
+      </section>
+      <section title="draft-ietf-tls-bcp-01" anchor="changes-01">
+        <t>
+          <list style="symbols">
+            <t>Clarified that specific TLS-using protocols may have stricter requirements.</t>
+	    <t>Changed TLS 1.0 from MAY to SHOULD NOT.</t>
+	    <t>Added discussion of "optional TLS" and HSTS.</t>
+	    <t>Recommended use of the Signature Algorithm and Renegotiation Info extensions.</t>
+	    <t>Use of a strong cipher for a resumption ticket: changed SHOULD to MUST.</t>
+	    <t>Added an informational discussion of certificate revocation, but no recommendations.</t>
+          </list>
+        </t>
+      </section>
       <section title="draft-ietf-tls-bcp-00" anchor="changes-00">
         <t>
           <list style="symbols">
