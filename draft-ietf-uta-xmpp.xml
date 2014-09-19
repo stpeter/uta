@@ -10,7 +10,7 @@
 <?rfc toc="yes"?>
 <?rfc tocdepth="4"?>
 
-<rfc category="std" docName="draft-ietf-uta-xmpp-00" ipr="trust200902" updates="6120">
+<rfc category="std" docName="draft-ietf-uta-xmpp-01" ipr="trust200902" updates="6120">
 
   <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
 
@@ -19,7 +19,14 @@
     <author initials="P." surname="Saint-Andre" fullname="Peter Saint-Andre">
       <organization>&amp;yet</organization>
       <address>
-        <email>ietf@stpeter.im</email>
+        <postal>
+          <street>P.O. Box 787</street>
+          <city>Parker</city>
+          <region>CO</region>
+          <code>80134</code>
+          <country>USA</country>
+        </postal>
+        <email>peter@andyet.net</email>
       </address>
     </author>
     <author initials="T." surname="Alkemade" fullname="Thijs Alkemade">
@@ -37,7 +44,7 @@
   <middle>
 
     <section title="Introduction" anchor='intro'>
-      <t>The Extensible Messaging and Presence Protocol (XMPP) <xref target='RFC6120'/> (along with its precursor, the so-called "Jabber protocol") has used Transport Layer Security (TLS) <xref target='RFC5246'/> (along with its precursor, Secure Sockets Layer or SSL) since 1999.  Both <xref target='RFC6120'/> and its predecessor <xref target='RFC3920'/> provided recommendations regarding the use of TLS in XMPP.  In order to address the evolving threat model on the Internet today (see, for example, <xref target='I-D.trammell-perpass-ppa'/>), this document provides stronger recommendations (see also <xref target='I-D.ietf-uta-tls-bcp'/>).  This document updates <xref target='RFC6120'/>.</t>
+      <t>The Extensible Messaging and Presence Protocol (XMPP) <xref target='RFC6120'/> (along with its precursor, the so-called "Jabber protocol") has used Transport Layer Security (TLS) <xref target='RFC5246'/> (along with its precursor, Secure Sockets Layer or SSL) since 1999.  Both <xref target='RFC6120'/> and its predecessor <xref target='RFC3920'/> provided recommendations regarding the use of TLS in XMPP.  In order to address the evolving threat model on the Internet today, this document provides stronger recommendations based on <xref target='I-D.ietf-uta-tls-bcp'/>.  This document updates <xref target='RFC6120'/>.</t>
     </section>
 
     <section title="Terminology" anchor="terms">
@@ -45,15 +52,11 @@
       <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in <xref target='RFC2119'/>.</t>
     </section>
 
-    <section title="Discussion Venue" anchor="discuss">
-      <t>The discussion venue for this document is the mailing list of the XMPP Working Group, for which archives and subscription information can be found at <eref target='https://www.ietf.org/mailman/listinfo/xmpp'/>.  Discussion might also occur on the mailing list of the UTA Working Group, for which archives and subscription information can be found at <eref target='https://www.ietf.org/mailman/listinfo/uta'/>.</t>
-    </section>
-
     <section title="Recommendations" anchor="rec">
 
       <section title="Support for TLS" anchor="rec-support">
         <t>Support for TLS (specifically, the XMPP profile of STARTTLS) is mandatory for XMPP implementations, as already specified in <xref target='RFC6120'/> and its predecessor <xref target='RFC3920'/>.</t>
-        <t>If the server to which an XMPP client or peer server connects does not offer a stream feature of &lt;starttls xmlns='urn:ietf:params:xml:ns:xmpp-tls'/&gt; (thus indicating that it is an XMPP 1.0 server that supports TLS), the initiating entity MUST NOT proceed with the stream negotiation and MUST instead abort the connection attempt.  Although XMPP servers SHOULD include the &lt;required/&gt; child element to indicate that negotiation of TLS is mandatory, clients and peer servers MUST NOT depend on receiving the &lt;required/&gt; flag in determining whether TLS will be enforced for the stream.</t>
+        <t>If the server to which a client or peer server connects does not offer a stream feature of &lt;starttls xmlns='urn:ietf:params:xml:ns:xmpp-tls'/&gt; (thus indicating that it is an XMPP 1.0 server that supports TLS), the initiating entity MUST NOT proceed with the stream negotiation and MUST instead abort the connection attempt.  Although XMPP servers SHOULD include the &lt;required/&gt; child element to indicate that negotiation of TLS is mandatory, clients and peer servers MUST NOT depend on receiving the &lt;required/&gt; flag in determining whether TLS will be enforced for the stream.</t>
       </section>
 
       <section title="Protocol Versions" anchor="rec-versions">
@@ -76,7 +79,7 @@
       <section title="Session Resumption" anchor="rec-resume">
         <t>Implementations MUST follow the recommendations in <xref target='I-D.ietf-uta-tls-bcp'/>.</t>
         <t>Use of session IDs <xref target='RFC5246'/> is RECOMMENDED instead of session tickets <xref target='RFC5077'/>, since XMPP does not in general use state management technologies such as tickets or "cookies" <xref target='RFC6265'/>.</t>
-        <t>Note that, in XMPP, TLS session resumption can be used in concert with the XMPP Stream Management extension; see <xref target='XEP-0198'/> for further details.</t>
+        <t>In XMPP, TLS session resumption can be used in concert with the XMPP Stream Management extension; see <xref target='XEP-0198'/> for further details.</t>
       </section>
 
       <section title="Authenticated Connections" anchor="rec-auth">
@@ -92,7 +95,7 @@
       </section>
 
       <section title="Human Factors" anchor="rec-user">
-        <t>It is RECOMMENDED that XMPP clients provide ways for end users (and that XMPP servers provide ways for administators) to complete the following tasks:</t>
+        <t>It is RECOMMENDED that XMPP clients provide ways for end users (and that XMPP servers provide ways for administrators) to complete the following tasks:</t>
         <t>
           <list style='symbols'>
             <t>Determine if a client-to-server or server-to-server connection is encrypted and authenticated.</t>
@@ -106,18 +109,14 @@
 
     </section>
 
-    <section title="Implementation Notes" anchor="impl">
-      <t>Some governments enforce legislation prohibiting the export of strong cryptographic technologies.  Nothing in this document ought to be taken as advice to violate such prohibitions.</t>
-    </section>
-
     <section title="IANA Considerations" anchor="iana">
       <t>This document requests no actions of the IANA.</t>
     </section>
 
     <section title="Security Considerations" anchor="security">
-      <t>As noted in "A Threat Model for Pervasive Passive Surveillance" <xref target='I-D.trammell-perpass-ppa'/>), the use of TLS can help limit the information available for correlation to the network and transport layer headers as opposed to the application layer.  As typically deployed, XMPP technologies do not leave application-layer routing data (such as XMPP 'to' and 'from' addresses) at rest on intermediate systems, since there is only one hop between any two given XMPP servers.  As a result, encrypting all hops (sending client to sender's server, sender's server to recipient's server, recipient's server to recipient's client) can help to limit the amount of "metadata" that might leak.</t>
+      <t>The use of TLS can help limit the information available for correlation to the network and transport layer headers as opposed to the application layer.  As typically deployed, XMPP technologies do not leave application-layer routing data (such as XMPP 'to' and 'from' addresses) at rest on intermediate systems, since there is only one hop between any two given XMPP servers.  As a result, encrypting all hops (sending client to sender's server, sender's server to recipient's server, recipient's server to recipient's client) can help to limit the amount of "metadata" that might leak.</t>
       <t>It is possible that XMPP servers themselves might be compromised. In that case, per-hop encryption would not protect XMPP communications, and even end-to-end encryption of (parts of) XMPP stanza payloads would leave addressing information and XMPP roster data in the clear.  By the same token, it is possible that XMPP clients (or the end-user devices on which such clients are installed) could also be compromised, leaving users utterly at the mercy of an adversary.</t>
-      <t>This document, along with actions currently being taken to strenthen the security of the XMPP network, do not assume widespread compromise of XMPP servers and clients or their underlying operating systems or hardware.  Thus it is assumed that ubiquitous use of per-hop TLS channel encryption and more significant deployment of end-to-end object encryption technologies will serve to protect XMPP communications to a measurable degree, compared to the alternatives.</t>
+      <t>This document and related actions to strengthen the security of the XMPP network are based on the assumption that XMPP servers and clients have not been subject to widespread compromise.  If this assumption is valid, then ubiquitous use of per-hop TLS channel encryption and more significant deployment of end-to-end object encryption technologies will serve to protect XMPP communications to a measurable degree, compared to the alternatives.</t>
     </section>
 
   </middle>
@@ -125,6 +124,26 @@
   <back>
 
     <references title="Normative References">
+
+<reference anchor='I-D.ietf-uta-tls-bcp'>
+<front>
+<title>Recommendations for Secure Use of TLS and DTLS</title>
+<author initials='Y' surname='Sheffer' fullname='Yaron Sheffer'>
+    <organization />
+</author>
+<author initials='R' surname='Holz' fullname='Ralph Holz'>
+    <organization />
+</author>
+<author initials='P' surname='Saint-Andre' fullname='Peter Saint-Andre'>
+    <organization />
+</author>
+<date month='August' day='24' year='2014' />
+<abstract><t>Transport Layer Security (TLS) and Datagram Transport Security Layer (DTLS) are widely used to protect data exchanged over application protocols such as HTTP, SMTP, IMAP, POP, SIP, and XMPP.  Over the last few years, several serious attacks on TLS have emerged, including attacks on its most commonly used cipher suites and modes of operation.  This document provides recommendations for improving the security of both software implementations and deployed services that use TLS and DTLS.</t></abstract>
+</front>
+<seriesInfo name='Internet-Draft' value='draft-ietf-uta-tls-bcp-02' />
+<format type='TXT'
+        target='http://www.ietf.org/internet-drafts/draft-ietf-uta-tls-bcp-02.txt' />
+</reference>
 
 <reference anchor="RFC2119">
 <front>
@@ -250,52 +269,12 @@
 <author initials='M' surname='Miller' fullname='Matthew Miller'>
     <organization />
 </author>
-<date month='February' day='4' year='2014' />
+<date month='June' day='21' year='2014' />
 <abstract><t>This document improves the security of the Extensible Messaging and Presence Protocol (XMPP) in two ways.  First, it specifies how "prooftypes" can establish a strong association between a domain name and an XML stream.  Second, it describes how to securely delegate a source domain to a derived domain, which is especially important in virtual hosting environments.</t></abstract>
 </front>
-<seriesInfo name='Internet-Draft' value='draft-ietf-xmpp-dna-05' />
+<seriesInfo name='Internet-Draft' value='draft-ietf-xmpp-dna-06' />
 <format type='TXT'
-        target='http://www.ietf.org/internet-drafts/draft-ietf-xmpp-dna-05.txt' />
-</reference>
-
-<reference anchor='I-D.ietf-uta-tls-bcp'>
-<front>
-<title>Recommendations for Secure Use of TLS and DTLS</title>
-<author initials='Y' surname='Sheffer' fullname='Yaron Sheffer'>
-    <organization />
-</author>
-<author initials='R' surname='Holz' fullname='Ralph Holz'>
-    <organization />
-</author>
-<author initials='P' surname='Saint-Andre' fullname='Peter Saint-Andre'>
-    <organization />
-</author>
-<date month='March' day='27' year='2014' />
-<abstract><t>Transport Layer Security (TLS) and Datagram Transport Security Layer (DTLS) are widely used to protect data exchanged over application protocols such as HTTP, SMTP, IMAP, POP, SIP, and XMPP.  Over the last few years, several serious attacks on TLS have emerged, including attacks on its most commonly used cipher suites and modes of operation.  This document provides recommendations for improving the security of both software implementations and deployed services that use TLS and DTLS.</t></abstract>
-</front>
-<seriesInfo name='Internet-Draft' value='draft-ietf-uta-tls-bcp-00' />
-<format type='TXT'
-        target='http://www.ietf.org/internet-drafts/draft-ietf-uta-tls-bcp-02.txt' />
-</reference>
-
-<reference anchor='I-D.trammell-perpass-ppa'>
-<front>
-<title>A Threat Model for Pervasive Passive Surveillance</title>
-<author initials='B' surname='Trammell' fullname='Brian Trammell'>
-    <organization />
-</author>
-<author initials='D' surname='Borkmann' fullname='Daniel Borkmann'>
-    <organization />
-</author>
-<author initials='C' surname='Huitema' fullname='Christian Huitema'>
-    <organization />
-</author>
-<date month='November' day='13' year='2013' />
-<abstract><t>This document elaborates a threat model for pervasive surveillance. We assume an adversary with an interest in indiscriminate eavesdropping that can passively observe network traffic at every layer at every point in the network between the endpoints.  It is intended to demonstrate to protocol designers and implementors the observability and inferability of information and metainformation transported over their respective protocols, to assist in the evaluation of the performance of these protocols and the effectiveness of their protection mechanisms under pervasive passive surveillance.</t></abstract>
-</front>
-<seriesInfo name='Internet-Draft' value='draft-trammell-perpass-ppa-01' />
-<format type='TXT'
-        target='http://www.ietf.org/internet-drafts/draft-trammell-perpass-ppa-01.txt' />
+        target='http://www.ietf.org/internet-drafts/draft-ietf-xmpp-dna-06.txt' />
 </reference>
 
 <reference anchor='RFC3920'>
@@ -489,6 +468,10 @@
 </reference>
 
     </references>
+
+    <section title="Implementation Notes" anchor="impl">
+      <t>Some governments enforce legislation prohibiting the export of strong cryptographic technologies.  Nothing in this document ought to be taken as advice to violate such prohibitions.</t>
+    </section>
 
     <section title="Acknowledgements">
       <t>Thanks to the following individuals for their input: Dave Cridland, Philipp Hancke, Olle Johansson, Steve Kille, Tobias Markmann, Matt Miller, and Rene Treffer.</t>
