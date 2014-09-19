@@ -62,16 +62,69 @@
 
     <section title="Introduction" anchor="d1e381">
       <t>Transport Layer Security (TLS) and Datagram Transport Security Layer (DTLS) are widely used to protect data exchanged over application protocols such as HTTP, SMTP, IMAP, POP, SIP, and XMPP.  Over the last few years, several serious attacks on TLS have emerged, including attacks on its most commonly used cipher suites and modes of operation.  For instance, both AES-CBC and RC4, which together comprise most current usage, have been attacked in the context of TLS.  A companion document <xref target='I-D.ietf-uta-tls-attacks'/> provides detailed information about these attacks.</t>
-      <t>Because of these attacks, those who implement and deploy TLS and DTLS need updated guidance on how TLS can be used securely.  Note that this document provides guidance for deployed services, as well as software implementations.  In fact, this document calls for the deployment of algorithms that are widely implemented but not yet widely deployed.</t>
+      <t>Because of these attacks, those who implement and deploy TLS and DTLS need updated guidance on how TLS can be used securely.  Note that this document provides guidance for deployed services, as well as software implementations.  In fact, this document calls for the deployment of algorithms that are widely implemented but not yet widely deployed. Concerning deployment, this document targets a
+wide audience, namely all deployers who wish to add authentication,
+confidentiality and data integrity to their communications. This
+document does not address the rare deployment scenarios where one of these
+three properties is not desired.</t>
       <t>The recommendations herein take into consideration the security of various mechanisms, their technical maturity and interoperability, and their prevalence in implementations at the time of writing.  Unless noted otherwise, these recommendations apply to both TLS and DTLS.  TLS 1.3, when it is standardized and deployed in the field, should resolve the current vulnerabilities while providing significantly better functionality, and will very likely obsolete this document.</t>
       <t>
-      These are minimum recommendations for the general use of TLS.  Individual specifications may have 
-      stricter requirements related to one or more aspects of the protocol, based on their particular circumstances.
-      When that is the case, implementers MUST adhere to those stricter requirements.
+	These are minimum recommendations for the use of TLS for the
+	specified audience. Individual specifications may have stricter
+	requirements related to one or more aspects of the protocol,
+	based on their particular circumstances.  When that is the case,
+	implementers MUST adhere to those stricter requirements.
       </t>
       <t>Community knowledge about the strength of various algorithms and feasible attacks can change quickly, and experience shows that a security BCP is a point-in-time statement.  Readers are advised to seek out any errata or updates that apply to this document.</t>
     </section>
+    
+<section title="Intended Audience">
+<t>
+In the following, we specify which audience this document addresses concerning
+deployment. Most deployers are very likely part of this audience, but very
+specialised use cases of TLS that are outside of the intended audience can
+exist.
+</t>
+<section title="Security Services">
+<t>
+This document provides recommendations for an audience that wishes to secure
+their communication with TLS to achieve the following:
+</t>
+<t>
+<list style="symbols">
+<t>Authentication: this means that an end-point of the TLS communication
+is authenticated as the intended entity to communicate with. TLS allows to
+authenticate one or both end-points in the communication.</t>
 
+<t>Confidentiality: all (payload) communication is encrypted with the goal
+that no party should be able to decrypt it except the intended receiver.</t>
+
+<t>Data integrity: any changes made to the communication are detectable by
+the receiver.</t>
+</list>
+</t>
+<t>
+Deployers MUST verify that they do not need one of these three properties
+if they deviate from the recommendations given in this document.
+</t>
+</section>
+
+<section title="Examples">
+<t>
+The intended audience covers those services that are most commonly
+used on the Internet, among many others:
+</t>
+<t>
+<list style="symbols">
+<t>Operators of WWW servers (HTTPS).</t>
+
+<t>Operators of email servers (SMTPS, IMAPS, POPS).</t>
+
+<t>Operators of instant-messaging services (XMPPS, IRCS).</t>
+</list>
+</t>
+</section>
+</section>
     <section title="Conventions used in this document" anchor="d1e412">
       <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in <xref target="RFC2119"/>.</t>
     </section>
@@ -429,6 +482,7 @@ PFS is generally achieved by using the Diffie-Hellman scheme to derive session k
 <?rfc include="reference.RFC.5746.xml"?>
 <?rfc include="reference.RFC.6125.xml"?>
 <?rfc include="reference.RFC.6176.xml"?>
+<?rfc include="reference.RFC.6347.xml"?>
     </references>
 
     <references title="Informative References">
@@ -437,6 +491,8 @@ PFS is generally achieved by using the Diffie-Hellman scheme to derive session k
 <?rfc include="reference.I-D.ietf-uta-tls-attacks.xml"?>
 <?rfc include="reference.RFC.2246.xml"?>
 <?rfc include="reference.RFC.4346.xml"?>
+<?rfc include="reference.RFC.4347.xml"?>
+<?rfc include="reference.RFC.4949.xml"?>
 <?rfc include="reference.RFC.5077.xml"?>
 <?rfc include="reference.RFC.5116.xml"?>
 <?rfc include="reference.RFC.6066.xml"?>
@@ -472,6 +528,7 @@ Note to RFC Editor: please remove this section before publication.</t>
 	    <t>Host name validation is sometimes irrelevant.</t>
 	    <t>HSTS: MUST implement, SHOULD deploy.</t>
 	    <t>Session identities are not protected, only tickets are.</t>
+	    <t>Clarified the target audience.</t>
           </list>
         </t>
       </section>
