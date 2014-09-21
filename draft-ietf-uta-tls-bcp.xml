@@ -82,7 +82,7 @@ three properties is not desired.</t>
 <t>
 In the following, we specify which audience this document addresses concerning
 deployment. Most deployers are very likely part of this audience, but very
-specialised use cases of TLS that are outside of the intended audience can
+specialized use cases of TLS that are outside of the intended audience can
 exist.
 </t>
 <section title="Security Services">
@@ -316,7 +316,7 @@ used on the Internet, among many others:
 	clients and servers SHOULD support 
 	the NIST P-256 (secp256r1) curve <xref target="RFC4492"/>. In addition, clients SHOULD send
 	an ec_point_formats extension with
-	a single element, “uncompressed”.</t>
+	a single element, "uncompressed".</t>
       </section>
 
 	<section title="Cipher Suite Negotiation Details" anchor="detail-neg">
