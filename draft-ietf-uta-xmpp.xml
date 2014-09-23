@@ -10,7 +10,7 @@
 <?rfc toc="yes"?>
 <?rfc tocdepth="4"?>
 
-<rfc category="std" docName="draft-ietf-uta-xmpp-01" ipr="trust200902" updates="6120">
+<rfc category="std" docName="draft-ietf-uta-xmpp-02" ipr="trust200902" updates="6120">
 
   <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
 
@@ -60,24 +60,24 @@
       </section>
 
       <section title="Protocol Versions" anchor="rec-versions">
-        <t>Implementations MUST follow the recommendations in <xref target='I-D.ietf-uta-tls-bcp'/> as to supporting various TLS versions and avoiding fallback to SSL.</t>
+        <t>Implementations MUST follow the recommendations in Section 4.1 of <xref target='I-D.ietf-uta-tls-bcp'/> as to supporting various TLS versions and avoiding fallback to SSL.</t>
       </section>
 
       <section title="Cipher Suites" anchor="rec-cipher">
-        <t>Implementations MUST follow the recommendations in <xref target='I-D.ietf-uta-tls-bcp'/>.</t>
+        <t>Implementations MUST follow the recommendations in Section 5 of <xref target='I-D.ietf-uta-tls-bcp'/>.</t>
       </section>
 
       <section title="Public Key Length" anchor="rec-keylength">
-        <t>Implementations MUST follow the recommendations in <xref target='I-D.ietf-uta-tls-bcp'/>.</t>
+        <t>Implementations MUST follow the recommendations in Section 5.4 of <xref target='I-D.ietf-uta-tls-bcp'/>.</t>
       </section>
 
       <section title="Compression" anchor="rec-compress">
-        <t>Implementations MUST follow the recommendations in <xref target='I-D.ietf-uta-tls-bcp'/>.</t>
+        <t>Implementations MUST follow the recommendations in Section 4.5 of <xref target='I-D.ietf-uta-tls-bcp'/>.</t>
         <t>XMPP supports an application-layer compression technology <xref target='XEP-0138'/>, which might have slightly stronger security properties than TLS (at least because it is enabled after SASL authentication, as described in <xref target='XEP-0170'/>).</t>
       </section>
 
       <section title="Session Resumption" anchor="rec-resume">
-        <t>Implementations MUST follow the recommendations in <xref target='I-D.ietf-uta-tls-bcp'/>.</t>
+        <t>Implementations MUST follow the recommendations in Section 4.6 of <xref target='I-D.ietf-uta-tls-bcp'/>.</t>
         <t>Use of session IDs <xref target='RFC5246'/> is RECOMMENDED instead of session tickets <xref target='RFC5077'/>, since XMPP does not in general use state management technologies such as tickets or "cookies" <xref target='RFC6265'/>.</t>
         <t>In XMPP, TLS session resumption can be used in concert with the XMPP Stream Management extension; see <xref target='XEP-0198'/> for further details.</t>
       </section>
@@ -95,7 +95,7 @@
       </section>
 
       <section title="Human Factors" anchor="rec-user">
-        <t>It is RECOMMENDED that XMPP clients provide ways for end users (and that XMPP servers provide ways for administrators) to complete the following tasks:</t>
+        <t>It is strongly encouraged that XMPP clients provide ways for end users (and that XMPP servers provide ways for administrators) to complete the following tasks:</t>
         <t>
           <list style='symbols'>
             <t>Determine if a client-to-server or server-to-server connection is encrypted and authenticated.</t>
@@ -137,12 +137,12 @@
 <author initials='P' surname='Saint-Andre' fullname='Peter Saint-Andre'>
     <organization />
 </author>
-<date month='August' day='24' year='2014' />
+<date month='September' day='21' year='2014' />
 <abstract><t>Transport Layer Security (TLS) and Datagram Transport Security Layer (DTLS) are widely used to protect data exchanged over application protocols such as HTTP, SMTP, IMAP, POP, SIP, and XMPP.  Over the last few years, several serious attacks on TLS have emerged, including attacks on its most commonly used cipher suites and modes of operation.  This document provides recommendations for improving the security of both software implementations and deployed services that use TLS and DTLS.</t></abstract>
 </front>
-<seriesInfo name='Internet-Draft' value='draft-ietf-uta-tls-bcp-02' />
+<seriesInfo name='Internet-Draft' value='draft-ietf-uta-tls-bcp-03' />
 <format type='TXT'
-        target='http://www.ietf.org/internet-drafts/draft-ietf-uta-tls-bcp-02.txt' />
+        target='http://www.ietf.org/internet-drafts/draft-ietf-uta-tls-bcp-03.txt' />
 </reference>
 
 <reference anchor="RFC2119">
