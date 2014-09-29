@@ -555,6 +555,13 @@ initials="" surname="CA/Browser Forum"></author><date year="2013"/></front></ref
     <section title="Change Log" anchor="changes">
       <t>
 Note to RFC Editor: please remove this section before publication.</t>
+      <section title="draft-ietf-uta-tls-bcp-04" anchor="changes-04">
+        <t>
+          <list style="symbols">
+            <t>Some cleanup, and input from TLS WG discussion on applicability.</t>
+          </list>
+        </t>
+      </section>
       <section title="draft-ietf-uta-tls-bcp-03" anchor="changes-03">
         <t>
           <list style="symbols">
