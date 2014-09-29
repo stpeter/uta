@@ -10,7 +10,7 @@
 <?rfc compact="yes"?>
 <!DOCTYPE rfc SYSTEM "rfc2629.dtd" [
 ]>
-<rfc docName="draft-ietf-uta-tls-attacks-03" ipr="trust200902" category="info">
+<rfc docName="draft-ietf-uta-tls-attacks-04" ipr="trust200902" category="info">
   <front>
     <title abbrev="TLS Attacks">Summarizing Current Attacks on TLS and DTLS</title>
     <author initials="Y." surname="Sheffer" fullname="Yaron Sheffer">
@@ -65,7 +65,9 @@ Over the last few years there have been several serious attacks on TLS, includin
       <t>
 Over the last few years there have been several major attacks on TLS <xref target="RFC5246"/>, including attacks on its most commonly used ciphers and modes of operation. Details are given in  <xref target="sec_Attacks"/>, but suffice it to say that both AES-CBC and RC4, which together make up for most current usage, have been seriously attacked in the context of TLS.</t>
       <t>
-This situation motivated the creation of the UTA working group, which is tasked with the creation of generic and protocol-specific recommendations for the use of TLS and DTLS.</t>
+This situation was one of the motivations for the creation of the UTA working group,
+which is tasked with the creation of generic and protocol-specific recommendations
+for the use of TLS and DTLS.</t>
       <t>
 "Attacks always get better; they never get worse" (ironically, this saying is attributed to the NSA). This list of attacks describes our knowledge as of this writing. It seems likely that new attacks will be invented in the future.</t>
       <t>
@@ -76,6 +78,13 @@ For a more detailed discussion of the attacks listed here, the interested reader
 This section lists the attacks that motivated the current recommendations. This is not intended to be an extensive survey of TLS's security.</t>
       <t>
 While there are widely deployed mitigations for some of the attacks listed below, we believe that their root causes necessitate a more systemic solution.</t>
+      <t>
+      When such an identifier exists for an attack,
+      we have included its CVE (Common Vulnerabilities
+      and Exposures) ID. CVE <xref target="CVE"/> is an extensive,
+      industry-wide database of software
+      vulnerabilities.
+      </t>
       <section title="SSL Stripping">
       <t>
       Various attacks attempt to remove the use of SSL/TLS altogether, by modifying unencrypted protocols that request the use of TLS,
@@ -161,9 +170,11 @@ The former attack can be mitigated by disabling TLS compression. We are not awar
       </section>
       <section title="Diffie-Hellman Parameters">
       <t>
-      TLS allows to define ephemeral Diffie-Hellman and Elliptic Curve Diffie-Hellman parameters in its respective
+      TLS allows the definition of ephemeral Diffie-Hellman
+      and Elliptic Curve Diffie-Hellman parameters in its respective
       key exchange modes. This results in an attack detailed in <xref target="Cross-Protocol"/>.
-      In addition, clients that do not properly verify the received parameters are exposed to man in the middle 
+      In addition, clients that do not properly verify the received parameters
+      are exposed to man in the middle 
       (MITM) attacks.
       Unfortunately the TLS protocol
       does not require this verification, see <xref target="RFC6989"/> for the IPsec analogy.
@@ -210,8 +221,8 @@ binding via TLS Exporter <xref target="RFC5705"/> or "tls-unique"
       <section title="Implementation Issues">
       <t>
       Even when the protocol is fully specified, there are very common
-      issues that often plague implementations. In particular, the integration of
-      higher-level protocols, TLS and its PKI-based authentication is the source
+      issues that often plague implementations. In particular, when integrating into
+      higher-level protocols, TLS and its PKI-based authentication are sometimes the source
       of misunderstandings and implementation "shortcuts". An extensive survey 
       of these issues can be found in <xref target="Georgiev2012"/>.
       </t>
@@ -277,6 +288,13 @@ The document was prepared using the lyx2rfc tool, created by Nico Williams.</t>
 <?rfc include="reference.I-D.ietf-tls-prohibiting-rc4.xml"?>
 <?rfc include="reference.I-D.ietf-tls-encrypt-then-mac.xml"?>
 
+<reference anchor="CVE" target="https://cve.mitre.org/">
+  <front>
+    <title>Common Vulnerabilities and Exposures</title>
+    <author surname="MITRE"/>
+    <date/>
+  </front>
+</reference>
     <reference anchor="CBC-Attack"><front><title>Lucky Thirteen: Breaking the TLS and DTLS Record Protocols</title><author initials="N.J." surname="AlFardan" fullname="Nadhem J. AlFardan"/><author initials="K." surname="Paterson" fullname="K. Paterson"/><date year="2013"/></front><seriesInfo name="IEEE Symposium on Security and Privacy" value=""/></reference>
     <reference anchor="BEAST" target="http://packetstormsecurity.com/files/105499/Browser-Exploit-Against-SSL-TLS.html"><front><title>Browser Exploit Against SSL/TLS</title><author initials="J." surname="Rizzo" fullname="Juliano Rizzo"/><author initials="T." surname="Duong" fullname="Thai Duong"/><date year="2011"/></front></reference>
     <reference anchor="CRIME"><front><title>The CRIME Attack</title><author initials="J." surname="Rizzo" fullname="Juliano Rizzo"/><author initials="T." surname="Duong" fullname="Thai Duong"/><date year="2012"/></front><seriesInfo name="EKOparty Security Conference" value="2012"/></reference>
@@ -301,6 +319,13 @@ The document was prepared using the lyx2rfc tool, created by Nico Williams.</t>
     <section title="Appendix: Change Log" anchor="changes">
       <t>
 Note to RFC Editor: please remove this section before publication.</t>
+      <section title="draft-ietf-uta-tls-attacks-04" anchor="changes-04">
+        <t>
+          <list style='symbols'>
+            <t>Implemented AD review comments.</t>
+          </list>
+        </t>
+      </section>
       <section title="draft-ietf-uta-tls-attacks-03" anchor="changes-03">
         <t>
           <list style='symbols'>
