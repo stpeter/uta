@@ -11,7 +11,7 @@
 <?rfc toc="yes"?>
 <?rfc tocdepth="4"?>
 
-<rfc docName="draft-ietf-uta-tls-bcp-04" ipr="trust200902" category="bcp">
+<rfc docName="draft-ietf-uta-tls-bcp-05" ipr="trust200902" category="bcp">
   <front>
     <title abbrev="TLS Recommendations">Recommendations for Secure Use of TLS and DTLS</title>
     <author initials="Y." surname="Sheffer" fullname="Yaron Sheffer">
@@ -62,7 +62,7 @@ recommendations are applicable to the majority of use cases.</t>
   <middle>
 
     <section title="Introduction" anchor="d1e381">
-      <t>Transport Layer Security (TLS) and Datagram Transport Security Layer (DTLS) are widely used to protect data exchanged over application protocols such as HTTP, SMTP, IMAP, POP, SIP, and XMPP.  Over the last few years, several serious attacks on TLS have emerged, including attacks on its most commonly used cipher suites and modes of operation.  For instance, both AES-CBC and RC4, which together comprise most current usage, have been attacked in the context of TLS.  A companion document <xref target='I-D.ietf-uta-tls-attacks'/> provides detailed information about these attacks.</t>
+      <t>Transport Layer Security (TLS) and Datagram Transport Security Layer (DTLS) are widely used to protect data exchanged over application protocols such as HTTP, SMTP, IMAP, POP, SIP, and XMPP.  Over the last few years, several serious attacks on TLS have emerged, including attacks on its most commonly used cipher suites and modes of operation.  For instance, both of the AES-CBC and RC4 encryption algorithms, which together comprise most current usage, have been attacked in the context of TLS.  A companion document <xref target='I-D.ietf-uta-tls-attacks'/> provides detailed information about these attacks.</t>
       <t>Because of these attacks, those who implement and deploy TLS and DTLS need updated guidance on how TLS can be used securely.  Note that this document provides guidance for deployed services, as well as software implementations, assuming the implementer expects his or her code 
 to be deployed in environments defined in the following section. 
 In fact, this document calls for the deployment of algorithms that 
@@ -86,21 +86,22 @@ scenarios where no confidentiality is desired.
     
 <section title="Intended Audience and Applicability Statement">
 <t>
-In the following, we specify which audience this document addresses concerning
-deployment.  This document applies only to environments where 
-confidentiality is required. It recommends algorithms and configuration 
-options that make secrecy of the data-in-transit mandatory. While 
-this includes the majority of the TLS use cases, there are some 
-notable exceptions.
+The deployment recommendations address the operators of application
+  layer services that are most commonly used on the Internet, including
+  but not limited to:
 </t>
 <t>
-This document assumes that data integrity protection is always one of 
-the goals of a deployment. In cases when integrity is not required, it does not 
-make sense to employ TLS in the first place. There are attacks against 
-confidentiality-only protection that utilize the lack of integrity 
-to also break confidentiality (see e.g. <xref target="DegabrieleP07"/> in the context of IPsec).
-Thus, even when using opportunistic encryption, it is essential to provide cryptographic data
-integrity protection
+<list style="symbols">
+<t>Operators of WWW servers that wish to protect HTTP with TLS.</t>
+
+<t>Operators of email servers who wish to protect the 
+application-layer protocols with TLS (e.g., IMAP, POP3 or
+SMTP).</t>
+
+<t>Operators of instant-messaging services who wish to 
+protect their application-layer protocols with TLS (e.g. XMPP 
+or IRC).</t>
+</list>
 </t>
 <section title="Security Services">
 <t>
@@ -115,9 +116,10 @@ that no party should be able to decrypt it except the intended receiver.</t>
 <t>Data integrity: any changes made to the communication are detectable by
 the receiver.</t>
 
-<t>Optionally, authentication: this means that an end-point of the TLS
+<t>Authentication: this means that an end-point of the TLS
 communication is authenticated as the intended entity to
-communicate with.  TLS allows to authenticate one or both end-points in the communication.</t>
+communicate with.  TLS allows to authenticate one or both end-points in the communication. Some TLS usage scenarios do not require authentication, 
+and are further discussed in <xref target="unauth-tls"/>.</t>
 </list>
 </t>
 <t>
@@ -125,33 +127,57 @@ Deployers MUST verify that they do not need one of the above security services
 if they deviate from the recommendations given in this
 document.
 </t>
-</section>
+<t>
+This document applies only to environments where 
+confidentiality is required. It recommends algorithms and configuration 
+options that make secrecy of the data-in-transit mandatory. While 
+this includes the majority of the TLS use cases, there are some 
+notable exceptions.
+</t>
+<t>
+This document assumes that data integrity protection is always one of 
+the goals of a deployment. In cases when integrity is not required, it does not 
+make sense to employ TLS in the first place. There are attacks against 
+confidentiality-only protection that utilize the lack of integrity 
+to also break confidentiality (see e.g. <xref target="DegabrieleP07"/>
+in the context of IPsec).
+</t>
 
-<section title="Examples">
 <t>
 The intended audience covers those services that are most commonly
 used on the Internet. Typically, all communication between clients
 and servers requires all three of the above security services.
 </t>
 <t>
-<list style="symbols">
-<t>Operators of WWW servers (HTTPS).</t>
-
-<t>Operators of email servers who wish to protect the 
-application-layer protocols with TLS (e.g., IMAP, POP3, or
-SMTP between client and server).</t>
-
-<t>Operators of instant-messaging services who wish to 
-protect their application-layer protocols with TLS (e.g. XMPP 
-or IRC between client and server).</t>
-</list>
-</t>
-<t>
-An example of an audience not needing confidentiality is the 
+This document does not address the rare deployment scenarios where
+  one of these three properties is not desired, with the exception of the use case
+  described in <xref target="unauth-tls"/> below.  
+  An example of an audience not needing confidentiality is the 
 following: a monitored network where the authorities in charge of 
 that traffic domain require full access to unencrypted (plaintext) 
 traffic, and where users collaborate and send their traffic in the 
 clear.
+</t>
+</section>
+<section title="Unauthenticated TLS" anchor="unauth-tls">
+<t>
+Several important applications use TLS to protect data between a client and a server,
+but do so without the client verifying the server's certificate. The reader is referred
+to <xref target="I-D.dukhovni-smtp-opportunistic-tls"/> for additional details and
+an explanation why this insecure practice is still common and likely to 
+remain so for a while.
+</t>
+<t>
+In many of these scenarios the actual use of TLS is optional, i.e. the client
+decides dynamically ("opportunistically") whether to use TLS with a particular server.
+Opportunistic encryption is described at leangth in Sec. 2 of
+<xref target="I-D.farrelll-mpls-opportunistic-encrypt"/>.
+</t>
+<t>
+Despite the threat model differing from "standard" authenticated usage of TLS,
+the recommendations in this document
+are applicable to unauthenticated uses of TLS, with the obvious exception
+of peer authentication.
 </t>
 </section>
 </section>
@@ -163,18 +189,21 @@ clear.
     <t>This section provides general recommendations on the secure use of TLS. Recommendations related to cipher
     suites are discussed in the following section.</t>
 
-      <section title="Protocol Versions" anchor="rec-versions">
-        <t>It is important both to stop using old, less secure versions of SSL/TLS and to start using modern, more secure versions. Therefore:</t>
+      <section title="Protocol Versions">
+      <section title="SSL/TLS Protocol Versions" anchor="rec-versions">
+        <t>It is important both to stop using old, less secure versions of SSL/
+  TLS and to start using modern, more secure versions; therefore, the following
+  are the recommendations concerning TLS/SSL protocol versions:</t>
         <t>
           <list style='symbols'>
             <t>Implementations MUST NOT negotiate SSL version 2.
                <vspace blankLines='1'/>
-               Rationale: SSLv2 is considered today as insecure <xref target='RFC6176'/>.
+               Rationale: Today, SSLv2 is considered insecure <xref target='RFC6176'/>.
             </t>
             <t>Implementations MUST NOT negotiate SSL version 3.
                <vspace blankLines='1'/>
                Rationale: SSLv3 <xref target='RFC6101'/> was an improvement over SSLv2 and plugged some significant security holes, but did not support strong cipher suites. In addition, SSLv3 does not support TLS extensions, some
-	       of which are considered security-critical today.
+	       of which (e.g. renegotiation_info) are security-critical.
             </t>
             <t>Implementations SHOULD NOT negotiate TLS version 1.0 <xref target='RFC2246'/>.
                <vspace blankLines='1'/>
@@ -186,7 +215,8 @@ clear.
             </t>
             <t>Implementations MUST support, and prefer to negotiate, TLS version 1.2 <xref target='RFC5246'/>.
                <vspace blankLines='1'/>
-               Rationale: Several stronger cipher suites are available only with TLS 1.2 (published in 2008).
+               Rationale: Several stronger cipher suites are available only with TLS 1.2 (published in 2008). In fact, the cipher suites recommended by this document
+	       (<xref target="rec-cipher"/> below) are only available in TLS 1.2.
             </t>
           </list>
         </t>
@@ -194,32 +224,54 @@ clear.
 	to any future version of TLS.</t>
       </section>
       
-          <section title="Applicability to DTLS">
+          <section title="DTLS Protocol Versions">
     <t>
-    DTLS <xref target="RFC4347"/> <xref target="RFC6347"/> is an adaptation of TLS
+    DTLS  is an adaptation of TLS
     for UDP datagrams.
     </t>
     <t>
-    With respect to the recommendations in the current document,
-    DTLS 1.0 is equivalent to TLS
-    1.1. The only exception is RC4 which is disallowed in DTLS. DTLS 1.2 is equivalent
-    to TLS 1.2.
+ The following are the recommendations with respect to DTLS:
+ </t>
+ <t>
+ <list style="symbols">
+
+<t>Implementations MAY negotiate DTLS version 1.0 <xref target="RFC4347"/>.</t>
+<t>Implementations MUST negotiate DTLS version 1.2 <xref target="RFC6347"/>.</t>
+</list>
+</t>
+<t>
+  Rationale: DTLS is an adaptation of TLS for UDP datagrams that was
+  introduced when TLS 1.1 was published.  Version 1.0 correlates to TLS 1.1
+  and Version 1.2 correlates to TLS 1.2. There is no Version 1.1.
+</t>
+<t>
+  Note: DTLS and TLS are nearly identical.  The most notable exception is that
+  RC4, which is a stream-based bulk encryption algorithm, cannot be supported by
+  DTLS.
     </t>
     </section>
 
-      <section title="Fallback to SSL" anchor="rec-fallback">
-        <t>Some client implementations revert to lower versions of TLS or even to SSLv3 if the server rejected higher versions of the protocol.
-	This fall back can be forced by a man in the middle (MITM) attacker. By default, such clients MUST NOT fall back to SSLv3.</t>
-	<t>
-	Rationale: TLS 1.0 and SSLv3 are significantly less secure than TLS 1.2, the version recommended by this document.
-	While TLS 1.0-only servers are
-	still quite common,  IP scans show that SSLv3-only servers amount to only about 3% of the current Web server population.
-	</t>
+      <section title="Fallback to Earlier Versions" anchor="rec-fallback">
+      <t>
+       Clients that “fallback" to lower versions of the protocol after the server
+  rejects higher versions of the protocol MUST NOT fall back to SSLv3.
+</t>
+<t>
+  Rationale: Some client implementations revert to lower versions of TLS or even
+  to SSLv3 if the server rejected higher versions of the protocol.
+  This fallback can be forced by a man in the middle (MITM) attacker.
+  TLS 1.0 and SSLv3 are significantly less secure than TLS
+  1.2, the version recommended by this document.  While TLS 1.0-only
+  servers are still quite common, IP scans show that SSLv3-only servers
+  amount to only about 3% of the current Web server population.
+  </t>
+      </section>
       </section>
       
       <section title="Strict TLS">
       <t>
-      Combining unprotected and TLS-protected communication opens the way to SSL Stripping and similar attacks. Therefore:
+      To prevent SSL Stripping:
+      
       <list style="symbols">
       <t>
 	In cases where an
@@ -239,11 +291,19 @@ clear.
       </t>
       </list>
       </t>
+      <t>
+      Rationale: Combining unprotected and TLS-protected communication opens
+      the way to SSL Stripping and similar attacks, since an initial part of
+      the communication is not integrity protected and therefore can be manipulated
+      by an attacker whose goal is to keep the communication in the clear. 
+      </t>
       </section>
 
       <section title="Compression" anchor="rec-compress">
-        <t>Implementations and deployments SHOULD disable TLS-level compression (<xref target="RFC5246"/>, Sec. 6.2.2),
-	because it has been subject to security attacks.</t>
+        <t>Implementations and deployments SHOULD disable TLS-level compression (<xref target="RFC5246"/>, Sec. 6.2.2).</t>
+	<t>
+	Rationale: TLS compression has been subject to security attacks,
+	such as the CRIME attack.</t>
 	<t>Implementers should note that compression at higher protocol levels can allow an active attacker to extract cleartext
 	information from the connection. The BREACH attack is one such case. These issues can only be mitigated outside
 	of TLS and are thus out of scope of the current document. See Sec. 2.5 of <xref target="I-D.ietf-uta-tls-attacks"/> for 
@@ -499,7 +559,7 @@ PFS is generally achieved by using the Diffie-Hellman scheme to derive session k
     </section>
 
     <section title="Acknowledgments" anchor="d1e1127">
-      <t>We would like to thank Viktor Dukhovni, Stephen Farrell, Simon Josefsson, Watson Ladd, Orit Levin, Johannes Merkle, Bodo Moeller, Yoav Nir, Kenny Paterson, Patrick Pelletier, Tom Ritter, Rich Salz, Aaron Zauner for their review and improvements. Thanks to Brian Smith whose "browser cipher suites" page is a great resource. Finally, thanks to all others who commented on the TLS, UTA and other lists and are not mentioned here by name.</t>
+      <t>We would like to thank Uri Blumenthal, Viktor Dukhovni, Stephen Farrell, Simon Josefsson, Watson Ladd, Orit Levin, Johannes Merkle, Bodo Moeller, Yoav Nir, Kenny Paterson, Patrick Pelletier, Tom Ritter, Rich Salz, Sean Turner, Aaron Zauner for their review and improvements. Thanks to Brian Smith whose "browser cipher suites" page is a great resource. Finally, thanks to all others who commented on the TLS, UTA and other lists and are not mentioned here by name.</t>
     </section>
 
   </middle>
@@ -524,6 +584,8 @@ PFS is generally achieved by using the Diffie-Hellman scheme to derive session k
 <?rfc include="reference.I-D.ietf-uta-tls-attacks.xml"?>
 <?rfc include="reference.I-D.ietf-dane-srv.xml"?>
 <?rfc include="reference.I-D.ietf-dane-smtp.xml"?>
+<?rfc include="reference.I-D.dukhovni-smtp-opportunistic-tls"?>
+<?rfc include="reference.I-D.farrelll-mpls-opportunistic-encrypt.xml"?>
 <?rfc include="reference.RFC.2246.xml"?>
 <?rfc include="reference.RFC.4346.xml"?>
 <?rfc include="reference.RFC.4347.xml"?>
@@ -555,6 +617,14 @@ initials="" surname="CA/Browser Forum"></author><date year="2013"/></front></ref
     <section title="Change Log" anchor="changes">
       <t>
 Note to RFC Editor: please remove this section before publication.</t>
+      <section title="draft-ietf-uta-tls-bcp-05" anchor="changes-05">
+        <t>
+          <list style="symbols">
+	    <t>Lots of comments by Sean Turner.</t>
+            <t>Unauthenticated TLS, following a long thread on the list.</t>
+          </list>
+        </t>
+      </section>
       <section title="draft-ietf-uta-tls-bcp-04" anchor="changes-04">
         <t>
           <list style="symbols">
