@@ -169,8 +169,9 @@ remain so for a while.
 </t>
 <t>
 In many of these scenarios the actual use of TLS is optional, i.e. the client
-decides dynamically ("opportunistically") whether to use TLS with a particular server.
-Opportunistic encryption is described at leangth in Sec. 2 of
+decides dynamically ("opportunistically") whether to use TLS with a particular server
+or to connect in the clear.
+Opportunistic encryption is described at length in Sec. 2 of
 <xref target="I-D.farrelll-mpls-opportunistic-encrypt"/>.
 </t>
 <t>
@@ -240,7 +241,7 @@ of peer authentication.
 </list>
 </t>
 <t>
-  Rationale: DTLS is an adaptation of TLS for UDP datagrams that was
+  Rationale: DTLS is an adaptation of TLS for UDP that was
   introduced when TLS 1.1 was published.  Version 1.0 correlates to TLS 1.1
   and Version 1.2 correlates to TLS 1.2. There is no Version 1.1.
 </t>
@@ -254,7 +255,7 @@ of peer authentication.
       <section title="Fallback to Earlier Versions" anchor="rec-fallback">
       <t>
        Clients that “fallback" to lower versions of the protocol after the server
-  rejects higher versions of the protocol MUST NOT fall back to SSLv3.
+  rejects higher versions of the protocol MUST NOT fallback to SSLv3.
 </t>
 <t>
   Rationale: Some client implementations revert to lower versions of TLS or even
@@ -322,6 +323,16 @@ of peer authentication.
 	<t>Session ticket validity SHOULD be limited to a reasonable duration (e.g. 1 day), for similar reasons.</t>
 	</list>
 	</t>
+	<t>
+	Rationale: session resumption is another kind of TLS handshake, and therefore
+	must be as secure as the initial handshake. This document
+	(<xref target="detail"/>) recommends the use
+	of cipher suites that provide forward secrecy, i.e. that prevent an attacker
+	who gains momentary access to the TLS endpoint (either client or server)
+	and its secrets	from reading
+	either past or future communication. The tickets must be managed so as not to
+	negate this security property.
+	</t>
       </section>
       
       <section title="TLS Renegotiation">
@@ -341,27 +352,47 @@ of peer authentication.
       However, unlike implementation, the use of SNI in particular circumstances
       is a matter of local policy.
       </t>
+      <t>
+      Rationale: SNI supports deployment of multiple TLS-protected virtual servers on a single
+      address, and therefore enables fine grain security for these virtual servers,
+      by allowing each one to have its own certificate.
+      </t>
       </section>
       
     </section>
 
     <section title="Recommendations: Cipher Suites" anchor="detail">
 
-      <t>TLS and its implementations provide considerable flexibility in the selection of cipher suites. Unfortunately many available
-      cipher suites are insecure, and so misconfiguration can easily result in reduced security. This section
+      <t>TLS and its implementations provide considerable flexibility in the
+      selection of cipher suites. Unfortunately many available
+      cipher suites are insecure, and so misconfiguration can easily result in 
+      reduced security. This section
       includes recommendations on the selection and negotiation of cipher suites.</t>
 
       <section title="General Guidelines" anchor="rec-cipher-guidelines">
-        <t>It is important both to stop using old, insecure cipher suites and to start using modern, more secure cipher suites. Therefore:</t>
+        <t>
+	Cryptographic algorithms weaken over time as cryptanalysis improves.  In other
+  words, as time progresses, algorithms that were once considered strong but are
+  now weak need to be phased out over time and replaced with more secure
+  cipher suites to ensure that desired security properties still hold.
+  SSL/TLS has been in existence for almost 20 years
+  at this point and this section provides some much needed recommendations
+  concerning cipher suite section:
+	</t>
         <t>
           <list style='symbols'>
-            <t>Implementations MUST NOT negotiate the NULL cipher suites.
+            <t>Implementations MUST NOT negotiate the cipher suites with NULL encryption.
                <vspace blankLines='1'/>
-               Rationale: The NULL cipher suites offer no encryption whatsoever and thus are completely insecure.
+               Rationale: The NULL cipher suites do not encrypt traffic and so provide
+  no confidentiality services. Any entity in the network with access to the
+  connection can view the plaintext of contents being exchanged by the client and
+  server.
             </t>
-            <t>Implementations MUST NOT negotiate RC4 cipher suites 
+            <t>Implementations MUST NOT negotiate RC4 cipher suites. 
                <vspace blankLines='1'/>
                Rationale: The RC4 stream cipher has a variety of cryptographic weaknesses, as documented in <xref target='I-D.ietf-tls-prohibiting-rc4'/>.
+	       We note that this guideline does not apply to DTLS,
+	       which specifically forbids the use of RC4.
             </t>
             <t>Implementations MUST NOT negotiate cipher suites offering only so-called "export-level" encryption (including algorithms with 40 bits or 56 bits of security).
                <vspace blankLines='1'/>
@@ -369,14 +400,18 @@ of peer authentication.
             </t>
 	    <t>Applications MUST NOT negotiate cipher suites of less than 112 bits of security.</t>
             <t>Implementations SHOULD NOT negotiate cipher suites that use algorithms offering less than 128 bits of security.
-	    Note that some legacy cipher suites (e.g. 168-bit 3DES) have an effective key length which is smaller 
-	    than their nominal key length (112 bits in the case of 3DES). Such cipher suites should be evaluated
-	    according to their effective key length.
+	    
                <vspace blankLines='1'/>
-               Rationale: Although these cipher suites are not actively subject to breakage, their useful lifespan is
-	       short enough that stronger cipher suites are desirable. 128-bit ciphers are expected to remain secure 
-	       for at least several years,
-	       and 256-bit ciphers "until the next fundamental technology breakthrough".
+Rationale: Cipher suites that offer between 112-bits and 128-bits of security
+  are not considered weak at this time, however it is expected that their useful lifespan
+  is short enough to justify supporting stronger cipher suites at this time.
+  128-bit ciphers are expected to remain secure for at least several years,
+  and 256-bit ciphers "until the next fundamental technology breakthrough".
+  Note that
+  some legacy cipher suites (e.g. 168-bit 3DES) have an effective
+  key length which is smaller than their nominal key length (112
+  bits in the case of 3DES).  Such cipher suites should be evaluated
+   according to their effective key length.
             </t>
             <t>Implementations MUST support, and SHOULD prefer to negotiate, cipher suites offering forward secrecy, such as those in the Ephemeral Diffie-Hellman and Elliptic Curve Ephemeral Diffie Hellman ("DHE" and "ECDHE") families.
                <vspace blankLines='1'/>
@@ -396,8 +431,6 @@ of peer authentication.
             <t>TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384</t>
           </list>
         </t>
-        <t>We suggest that TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 be preferred in general.
-	See <xref target="RFC5289"/> for additional implementation details.</t>
         <t>It is noted that those cipher suites are supported only in TLS 1.2 since they
 	are authenticated encryption (AEAD) algorithms <xref target="RFC5116"/>.</t>
         <t><xref target="RFC4492"/> allows clients and servers to negotiate ECDH parameters (curves).
@@ -419,10 +452,14 @@ of peer authentication.
       </section>
 
       <section title="Public Key Length" anchor="rec-keylength">
-        <t>With a key exchange based on modular Diffie-Hellman ("DHE" cipher suites), key lengths of at least 2048 bits are RECOMMENDED.</t>
-<t> Rationale: because Diffie-Hellman keys of 1024 bits are estimated to be roughly equivalent to 80-bit symmetric keys, it is better to use longer keys for the "DHE" family of cipher suites.  Unfortunately, some existing software cannot handle (or cannot easily handle) key lengths greater than 1024 bits.  The most common workaround for these systems is to prefer the "ECDHE" family of cipher suites instead of the "DHE" family.  For modular groups, key lengths of at least 2048 bits are estimated to be roughly equivalent to 112-bit symmetric keys and might be sufficient for at least the next 10 years.
+      <t>When using the cipher suites recommended in this document, two public
+      keys are normally used in the TLS handshake: one for the Diffie-Hellman key agreement
+      and one for server authentication. Where a client certificate is used, it would
+      add a third one.</t>
+        <t>With a key exchange based on modular Diffie-Hellman ("DHE" cipher suites), DH key lengths of at least 2048 bits are RECOMMENDED.</t>
+<t> Rationale: because Diffie-Hellman keys of 1024 bits are estimated to be roughly equivalent to 80-bit symmetric keys, it is better to use longer keys for the "DHE" family of cipher suites.  Unfortunately, some existing software cannot handle (or cannot easily handle) key lengths greater than 1024 bits.  The most common workaround for these systems is to prefer the "ECDHE" family of cipher suites instead of the "DHE" family.  For modular groups, key lengths of at least 2048 bits are estimated to be roughly equivalent to 112-bit symmetric keys and might be sufficient for at least the next 10&nbsp;years.
 </t>
-<t>Servers SHOULD authenticate using 2048-bit certificates. In addition, the use of SHA-256 fingerprints is RECOMMENDED (see <xref target="CAB-Baseline"/> for more details). Clients SHOULD indicate to servers that they request SHA-256, by using the "Signature Algorithms" extension defined in TLS 1.2. </t>
+<t>Servers SHOULD authenticate using 2048-bit certificates. In addition, the use of SHA-256 fingerprints is RECOMMENDED (see <xref target="CAB-Baseline"/> for more details). Clients SHOULD indicate to servers that they request SHA-256, by using the "Signature Algorithms" extension defined in TLS&nbsp;1.2. </t>
       </section>
 
 	<section title="Modular vs. Elliptic Curve DH Cipher Suites" anchor="detail-alt">
@@ -434,7 +471,7 @@ of peer authentication.
           <list style="numbers">
             <t>Elliptic Curve DHE with negotiated parameters <xref target='RFC5289'/></t>
             <t>TLS_DHE_RSA_WITH_AES_128_GCM_SHA256 <xref target="RFC5288"/>, with 2048-bit Diffie-Hellman parameters</t>
-            <t>The same cipher suite, with 1024-bit parameters.</t>
+            <t>TLS_DHE_RSA_WITH_AES_128_GCM_SHA256, with 1024-bit parameters.</t>
           </list>
         </t>
         <t>Rationale: Elliptic Curve Cryptography is not universally deployed for several reasons, including its complexity compared to modular arithmetic and longstanding IPR concerns. On the other hand, there are two related issues hindering effective use of modular Diffie-Hellman cipher suites in TLS:</t>
@@ -449,9 +486,13 @@ of peer authentication.
       </section>
       
       <section title="Truncated HMAC">
-      <t>The truncated HMAC extension, defined in Sec. 7 of <xref target="RFC6066"/> does not apply to the AEAD
+      <t>Implementations MUST NOT use the Truncated HMAC extension, defined in Sec. 7 of <xref target="RFC6066"/>.
+</t>
+<t>
+Rationale: the extension does not apply to the AEAD
       cipher suites recommended above. However it does apply to most other TLS cipher suites. Its use
-      has been shown to be insecure in <xref target="PatersonRS11"/>, and implementations MUST NOT use it.</t>
+      has been shown to be insecure in <xref target="PatersonRS11"/>.
+      </t>
       </section>
     </section>
 
@@ -492,7 +533,7 @@ of peer authentication.
 
 	<section title="AES-GCM" anchor="sec-aes">
         <t>
-	Sec. <xref target="rec-cipher"/> above recommends the use of the AES-GCM authenticated
+	<xref target="rec-cipher"/> above recommends the use of the AES-GCM authenticated
 	encryption algorithm.
 Please refer to <xref target="RFC5246"/>, Sec. 11 for general security considerations when using TLS 1.2, and to <xref target="RFC5288"/>, Sec. 6 for security considerations that apply specifically to AES-GCM when used with TLS.</t>
       </section>
