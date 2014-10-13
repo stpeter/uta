@@ -35,7 +35,7 @@
           <code>85748</code>
           <country>Germany</country>
         </postal>
-        <email>holz@net.in.tum.de</email>
+        <email>ralph.ietf@gmail.com</email>
       </address>
     </author>
     <author initials="P." surname="Saint-Andre" fullname="Peter Saint-Andre">
@@ -56,8 +56,8 @@ recommendations are applicable to the majority of use cases.</t>
   <middle>
 
     <section title="Introduction" anchor="d1e381">
-      <t>Transport Layer Security (TLS) and Datagram Transport Security Layer (DTLS) are widely used to protect data exchanged over application protocols such as HTTP, SMTP, IMAP, POP, SIP, and XMPP.  Over the last few years, several serious attacks on TLS have emerged, including attacks on its most commonly used cipher suites and modes of operation.  For instance, both of the AES-CBC and RC4 encryption algorithms, which together comprise most current usage, have been attacked in the context of TLS.  A companion document <xref target='I-D.ietf-uta-tls-attacks'/> provides detailed information about these attacks.</t>
-      <t>Because of these attacks, those who implement and deploy TLS and DTLS need updated guidance on how TLS can be used securely.  Note that this document provides guidance for deployed services, as well as software implementations, assuming the implementer expects his or her code 
+      <t>Transport Layer Security (TLS) and Datagram Transport Security Layer (DTLS) are widely used to protect data exchanged over application protocols such as HTTP, SMTP, IMAP, POP, SIP, and XMPP.  Over the last few years, several serious attacks on TLS have emerged, including attacks on its most commonly used cipher suites and modes of operation.  For instance, both the AES-CBC and RC4 encryption algorithms, which together comprise most current usage, have been attacked in the context of TLS.  A companion document <xref target='I-D.ietf-uta-tls-attacks'/> provides detailed information about these attacks.</t>
+      <t>Because of these attacks, those who implement and deploy TLS and DTLS need updated guidance on how TLS can be used securely.  Note that this document provides guidance for deployed services as well as software implementations, assuming the implementer expects his or her code 
 to be deployed in environments defined in the following section. 
 In fact, this document calls for the deployment of algorithms that 
 are widely implemented but not yet widely deployed.  Concerning 
@@ -67,7 +67,7 @@ to their communications. In many (but not all) cases authentication
 is also desired. This document does not address the rare deployment 
 scenarios where no confidentiality is desired.
 </t>
-      <t>The recommendations herein take into consideration the security of various mechanisms, their technical maturity and interoperability, and their prevalence in implementations at the time of writing.  Unless noted otherwise, these recommendations apply to both TLS and DTLS.  TLS 1.3, when it is standardized and deployed in the field, should resolve the current vulnerabilities while providing significantly better functionality, and will very likely obsolete this document.</t>
+      <t>The recommendations herein take into consideration the security of various mechanisms, their technical maturity and interoperability, and their prevalence in implementations at the time of writing.  Unless noted otherwise, these recommendations apply to both TLS and DTLS.  TLS 1.3, when it is standardized and deployed in the field, should resolve the current vulnerabilities while providing significantly better functionality and will very likely obsolete this document.</t>
       <t>
 	These are minimum recommendations for the use of TLS for the
 	specified audience. Individual specifications may have stricter
@@ -81,7 +81,7 @@ scenarios where no confidentiality is desired.
 <section title="Intended Audience and Applicability Statement">
 <t>
 The deployment recommendations address the operators of application
-  layer services that are most commonly used on the Internet, including
+  layer services that are most commonly used on the Internet, including,
   but not limited to:
 </t>
 <t>
@@ -107,7 +107,7 @@ their communication with TLS to achieve the following:
 <t>Confidentiality: all (payload) communication is encrypted with the goal
 that no party should be able to decrypt it except the intended receiver.</t>
 
-<t>Data integrity: any changes made to the communication are detectable by
+<t>Data integrity: any changes made to the communication in transit are detectable by
 the receiver.</t>
 
 <t>Authentication: this means that an end-point of the TLS
@@ -124,7 +124,7 @@ document.
 <t>
 This document applies only to environments where 
 confidentiality is required. It recommends algorithms and configuration 
-options that make secrecy of the data-in-transit mandatory. While 
+options that enforce secrecy of the data-in-transit. While 
 this includes the majority of the TLS use cases, there are some 
 notable exceptions.
 </t>
@@ -140,15 +140,17 @@ in the context of IPsec).
 <t>
 The intended audience covers those services that are most commonly
 used on the Internet. Typically, all communication between clients
-and servers requires all three of the above security services.
+and servers requires all three of the above security services. This
+is particularly true where clients are user agents like Web browsers
+or email software.
 </t>
 <t>
 This document does not address the rare deployment scenarios where
-  one of these three properties is not desired, with the exception of the use case
+  one of the above three properties is not desired, with the exception of the use case
   described in <xref target="unauth-tls"/> below.  
   An example of an audience not needing confidentiality is the 
 following: a monitored network where the authorities in charge of 
-that traffic domain require full access to unencrypted (plaintext) 
+the respective traffic domain require full access to unencrypted (plaintext) 
 traffic, and where users collaborate and send their traffic in the 
 clear.
 </t>
@@ -375,11 +377,11 @@ of peer authentication.
         <t>
 	Cryptographic algorithms weaken over time as cryptanalysis improves.  In other
   words, as time progresses, algorithms that were once considered strong but are
-  now weak need to be phased out over time and replaced with more secure
+  now weak, need to be phased out over time and replaced with more secure
   cipher suites to ensure that desired security properties still hold.
   SSL/TLS has been in existence for almost 20 years
   at this point and this section provides some much needed recommendations
-  concerning cipher suite section:
+  concerning cipher suite selection:
 	</t>
         <t>
           <list style='symbols'>
@@ -415,7 +417,7 @@ Rationale: Cipher suites that offer between 112-bits and 128-bits of security
   bits in the case of 3DES).  Such cipher suites should be evaluated
    according to their effective key length.
             </t>
-            <t>Implementations MUST support, and SHOULD prefer to negotiate, cipher suites offering forward secrecy, such as those in the Ephemeral Diffie-Hellman and Elliptic Curve Ephemeral Diffie Hellman ("DHE" and "ECDHE") families.
+            <t>Implementations MUST support, and SHOULD prefer to negotiate, cipher suites offering forward secrecy, such as those in the Ephemeral Diffie-Hellman and Elliptic Curve Ephemeral Diffie-Hellman ("DHE" and "ECDHE") families.
                <vspace blankLines='1'/>
                Rationale: Forward secrecy (sometimes called "perfect forward secrecy") prevents the recovery of information that was encrypted with older session keys, thus limiting the amount of time during which attacks can be successful.
             </t>
@@ -424,7 +426,8 @@ Rationale: Cipher suites that offer between 112-bits and 128-bits of security
 	</section>
 	
 	<section title="Recommended Cipher Suites" anchor="rec-cipher">
-        <t>Given the foregoing considerations, implementation of the following cipher suites is RECOMMENDED:</t>
+        <t>Given the foregoing considerations, implementation and deployment of the following cipher suites
+	is RECOMMENDED:</t>
         <t>
           <list style='symbols'>
             <t>TLS_DHE_RSA_WITH_AES_128_GCM_SHA256</t>
@@ -456,8 +459,7 @@ Rationale: Cipher suites that offer between 112-bits and 128-bits of security
       <section title="Public Key Length" anchor="rec-keylength">
       <t>When using the cipher suites recommended in this document, two public
       keys are normally used in the TLS handshake: one for the Diffie-Hellman key agreement
-      and one for server authentication. Where a client certificate is used, it would
-      add a third one.</t>
+      and one for server authentication. Where a client certificate is used, a third one is added.</t>
         <t>With a key exchange based on modular Diffie-Hellman ("DHE" cipher suites), DH key lengths of at least 2048 bits are RECOMMENDED.</t>
 <t> Rationale: because Diffie-Hellman keys of 1024 bits are estimated to be roughly equivalent to 80-bit symmetric keys, it is better to use longer keys for the "DHE" family of cipher suites. Key lengths of at least 2048 bits are estimated to be roughly equivalent to 112-bit symmetric keys and might be sufficient for at least the next 10&nbsp;years. See <xref target="detail-alt"/> for additional information on the use of modular Diffie-Hellman in TLS.
 </t>
@@ -483,7 +485,7 @@ Rationale: Cipher suites that offer between 112-bits and 128-bits of security
             <t>There are widely deployed client implementations that reject received DH parameters if they are longer than 1024 bits.</t>
           </list>
         </t>
-        <t>We note that with DHE and ECDHE cipher suites, the TLS master key only depends on the Diffie Hellman parameters and not on the strength of the RSA certificate; moreover, 1024 bit modular DH parameters are generally considered insufficient at this time.</t>
+        <t>We note that with DHE and ECDHE cipher suites, the TLS master key only depends on the Diffie-Hellman parameters and not on the strength of the RSA certificate; moreover, 1024 bit modular DH parameters are generally considered insufficient at this time.</t>
         <t>With modular ephemeral DH, deployers SHOULD carefully evaluate interoperability vs. security considerations when configuring their TLS endpoints.</t>
       </section>
       
@@ -509,8 +511,8 @@ Rationale: the extension does not apply to the AEAD
       <section title="Host Name Validation">
 	<t>
 	Application authors should take note that TLS implementations
-	frequently do not validate host names, and must therefore determine if
-	the TLS implementation they are using does, and if not write their own
+	frequently do not validate host names and must therefore determine if
+	the TLS implementation they are using does and, if not, write their own
 	validation code or consider changing the TLS implementation.
 	</t>
 	<t>
@@ -540,7 +542,7 @@ Rationale: the extension does not apply to the AEAD
 Please refer to <xref target="RFC5246"/>, Sec. 11 for general security considerations when using TLS 1.2, and to <xref target="RFC5288"/>, Sec. 6 for security considerations that apply specifically to AES-GCM when used with TLS.</t>
       </section>
       <section title="Forward Secrecy" anchor="sec-pfs">
-        <t>Forward secrecy (also often called Perfect Forward Secrecy or "PFS", and defined in <xref target="RFC4949"/>) is a defense against an attacker who records encrypted conversations where the session keys are only encrypted with the communicating parties' long-term keys. Should the attacker be able to obtain these long-term keys at some point later in time, he will be able to decrypt the session keys and thus the entire conversation. In the context of TLS and DTLS, such compromise of long-term keys is not entirely implausible. It can happen, for example, due to:</t>
+        <t>Forward secrecy (also often called Perfect Forward Secrecy or "PFS" and defined in <xref target="RFC4949"/>) is a defense against an attacker who records encrypted conversations where the session keys are only encrypted with the communicating parties' long-term keys. Should the attacker be able to obtain these long-term keys at some point later in time, he will be able to decrypt the session keys and thus the entire conversation. In the context of TLS and DTLS, such compromise of long-term keys is not entirely implausible. It can happen, for example, due to:</t>
         <t>
           <list style="symbols">
             <t>A client or server being attacked by some other attack vector, and the private key retrieved.</t>
@@ -557,7 +559,7 @@ PFS is generally achieved by using the Diffie-Hellman scheme to derive session k
         <t>Unfortunately, many TLS/DTLS cipher suites were defined that do not feature PFS, e.g. TLS_RSA_WITH_AES_256_CBC_SHA256.  We thus advocate strict use of PFS-only ciphers.</t>
       </section>
       
-      <section title="Diffie Hellman Exponent Reuse">
+      <section title="Diffie-Hellman Exponent Reuse">
       <t>
       For performance reasons, many TLS implementations reuse Diffie-Hellman and Elliptic Curve
       Diffie-Hellman exponents
