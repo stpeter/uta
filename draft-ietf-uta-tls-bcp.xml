@@ -276,6 +276,14 @@ of peer authentication.
 	servers SHOULD prefer strict TLS configuration.
 	</t>
       <t>
+        In many application protocols, clients can be configured to
+        use TLS even if the server has not advertised that TLS is 
+        mandatory or even supported (e.g., this is often the
+        case in messaging protocols such as IMAP and XMPP).  
+        Application clients SHOULD use TLS by default, and disable
+        this default only through explicit configration by the user. 
+      </t>
+      <t>
       HTTP client and server implementations MUST support the HTTP Strict Transport
       Security (HSTS) header <xref target="RFC6797"/>, in order to allow Web servers to 
       advertise that they are
@@ -568,14 +576,14 @@ PFS is generally achieved by using the Diffie-Hellman scheme to derive session k
       </section>
       <section title="Certificate Revocation">
       <t>
-      Unfortunately there is currently no effective, Internet-scale mechanism to affect certificate revocation:
+      Unfortunately there is currently no effective, Internet-scale mechanism to effect certificate revocation:
       <list style='symbols'>
       <t>Certificate Revocation Lists (CRLs) are non-scalable and therefore rarely used.</t>
       <t>The On-Line Certification Status Protocol (OCSP) presents both scaling and privacy issues when used for heavy traffic
       Web servers. In addition, clients typically "soft-fail", meaning they do not abort the TLS connection if the OCSP server
       does not respond.</t>
       <t>OCSP stapling (Sec. 8 of <xref target="RFC6066"/>) resolves the operational issues with OCSP, but is still ineffective
-      in the presence of a MITM attacker because they can simply ignore the client's
+      in the presence of a MITM attacker because the attacker can simply ignore the client's
       request for a stapled OCSP response.</t>
       <t>OCSP stapling as defined in <xref target="RFC6066"/> does not extend to intermediate
       certificates used in a certificate chain. <xref target="RFC6961"/> addresses this shortcoming,
