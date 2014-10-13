@@ -459,7 +459,7 @@ Rationale: Cipher suites that offer between 112-bits and 128-bits of security
       and one for server authentication. Where a client certificate is used, it would
       add a third one.</t>
         <t>With a key exchange based on modular Diffie-Hellman ("DHE" cipher suites), DH key lengths of at least 2048 bits are RECOMMENDED.</t>
-<t> Rationale: because Diffie-Hellman keys of 1024 bits are estimated to be roughly equivalent to 80-bit symmetric keys, it is better to use longer keys for the "DHE" family of cipher suites.  Unfortunately, some existing software cannot handle (or cannot easily handle) key lengths greater than 1024 bits.  The most common workaround for these systems is to prefer the "ECDHE" family of cipher suites instead of the "DHE" family.  For modular groups, key lengths of at least 2048 bits are estimated to be roughly equivalent to 112-bit symmetric keys and might be sufficient for at least the next 10&nbsp;years.
+<t> Rationale: because Diffie-Hellman keys of 1024 bits are estimated to be roughly equivalent to 80-bit symmetric keys, it is better to use longer keys for the "DHE" family of cipher suites. Key lengths of at least 2048 bits are estimated to be roughly equivalent to 112-bit symmetric keys and might be sufficient for at least the next 10&nbsp;years. See <xref target="detail-alt"/> for additional information on the use of modular Diffie-Hellman in TLS.
 </t>
 <t>Servers SHOULD authenticate using 2048-bit certificates. In addition, the use of SHA-256 fingerprints is RECOMMENDED (see <xref target="CAB-Baseline"/> for more details). Clients SHOULD indicate to servers that they request SHA-256, by using the "Signature Algorithms" extension defined in TLS&nbsp;1.2. </t>
       </section>
