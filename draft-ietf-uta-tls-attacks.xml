@@ -71,7 +71,7 @@ For a more detailed discussion of the attacks listed here, the interested reader
 This section lists the attacks that motivated the current recommendations in <xref target='I-D.ietf-uta-tls-bcp'/>. This list is not intended to be an extensive survey of the security of TLS.</t>
       <t>
 While there are widely deployed mitigations for some of the attacks listed below, we believe that their root causes necessitate a more systematic solution, which we have attempted
-to do in <xref target='I-D.ietf-uta-tls-bcp'/>.</t>
+to develop in <xref target='I-D.ietf-uta-tls-bcp'/>.</t>
       <t>
       When an identifier exists for an attack,
       we have included its CVE (Common Vulnerabilities
@@ -156,8 +156,7 @@ though the number has not been officially allocated) both make similar use of HT
 decrypt secret data passed in the HTTP response. We note that compression of the HTTP message body is much
 more prevalent than compression at the TLS level.</t>
         <t>
-The former attack can be mitigated by disabling TLS compression. We are not aware of mitigations at the TLS protocol level to the latter attack, and so application-level mitigations are needed (see <xref target="BREACH"/>). For example, implementations of HTTP that use CSRF tokens will need to randomize them even when the recommendations of <xref target='I-D.ietf-uta-tls-bcp'/> are adopted, since the BCP only makes recommendations
-related to the TLS protocol layer.</t>
+The former attack can be mitigated by disabling TLS compression. We are not aware of mitigations at the TLS protocol level to the latter attack, and so application-level mitigations are needed (see <xref target="BREACH"/>). For example, implementations of HTTP that use CSRF tokens will need to randomize them.  Even the best practices and recommendations from <xref target='I-D.ietf-uta-tls-bcp'/> are insufficient to thwart this attack.</t>
       </section>
       <section title="Certificate and RSA-Related Attacks">
       <t>
@@ -193,7 +192,7 @@ related to the TLS protocol layer.</t>
       <t>
       Such attacks can be mitigated by better protecting the private key, e.g. using OS protections
       or dedicated hardware. Even more effective is the use of cipher suites that offer "forward secrecy", the
-      property that revealing a secret does not expose past or future sessions to a passive attacker.
+      property that revealing a secret such as a private key does not expose past or future sessions to a passive attacker.
       </t>
       </section>
       <section title="Diffie-Hellman Parameters">
