@@ -283,7 +283,7 @@ unauthenticated uses of TLS.
         mandatory or even supported (e.g., this is often the
         case in messaging protocols such as IMAP and XMPP).  
         Application clients SHOULD use TLS by default, and disable
-        this default only through explicit configration by the user. 
+        this default only through explicit configuration by the user. 
       </t>
       <t>
       HTTP client and server implementations MUST support the HTTP Strict Transport
@@ -405,7 +405,7 @@ unauthenticated uses of TLS.
                <vspace blankLines='1'/>
                Rationale: These cipher suites are deliberately "dumbed down" and are very easy to break.
             </t>
-	    <t>Implementations MUST NOT negotiate cipher suites offering less than 112 bits of security, including the so-called "export-level” encryption (which provide 40 or 56 bits of security).
+	    <t>Implementations MUST NOT negotiate cipher suites offering less than 112 bits of security, including the so-called "export-level" encryption (which provide 40 or 56 bits of security).
             <vspace blankLines='1'/>
             Rationale: Based on <xref target='RFC3766'/>, at least 112 bits of security 
             is needed.  40-bit and 56-bit security are considered insecure today.  
@@ -653,7 +653,7 @@ PFS is generally achieved by using the Diffie-Hellman scheme to derive session k
 <?rfc include="reference.RFC.6961.xml"?>
 <?rfc include="reference.RFC.6989.xml"?>
 
-<reference anchor="POODLE" target="https://www.openssl.org/~bodo/ssl-poodle.pdf"><front><title>This POODLE Bites:Exploiting the SSL 3.0 Fallback</title><author initials="B." surname="Moeller" fullname="Bodo Moeller"/><author initials="T." surname="Duong" fullname="Thai Duong"/><author initials="K." surname="Kotowicz" fullname="Krzysztof Kotowicz"/><date year="2014"/></front></reference>
+<reference anchor="POODLE" target="https://www.openssl.org/~bodo/ssl-poodle.pdf"><front><title>This POODLE Bites: Exploiting the SSL 3.0 Fallback</title><author initials="B." surname="Moeller" fullname="Bodo Moeller"/><author initials="T." surname="Duong" fullname="Thai Duong"/><author initials="K." surname="Kotowicz" fullname="Krzysztof Kotowicz"/><date year="2014"/></front></reference>
 <reference anchor="triple-handshake" target="https://secure-resumption.com/"><front><title>Triple Handshakes Considered Harmful:
 Breaking and Fixing Authentication over TLS</title>
 <author initials="A." surname="Delignat-Lavaud" fullname="Antoine Delignat-Lavaud"></author>
