@@ -145,9 +145,9 @@ or email software.
 </t>
 <t>
 This document does not address the rare deployment scenarios where
-  one of the above three properties is not desired, with the exception of the use case
+  one of the above three properties is not desired, such as the use case
   described under <xref target="unauth-tls"/> below.  
-  An example of an audience not needing confidentiality is the 
+  Another example of an audience not needing confidentiality is the 
 following: a monitored network where the authorities in charge of 
 the respective traffic domain require full access to unencrypted (plaintext) 
 traffic, and where users collaborate and send their traffic in the 
@@ -170,10 +170,15 @@ Opportunistic encryption is described at length in Section 2 of
 <xref target="I-D.farrelll-mpls-opportunistic-encrypt"/>.
 </t>
 <t>
-Despite the threat model differing from "standard" authenticated usage of TLS,
-the recommendations in this document
-are applicable to unauthenticated uses of TLS, with the obvious exception
-of peer authentication.
+It can be argued that this document's recommendations should apply to unauthenticated cases,
+so as to keep implementations of TLS in synch, and bearing in mind that servers
+may be used simultaneously for unauthenticated and for regular TLS (and often
+don't know which one the client is attempting). On the other hand, it is argued that
+this document is too strict for unauthenticated scenarios, that any security is better than no
+security at all (i.e., sending traffic in the clear), even if it means deploying
+outdated protocol versions and ciphers. The working group could not resolve
+these conflicting positions, and resolved that this document does not apply to
+unauthenticated uses of TLS.
 </t>
 </section>
 </section>
@@ -667,6 +672,13 @@ initials="" surname="CA/Browser Forum"></author><date year="2013"/></front></ref
     <section title="Change Log" anchor="changes">
       <t>
 Note to RFC Editor: please remove this section before publication.</t>
+      <section title="draft-ietf-uta-tls-bcp-06" anchor="changes-06">
+        <t>
+          <list style="symbols">
+            <t>Undo unauthenticated TLS, following another long thread on the list.</t>
+          </list>
+        </t>
+      </section>
       <section title="draft-ietf-uta-tls-bcp-05" anchor="changes-05">
         <t>
           <list style="symbols">
