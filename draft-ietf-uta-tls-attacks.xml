@@ -55,24 +55,25 @@ Security (TLS), including attacks on its most commonly used ciphers and modes of
   <middle>
     <section title="Introduction" anchor="d1e329">
       <t>
-Over the last few years there have been several major attacks on TLS <xref target="RFC5246"/>, including attacks on its most commonly used ciphers and modes of operation. Details are given in  <xref target="sec_Attacks"/>, but a quick summary is that both AES-CBC and RC4, which together make up for most current usage, have been seriously attacked in the context of TLS.</t>
+Over the last few years there have been several major attacks on Transport Layer Security (TLS) <xref target="RFC5246"/>, including attacks on its most commonly used ciphers and modes of operation. Details are given in  <xref target="sec_Attacks"/>, but a quick summary is that both AES-CBC and RC4, which together make up for most current usage, have been seriously attacked in the context of TLS.</t>
       <t>
 This situation was one of the motivations for the creation of the UTA working group,
 which was tasked with the creation of generic and protocol-specific recommendations
-for the use of TLS and DTLS.</t>
+for the use of TLS along with Datagram TLS (DTLS) <xref target="RFC6347"/> (unless
+otherwise noted under <xref target='dtls'/>, all of the information provided in this document applies to DTLS).</t>
       <t>
-"Attacks always get better; they never get worse" (ironically, this saying is attributed to the American National Security Agency, the NSA). This list of attacks describes our knowledge as of this writing. It seems likely that new attacks will be invented in the future.</t>
+"Attacks always get better; they never get worse" (ironically, this saying is attributed to the U.S. National Security Agency, the NSA). This attacks summarized in this document reflect our knowledge as of this writing. It seems likely that new attacks will be discovered in the future.</t>
       <t>
 For a more detailed discussion of the attacks listed here, the interested reader is referred to <xref target="Attacks-iSec"/>.</t>
     </section>
     <section title="Attacks on TLS" anchor="sec_Attacks">
       <t>
-This section lists the attacks that motivated the current recommendations. This is not intended to be an extensive survey of TLS's security.</t>
+This section lists the attacks that motivated the current recommendations in <xref target='I-D.ietf-uta-tls-bcp'/>. This list is not intended to be an extensive survey of the security of TLS.</t>
       <t>
-While there are widely deployed mitigations for some of the attacks listed below, we believe that their root causes necessitate a more systemic solution, which we have attempted
+While there are widely deployed mitigations for some of the attacks listed below, we believe that their root causes necessitate a more systematic solution, which we have attempted
 to do in <xref target='I-D.ietf-uta-tls-bcp'/>.</t>
       <t>
-      When such an identifier exists for an attack,
+      When an identifier exists for an attack,
       we have included its CVE (Common Vulnerabilities
       and Exposures) ID. CVE <xref target="CVE"/> is an extensive,
       industry-wide database of software
@@ -165,7 +166,7 @@ related to the TLS protocol layer.</t>
       These include
       <xref target="Bleichenbacher98"/> and <xref target="Klima03"/>.
       While the Bleichenbacher attack has been mitigated in TLS 1.0, the
-      Klima attack that relies on a version-check oracle is only mitigated by TLS 1.1.
+      Klima attack relies on a version-check oracle is only mitigated by TLS 1.1.
       </t>
       <t>
       The use of RSA certificates often involves exploitable timing issues <xref target="Brumley03"/>
@@ -186,8 +187,8 @@ related to the TLS protocol layer.</t>
       sniffer to inspect TLS-protected connections.
       </t>
       <t>
-      It is known that stolen (or otherwise obtained) private keys have been used as part of large
-      scale monitoring <xref target="RFC7258"/> of certain servers.
+      It is known that stolen (or otherwise obtained) private keys have been used as part of 
+      large-scale monitoring <xref target="RFC7258"/> of certain servers.
       </t>
       <t>
       Such attacks can be mitigated by better protecting the private key, e.g. using OS protections
@@ -200,7 +201,7 @@ related to the TLS protocol layer.</t>
       TLS allows the definition of ephemeral Diffie-Hellman
       and Elliptic Curve Diffie-Hellman parameters in its respective
       key exchange modes. This results in an attack detailed in <xref target="Cross-Protocol"/>.
-      Using predefined DH groups, as proposed in <xref target="I-D.ietf-tls-negotiated-ff-dhe"/>
+      Using predefined DH groups, as proposed in <xref target="I-D.ietf-tls-negotiated-ff-dhe"/>,
       would mitigate this attack.
       </t>
       <t>
@@ -208,7 +209,7 @@ related to the TLS protocol layer.</t>
       are exposed to man in the middle 
       (MITM) attacks.
       Unfortunately the TLS protocol
-      does not mandate this verification, see <xref target="RFC6989"/> for the IPsec analogy.
+      does not mandate this verification (see <xref target="RFC6989"/> for analogous information for IPsec).
       </t>
       </section>
       <section title="Renegotiation (CVE-2009-3555)">
@@ -223,7 +224,7 @@ related to the TLS protocol layer.</t>
       The triple handshake attack <xref target="BhargavanDFPS14"/>
       enables the attacker to cause two TLS
 connections to share keying material. This leads to a multitude of attacks,
-e.g. Man-in-the-Middle, breaking safe renegotiation and breaking channel
+e.g. Man-in-the-Middle, breaking safe renegotiation, and breaking channel
 binding via TLS Exporter <xref target="RFC5705"/> or "tls-unique"
 <xref target="RFC5929"/>.
 
@@ -242,7 +243,7 @@ binding via TLS Exporter <xref target="RFC5705"/> or "tls-unique"
       <section title="Denial of Service">
       <t>
       Server CPU power has progressed over the years so that TLS can now be turned on by default.
-      However the risk of malicious clients and
+      However, the risk of malicious clients and
 	coordinated groups of clients ("botnets") mounting denial of service attacks is still very real.
 	TLS adds another vector for computational
 	attacks, since a client can easily (with little computational effort) force the server to expend relatively large computational
@@ -260,7 +261,7 @@ binding via TLS Exporter <xref target="RFC5705"/> or "tls-unique"
       </t>
       <t>
       <list style="symbols">
-      <t>Implementations may omit validation of the server certificate altogether.
+      <t>Implementations might omit validation of the server certificate altogether.
       For example, this is true of the default implementation of HTTP client libraries
       in Python 2 (see e.g. CVE-2013-2191).</t>
       <t>Implementations might not validate the server identity.  This
@@ -270,8 +271,8 @@ binding via TLS Exporter <xref target="RFC5705"/> or "tls-unique"
       Distinguished Name, and some validators incorrectly retrieve
       it from there instead of from the Subject Alternative Name.
       </t>
-      <t>Implementations may be validating the certificate chain incorrectly
-      or not at all, or using an incorrect or outdated trust anchor list.</t>
+      <t>Implementations might validate the certificate chain incorrectly
+      or not at all, or use an incorrect or outdated trust anchor list.</t>
       </list>
       </t>
       <t>
@@ -284,18 +285,18 @@ binding via TLS Exporter <xref target="RFC5705"/> or "tls-unique"
       <section title="Usability">
       <t>
       Many TLS endpoints, such as browsers and mail clients, allow the user to explicitly accept an
-      invalid server certificate. This often takes the form of a UI dialog, "do you accept this server", and
+      invalid server certificate. This often takes the form of a UI dialog (e.g., "do you accept this server?") and
       users have been conditioned to respond in the affirmative in order to allow the connection to take place.
       </t>
-      <t>This user behavior is being used by (arguably legitimate) "SSL proxies" that decrypt and 
-      re-encrypt the TLS connection in order to enforce local security policy. It is also being 
+      <t>This user behavior is used by (arguably legitimate) "SSL proxies" that decrypt and 
+      re-encrypt the TLS connection in order to enforce local security policy. It is also 
       abused by attackers whose goal is to gain access to the encrypted information.
       </t>
       <t>Mitigation is complex and will probably involve a combination of protocol mechanisms (HSTS,
       certificate pinning <xref target="I-D.ietf-websec-key-pinning"/>) and very careful UI design.</t>
       </section>
     </section>
-    <section title="Applicability to DTLS">
+    <section title="Applicability to DTLS" anchor="dtls">
     <t>
     DTLS <xref target="RFC4347"/> <xref target="RFC6347"/> is an adaptation of TLS
     for UDP.
@@ -303,25 +304,26 @@ binding via TLS Exporter <xref target="RFC5705"/> or "tls-unique"
     <t>
     With respect to the attacks described in the current document,
     DTLS 1.0 is equivalent to TLS
-    1.1. The only exception is RC4 which is disallowed in DTLS. DTLS 1.2 is equivalent
+    1.1. The only exception is RC4, which is disallowed in DTLS. DTLS 1.2 is equivalent
     to TLS 1.2.
     </t>
+    </section>
+    <section title="IANA Considerations" anchor="sec_IANA_Considerations">
+      <t>This document requires no IANA actions. [Note to RFC Editor: please remove this whole section before publication.]</t>
     </section>
     <section title="Security Considerations" anchor="d1e507">
       <t>
 This document describes protocol attacks in an informational manner, and in itself does not have any security implications.
-Its companion documents certainly do.</t>
-    </section>
-    <section title="IANA Considerations" anchor="sec_IANA_Considerations">
-      <t>This document requires no IANA actions. [Note to RFC Editor: please remove this whole section before publication.]</t>
+Its companion documents, especially <xref target='I-D.ietf-uta-tls-bcp'/>, certainly do.</t>
     </section>
     <section title="Acknowledgments" anchor="d1e530">
       <t>
 We would like to thank Stephen Farrell, Simon Josefsson, John Mattsson, Yoav Nir,
 Kenny Paterson, Patrick Pelletier, Tom Ritter, 
-Rich Salz and Meral Shirazipour for their review of this document. We thank Andrei Popov for contributing text on RC4, Kohei Kasamatsu for text on Lucky13, Ilari Liusvaara for text on attacks and on DTLS, Aaron Zauner for text on virtual host confusion, Chris Newman for text on STARTTLS command injection.</t>
-      <t>
-The document was prepared using the lyx2rfc tool, created by Nico Williams.</t>
+Rich Salz and Meral Shirazipour for their feedback on this document. We thank Andrei Popov for contributing text on RC4, Kohei Kasamatsu for text on Lucky13, Ilari Liusvaara for text on attacks and on DTLS, Aaron Zauner for text on virtual host confusion, and Chris Newman for text on STARTTLS command injection.</t>
+      <t>During IESG review, Richard Barnes, Barry Leiba, and Kathleen Moriarty caught several issues that needed to be addressed.</t>
+      <t>The authors gratefully acknowledge the assistance of Leif Johansson and Orit Levin as the working group chairs and Pete Resnick as the sponsoring Area Director.</t>
+      <t>The document was prepared using the lyx2rfc tool, created by Nico Williams.</t>
     </section>
   </middle>
   <back>
