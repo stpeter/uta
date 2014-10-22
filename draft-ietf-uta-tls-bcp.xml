@@ -582,33 +582,32 @@ PFS is generally achieved by using the Diffie-Hellman scheme to derive session k
       </section>
       <section title="Certificate Revocation">
       <t>
-      Unfortunately there is currently no effective, Internet-scale mechanism to effect certificate revocation:
+      Unfortunately there is currently no effective, Internet-scale mechanism to effect certificate revocation for the PKI:
       <list style='symbols'>
-      <t>Certificate Revocation Lists (CRLs) are non-scalable and therefore rarely used.</t>
-      <t>The On-Line Certification Status Protocol (OCSP) presents both scaling and privacy issues when used for heavy traffic
-      Web servers. In addition, clients typically "soft-fail", meaning they do not abort the TLS connection if the OCSP server
-      does not respond.</t>
-      <t>OCSP stapling (Sec. 8 of <xref target="RFC6066"/>) resolves the operational issues with OCSP, but is still ineffective
-      in the presence of a MITM attacker because the attacker can simply ignore the client's
-      request for a stapled OCSP response.</t>
-      <t>OCSP stapling as defined in <xref target="RFC6066"/> does not extend to intermediate
-      certificates used in a certificate chain. <xref target="RFC6961"/> addresses this shortcoming,
-      but is a recent addition without much deployment.</t>
-      <t>Proprietary mechanisms that embed revocation lists in the Web browser's configuration database cannot scale beyond
-      a small number of the most heavily used Web servers.</t>
+      <t>Certificate Revocation Lists (CRLs) are not scalable and therefore rarely used.</t>
+      <t>The On-Line Certification Status Protocol (OCSP) presents both scaling 
+         and privacy issues when used for heavy traffic Web servers. In addition, 
+         clients typically "soft-fail", meaning they do not abort the TLS connection 
+         if the OCSP server does not respond.</t>
+      <t>OCSP stapling (Section 8 of <xref target="RFC6066"/>) resolves the 
+         operational issues with OCSP, but is still ineffective in the presence of 
+         a MITM attacker because the attacker can simply ignore the client's
+         request for a stapled OCSP response.</t>
+      <t>OCSP stapling as defined in <xref target="RFC6066"/> does not extend to 
+         intermediate certificates used in a certificate chain. 
+         <xref target="RFC6961"/> addresses this shortcoming, but is a recent 
+         addition without much deployment.</t>
+      <t>Proprietary mechanisms that embed revocation lists in the Web browser's 
+         configuration database cannot scale beyond a small number of the most 
+         heavily used Web servers.</t>
       </list>
-      </t>
-      <t>
-      The current consensus appears to be that OCSP stapling, combined with a "must staple" mechanism similar to HSTS, would
-      finally resolve this problem; in particular when used together with the extension defined in
-      <xref target="RFC6961"/>. But such a mechanism has not been standardized yet.
       </t>
       </section>
 
     </section>
 
     <section title="Acknowledgments" anchor="d1e1127">
-      <t>We would like to thank Uri Blumenthal, Viktor Dukhovni, Stephen Farrell, Simon Josefsson, Watson Ladd, Orit Levin, Johannes Merkle, Bodo Moeller, Yoav Nir, Kenny Paterson, Patrick Pelletier, Tom Ritter, Rich Salz, Sean Turner, Aaron Zauner for their review and improvements. Thanks to Brian Smith whose "browser cipher suites" page is a great resource. Finally, thanks to all others who commented on the TLS, UTA and other lists and are not mentioned here by name.</t>
+      <t>We would like to thank Uri Blumenthal, Viktor Dukhovni, Stephen Farrell, Simon Josefsson, Watson Ladd, Orit Levin, Johannes Merkle, Bodo Moeller, Yoav Nir, Kenny Paterson, Patrick Pelletier, Tom Ritter, Rich Salz, Sean Turner, and Aaron Zauner for their feedback and suggested improvements. Thanks to Brian Smith whose "browser cipher suites" page is a great resource. Finally, thanks to all others who commented on the TLS, UTA and other lists and are not mentioned here by name.</t>
     </section>
 
   </middle>
