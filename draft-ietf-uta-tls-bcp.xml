@@ -612,7 +612,8 @@ PFS is generally achieved by using the Diffie-Hellman scheme to derive session k
       </list>
       </t>
       <t>With regard to PKIX certificates, servers SHOULD support OCSP and OCSP stapling, including the OCSP stapling extension defined in <xref target='RFC6961'/>, as a best practice given the current state of the art and as a foundation for a possible future solution.</t>
-      <t>The foregoing considerations do not apply to DANE certificates <xref target='RFC6698'/>, since they do not require a revocation mechanism.</t>
+      <t>The foregoing considerations do not apply to scenarios where the DANE-TLSA resource record <xref target='RFC6698'/> is used to
+         signal to a client which certificate a server considers valid and good to use for TLS connections.</t>
       </section>
 
     </section>
