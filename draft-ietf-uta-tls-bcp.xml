@@ -181,7 +181,7 @@ hand, it has been argued that some of the recommendations in this document
 might be too strict for unauthenticated scenarios and that any security 
 is better than no security at all (i.e., sending traffic in the clear), even if 
 it means deploying outdated protocol versions and ciphers in unauthenticated
-scenarios.  The position of the UTA Working Group was to complete work on this
+scenarios.  The sense of the UTA Working Group was to complete work on this
 document about authenticated TLS and to initiate work on a separate document 
 about unauthenticated TLS.
 </t>
@@ -242,7 +242,7 @@ In summary: this document does not apply to unauthenticated TLS use cases.
 <vspace blankLines='1'/>
   Version 1.0 of DTLS correlates to version 1.1 of TLS (see above).
 </t>
-<t>Implementations MUST negotiate DTLS version 1.2 <xref target="RFC6347"/>.
+<t>Implementations MUST support, and prefer to negotiate, DTLS version 1.2 <xref target="RFC6347"/>.
 <vspace blankLines='1'/>
   Version 1.2 of DTLS correlates to Version 1.2 of TLS 1.2 (see above).
   (There is no Version 1.1 of DTLS.)
@@ -615,6 +615,7 @@ PFS is generally achieved by using the Diffie-Hellman scheme to derive session k
          heavily used Web servers.</t>
       </list>
       </t>
+      <t>Unfortunately, no mechanism exists at this time that we can recommend as a complete and efficient solution for the problem of checking the revocation status of PKIX certificates. However, servers SHOULD support OCSP and OCSP stapling, including the OCSP stapling extension defined in <xref target='RFC6961'/>, as a best practice given the current state of the art and as a foundation for a possible future solution. Implementers and deployers would do well to monitor further developments in this space.</t>
       </section>
 
     </section>
