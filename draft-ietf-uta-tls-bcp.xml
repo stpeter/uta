@@ -156,29 +156,39 @@ clear.
 </section>
 <section title="Unauthenticated TLS" anchor="unauth-tls">
 <t>
-Several important applications use TLS to protect data between a TLS client and a TLS server,
-but do so without the TLS client verifying the server's certificate. The reader is referred
-to <xref target="I-D.ietf-dane-smtp-with-dane"/> for additional details and
-an explanation of why this insecure practice is still common in the context of SMTP and 
-why it is likely to remain so for a while.
+Several important applications use TLS to protect data between a TLS client 
+and a TLS server, but do so without the TLS client verifying the server's 
+certificate. The reader is referred to 
+<xref target="I-D.ietf-dane-smtp-with-dane"/> for additional details and
+an explanation of why this less secure practice is still common in the 
+context of SMTP (especially for MTA-to-MTA communications) and why it 
+is likely to remain so for a while.  This practice is also frequently 
+encountered in similar contexts, such as server-to-server XMPP traffic.
 </t>
 <t>
-In many of these scenarios the actual use of TLS is optional, i.e. the client
-decides dynamically ("opportunistically") whether to use TLS with a particular server
-or to connect in the clear.
-Opportunistic encryption is described at length in Section 2 of
-<xref target="I-D.farrelll-mpls-opportunistic-encrypt"/>.
+In some of these scenarios the use of TLS is optional, i.e. the client
+decides dynamically ("opportunistically") whether to use TLS with a particular 
+server or to connect in the clear.  (Opportunistic encryption is described at 
+length in Section 2 of <xref target="I-D.farrelll-mpls-opportunistic-encrypt"/>.)
+In other scenarios, the use of TLS is required but certificates are not always
+checked (e.g., this is often the case on the XMPP network, where multi-tenant 
+hosting environments make it difficult for operators to obtain proper 
+certificates for all of the domains they service).
 </t>
 <t>
-It can be argued that this document's recommendations should apply to unauthenticated cases,
-so as to keep implementations of TLS in synch, and bearing in mind that servers
-may be used simultaneously for unauthenticated and for regular TLS (and often
-don't know which one the client is attempting). On the other hand, it is argued that
-this document is too strict for unauthenticated scenarios, that any security is better than no
-security at all (i.e., sending traffic in the clear), even if it means deploying
-outdated protocol versions and ciphers. The working group could not resolve
-these conflicting positions, and resolved that this document does not apply to
-unauthenticated uses of TLS.
+It can be argued that the recommendations provided in this document ought to 
+apply equally to unauthenticated TLS as to authenticated TLS.  That would
+keep TLS implementations and deployments in sync, which is a desirable 
+property given that servers can be used simultaneously for unauthenticated 
+TLS and for authenticated TLS (indeed, often a server will not know whether
+a client might attempt authenticated or unauthenticated TLS). On the other 
+hand, it has been argued that some of the recommendations in this document 
+might be too strict for unauthenticated scenarios and that that any security 
+is better than no security at all (i.e., sending traffic in the clear), even if 
+it means deploying outdated protocol versions and ciphers in unauthenticated
+scenarios.  The sense of the UTA Working Group was to complete work on this
+document about authenticated TLS, and to initiate work on a separate document 
+about unauthenticated TLS.
 </t>
 </section>
 </section>
@@ -358,7 +368,7 @@ unauthenticated uses of TLS.
       </t>
       <t>
       Rationale: SNI supports deployment of multiple TLS-protected virtual servers on a single
-      address, and therefore enables fine grain security for these virtual servers,
+      address, and therefore enables fine-grained security for these virtual servers,
       by allowing each one to have its own certificate.
       </t>
       </section>
