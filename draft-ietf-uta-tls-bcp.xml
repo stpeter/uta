@@ -594,8 +594,8 @@ PFS is generally achieved by using the Diffie-Hellman scheme to derive session k
       </t>
       </section>
       <section title="Certificate Revocation">
+      <t>Unfortunately, no mechanism exists at this time that we can recommend as a complete and efficient solution for the problem of checking the revocation status of PKIX certificates <xref target='RFC5280'/>.  The current state of the art is as follows:</t>
       <t>
-      Unfortunately there is currently no effective, Internet-scale mechanism to effect certificate revocation for the PKI:
       <list style='symbols'>
       <t>Certificate Revocation Lists (CRLs) are not scalable and therefore rarely used.</t>
       <t>The On-Line Certification Status Protocol (OCSP) presents both scaling 
@@ -615,7 +615,8 @@ PFS is generally achieved by using the Diffie-Hellman scheme to derive session k
          heavily used Web servers.</t>
       </list>
       </t>
-      <t>Unfortunately, no mechanism exists at this time that we can recommend as a complete and efficient solution for the problem of checking the revocation status of PKIX certificates. However, servers SHOULD support OCSP and OCSP stapling, including the OCSP stapling extension defined in <xref target='RFC6961'/>, as a best practice given the current state of the art and as a foundation for a possible future solution. Implementers and deployers would do well to monitor further developments in this space.</t>
+      <t>With regard to PKIX certificates, servers SHOULD support OCSP and OCSP stapling, including the OCSP stapling extension defined in <xref target='RFC6961'/>, as a best practice given the current state of the art and as a foundation for a possible future solution.</t>
+      <t>The foregoing considerations do not apply to DANE certificates <xref target='RFC6698'/>, since they do not require a revocation mechanism.</t>
       </section>
 
     </section>
@@ -655,9 +656,11 @@ PFS is generally achieved by using the Diffie-Hellman scheme to derive session k
 <?rfc include="reference.RFC.4949.xml"?>
 <?rfc include="reference.RFC.5077.xml"?>
 <?rfc include="reference.RFC.5116.xml"?>
+<?rfc include="reference.RFC.5280.xml"?>
 <?rfc include="reference.RFC.6066.xml"?>
 <?rfc include="reference.RFC.6101.xml"?>
 <?rfc include="reference.RFC.6460.xml"?>
+<?rfc include="reference.RFC.6698.xml"?>
 <?rfc include="reference.RFC.6797.xml"?>
 <?rfc include="reference.RFC.6961.xml"?>
 <?rfc include="reference.RFC.6989.xml"?>
