@@ -185,6 +185,9 @@ scenarios.  The position of the UTA Working Group was to complete work on this
 document about authenticated TLS and to initiate work on a separate document 
 about unauthenticated TLS.
 </t>
+<t>
+In summary: this document does not apply to unauthenticated TLS use cases.
+</t>
 </section>
 </section>
 
