@@ -594,7 +594,7 @@ PFS is generally achieved by using the Diffie-Hellman scheme to derive session k
       </t>
       </section>
       <section title="Certificate Revocation">
-      <t>Unfortunately, no mechanism exists at this time that we can recommend as a complete and efficient solution for the problem of checking the revocation status of PKIX certificates <xref target='RFC5280'/>.  The current state of the art is as follows:</t>
+      <t>Unfortunately, no mechanism exists at this time that we can recommend as a complete and efficient solution for the problem of checking the revocation status of common public key certificates (a.k.a. PKIX certificates, <xref target='RFC5280'/>).  The current state of the art is as follows:</t>
       <t>
       <list style='symbols'>
       <t>Certificate Revocation Lists (CRLs) are not scalable and therefore rarely used.</t>
