@@ -49,29 +49,27 @@
     <workgroup>UTA</workgroup>
     <keyword>Internet-Draft</keyword>
     <abstract>
-      <t>Transport Layer Security (TLS) and Datagram Transport Security Layer (DTLS) are widely used to protect data exchanged over application protocols such as HTTP, SMTP, IMAP, POP, SIP, and XMPP.  Over the last few years, several serious attacks on TLS have emerged, including attacks on its most commonly used cipher suites and modes of operation.  This document provides recommendations for improving the security of deployed services that use TLS and DTLS. The recommendations are applicable to the majority of use cases.</t>
+      <t>Transport Layer Security (TLS) and Datagram Transport Layer Security (DTLS) are widely used to protect data exchanged over application protocols such as HTTP, SMTP, IMAP, POP, SIP, and XMPP.  Over the last few years, several serious attacks on TLS have emerged, including attacks on its most commonly used cipher suites and modes of operation.  This document provides recommendations for improving the security of deployed services that use TLS and DTLS. The recommendations are applicable to the majority of use cases.</t>
     </abstract>
   </front>
   <middle>
 
     <section title="Introduction" anchor="d1e381">
-      <t>Transport Layer Security (TLS) <xref target='RFC5246'/> and Datagram Transport Security Layer (DTLS) <xref target='RFC6347'/> are widely used to protect data exchanged over application protocols such as HTTP, SMTP, IMAP, POP, SIP, and XMPP.  Over the last few years, several serious attacks on TLS have emerged, including attacks on its most commonly used cipher suites and modes of operation.  For instance, both the AES-CBC <xref target='RFC3602'/> and RC4 <xref target='I-D.ietf-tls-prohibiting-rc4'/> encryption algorithms, which together are most widely deployed, have been attacked in the context of TLS.  A companion document <xref target='I-D.ietf-uta-tls-attacks'/> provides detailed information about these attacks.</t>
-      <t>Because of these attacks, those who implement and deploy TLS and DTLS need updated guidance on how TLS can be used securely.  Note that this document provides guidance for deployed services as well as software implementations, assuming the implementer expects his or her code 
+      <t>Transport Layer Security (TLS) <xref target='RFC5246'/> and Datagram Transport Security Layer (DTLS) <xref target='RFC6347'/> are widely used to protect data exchanged over application protocols such as HTTP, SMTP, IMAP, POP, SIP, and XMPP.  Over the last few years, several serious attacks on TLS have emerged, including attacks on its most commonly used cipher suites and modes of operation.  For instance, both the AES-CBC <xref target='RFC3602'/> and RC4 <xref target='I-D.ietf-tls-prohibiting-rc4'/> encryption algorithms, which together are the most widely deployed ciphers, have been attacked in the context of TLS.  A companion document <xref target='I-D.ietf-uta-tls-attacks'/> provides detailed information about these attacks.</t>
+      <t>Because of these attacks, those who implement and deploy TLS and DTLS need updated guidance on how TLS can be used securely.  This document provides guidance for deployed services as well as for software implementations, assuming the implementer expects his or her code 
 to be deployed in environments defined in the following section. 
 In fact, this document calls for the deployment of algorithms that 
 are widely implemented but not yet widely deployed.  Concerning 
 deployment, this document targets a wide audience, namely all 
-deployers who wish to add confidentiality and data integrity protection
-to their communications. In many (but not all) cases authentication
-is also desired. This document does not address the rare deployment 
-scenarios where no confidentiality is desired.
+deployers who wish to add authentication (be it one-way only or mutual), confidentiality, and data integrity protection
+to their communications.
 </t>
-      <t>The recommendations herein take into consideration the security of various mechanisms, their technical maturity and interoperability, and their prevalence in implementations at the time of writing.  Unless noted otherwise, these recommendations apply to both TLS and DTLS.  TLS 1.3, when it is standardized and deployed in the field, should resolve the current vulnerabilities while providing significantly better functionality and will very likely obsolete this document.</t>
+      <t>The recommendations herein take into consideration the security of various mechanisms, their technical maturity and interoperability, and their prevalence in implementations at the time of writing.  Unless noted otherwise, these recommendations apply to both TLS and DTLS.  TLS 1.3, when it is standardized and deployed in the field, should resolve the current vulnerabilities while providing significantly better functionality. It will very likely obsolete this document.</t>
       <t>
 	These are minimum recommendations for the use of TLS for the
 	specified audience. Individual specifications can have stricter
 	requirements related to one or more aspects of the protocol,
-	based on their particular circumstances (e.g., for use in a 
+	based on their particular circumstances (e.g., for use with a 
         particular application protocol).  When that is the case,
 	implementers are advised to adhere to those stricter requirements.
       </t>
@@ -112,8 +110,8 @@ the receiver.</t>
 
 <t>Authentication: an end-point of the TLS
 communication is authenticated as the intended entity to
-communicate with.  TLS enables authentication of one or both end-points in the communication. Some TLS usage scenarios do not require authentication, 
-and are further discussed under <xref target="unauth-tls"/>.</t>
+communicate with.  TLS enables authentication of one or both end-points in the communication. Some TLS usage scenarios do not require authentication. They are not in the scope of this
+document. We discuss them under <xref target="unauth-tls"/>.</t>
 </list>
 </t>
 <t>
@@ -123,13 +121,11 @@ they MUST verify that they do not need one of the foregoing security services.
 <t>
 This document applies only to environments where 
 confidentiality is required. It recommends algorithms and configuration 
-options that enforce secrecy of the data-in-transit. While 
-this includes the majority of the TLS use cases, there are some 
-notable exceptions.
+options that enforce secrecy of the data-in-transit.
 </t>
 <t>
-This document assumes that data integrity protection is always one of 
-the goals of a deployment. In cases when integrity is not required, it does not 
+This document also assumes that data integrity protection is always one of 
+the goals of a deployment. In cases where integrity is not required, it does not 
 make sense to employ TLS in the first place. There are attacks against 
 confidentiality-only protection that utilize the lack of integrity 
 to also break confidentiality (see for instance <xref target="DegabrieleP07"/>
@@ -144,7 +140,7 @@ is particularly true where TLS clients are user agents like Web browsers
 or email software.
 </t>
 <t>
-This document does not address the rare deployment scenarios where
+This document does not address the rarer deployment scenarios where
   one of the above three properties is not desired, such as the use case
   described under <xref target="unauth-tls"/> below.  
   Another example of an audience not needing confidentiality is the 
@@ -159,11 +155,10 @@ clear.
 Several important applications use TLS to protect data between a TLS client 
 and a TLS server, but do so without the TLS client verifying the server's 
 certificate. The reader is referred to 
-<xref target="I-D.ietf-dane-smtp-with-dane"/> for additional details and
-an explanation of why this less secure practice is still common in the 
-context of SMTP (especially for MTA-to-MTA communications) and why it 
-is likely to remain so for a while.  This practice is also frequently 
-encountered in similar contexts, such as server-to-server XMPP traffic.
+<xref target="I-D.ietf-dane-smtp-with-dane"/> for an example and
+an explanation of why this less secure practice will likely remain common in the 
+context of SMTP (especially for MTA-to-MTA communications).  The practice is also 
+encountered in similar contexts such as server-to-server XMPP traffic.
 </t>
 <t>
 In some of these scenarios the use of TLS is optional, i.e. the client
@@ -177,17 +172,17 @@ certificates for all of the domains they service).
 </t>
 <t>
 It can be argued that the recommendations provided in this document ought to 
-apply equally to unauthenticated TLS as to authenticated TLS.  That would
+apply equally to unauthenticated TLS as well as authenticated TLS.  That would
 keep TLS implementations and deployments in sync, which is a desirable 
 property given that servers can be used simultaneously for unauthenticated 
 TLS and for authenticated TLS (indeed, often a server will not know whether
 a client might attempt authenticated or unauthenticated TLS). On the other 
 hand, it has been argued that some of the recommendations in this document 
-might be too strict for unauthenticated scenarios and that that any security 
+might be too strict for unauthenticated scenarios and that any security 
 is better than no security at all (i.e., sending traffic in the clear), even if 
 it means deploying outdated protocol versions and ciphers in unauthenticated
-scenarios.  The sense of the UTA Working Group was to complete work on this
-document about authenticated TLS, and to initiate work on a separate document 
+scenarios.  The position of the UTA Working Group was to complete work on this
+document about authenticated TLS and to initiate work on a separate document 
 about unauthenticated TLS.
 </t>
 </section>
