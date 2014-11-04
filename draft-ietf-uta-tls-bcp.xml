@@ -64,7 +64,14 @@ deployment, this document targets a wide audience, namely all
 deployers who wish to add authentication (be it one-way only or mutual), confidentiality, and data integrity protection
 to their communications.
 </t>
-      <t>The recommendations herein take into consideration the security of various mechanisms, their technical maturity and interoperability, and their prevalence in implementations at the time of writing.  Unless noted otherwise, these recommendations apply to both TLS and DTLS.  TLS 1.3, when it is standardized and deployed in the field, should resolve the current vulnerabilities while providing significantly better functionality. It will very likely obsolete this document.</t>
+      <t>The recommendations herein take into consideration the security of various mechanisms, their technical maturity and interoperability, and their prevalence in implementations at the time of writing.  Unless noted otherwise, these recommendations apply to both TLS and DTLS.</t>
+      <t>
+         It is expected that the TLS 1.3 specification will resolve many of
+         the vulnerabilities listed in this document. A system that deploys
+         TLS 1.3 will have fewer vulnerabilities than TLS 1.2 or below. This
+         document is likely to be updated after TLS 1.3 gets noticeable
+         deployment.
+      </t>
       <t>
 	These are minimum recommendations for the use of TLS for the
 	specified audience. Individual specifications can have stricter
@@ -84,7 +91,7 @@ The deployment recommendations of this document address the operators of applica
 </t>
 <t>
 <list style="symbols">
-<t>Operators of WWW servers that wish to protect HTTP with TLS.</t>
+<t>Operators of web servers that wish to protect HTTP with TLS.</t>
 
 <t>Operators of email servers who wish to protect the 
 application-layer protocols with TLS (e.g., IMAP, POP3 or
@@ -102,18 +109,21 @@ their communication with TLS to achieve the following:
 </t>
 <t>
 <list style="symbols">
-<t>Confidentiality: all (payload) communication is encrypted with the goal
-that no party should be able to decrypt it except the intended receiver.</t>
+<t>Confidentiality: all application-layer communication is encrypted with the 
+goal that no party should be able to decrypt it except the intended receiver.</t>
 
 <t>Data integrity: any changes made to the communication in transit are detectable by
 the receiver.</t>
 
-<t>Authentication: an end-point of the TLS
-communication is authenticated as the intended entity to
-communicate with.  TLS enables authentication of one or both end-points in the communication. Some TLS usage scenarios do not require authentication. They are not in the scope of this
-document. We discuss them under <xref target="unauth-tls"/>.</t>
+<t>Authentication: an end-point of the TLS communication is authenticated as the 
+intended entity to communicate with.</t>
+
 </list>
 </t>
+<t>With regard to authentication, TLS enables authentication of one or both 
+end-points in the communication. Although some TLS usage scenarios do not 
+require authentication, those scenarios are not in scope for this document (a
+rationale for this decision is provided under <xref target="unauth-opp"/>).</t>
 <t>
 If deployers deviate from the recommendations given in this document,
 they MUST verify that they do not need one of the foregoing security services.
@@ -142,7 +152,7 @@ or email software.
 <t>
 This document does not address the rarer deployment scenarios where
   one of the above three properties is not desired, such as the use case
-  described under <xref target="unauth-tls"/> below.  
+  described under <xref target="unauth-opp"/> below.  
   Another example of an audience not needing confidentiality is the 
 following: a monitored network where the authorities in charge of 
 the respective traffic domain require full access to unencrypted (plaintext) 
@@ -175,7 +185,7 @@ It can be argued that the recommendations provided in this document ought to
 apply equally to unauthenticated TLS as well as authenticated TLS.  That would
 keep TLS implementations and deployments in sync, which is a desirable 
 property given that servers can be used simultaneously for unauthenticated 
-TLS and for authenticated TLS (indeed, often a server will not know whether
+TLS and for authenticated TLS (indeed, a server cannot know whether
 a client might attempt authenticated or unauthenticated TLS). On the other 
 hand, it has been argued that some of the recommendations in this document 
 might be too strict for unauthenticated scenarios and that any security 
@@ -287,11 +297,11 @@ In summary: this document does not apply to unauthenticated TLS use cases.
 	</t>
       <t>
         In many application protocols, clients can be configured to
-        use TLS even if the server has not advertised that TLS is 
-        mandatory or even supported (e.g., this is often the
-        case in messaging protocols such as IMAP and XMPP).  
-        Application clients SHOULD use TLS by default, and disable
-        this default only through explicit configuration by the user. 
+        use TLS no matter whether the server offers TLS during a 
+        protocol exchange or advertises support for TLS (e.g., through
+        a flag indicating that TLS is required).  Application clients 
+        SHOULD use TLS by default, and disable this default only through 
+        explicit configuration by the user. 
       </t>
       <t>
       HTTP client and server implementations MUST support the HTTP Strict Transport
@@ -470,13 +480,17 @@ Rationale: Cipher suites that offer between 112-bits and 128-bits of security
       </section>
 
       <section title="Public Key Length" anchor="rec-keylength">
-      <t>When using the cipher suites recommended in this document, two public
-      keys are normally used in the TLS handshake: one for the Diffie-Hellman key agreement
-      and one for server authentication. Where a client certificate is used, a third one is added.</t>
-        <t>With a key exchange based on modular Diffie-Hellman ("DHE" cipher suites), DH key lengths of at least 2048 bits are RECOMMENDED.</t>
-<t> Rationale: because Diffie-Hellman keys of 1024 bits are estimated to be roughly equivalent to 80-bit symmetric keys, it is better to use longer keys for the "DHE" family of cipher suites. Key lengths of at least 2048 bits are estimated to be roughly equivalent to 112-bit symmetric keys and might be sufficient for at least the next 10&nbsp;years. See <xref target="detail-alt"/> for additional information on the use of modular Diffie-Hellman in TLS.
+      <t>
+      When using the cipher suites recommended in this document, two public keys are 
+      normally used in the TLS handshake: one for the Diffie-Hellman key agreement
+      and one for server authentication. Where a client certificate is used, a third 
+      public key is added.
+      </t>
+     <t>With a key exchange based on modular Diffie-Hellman ("DHE" cipher suites), DH key lengths of at least 2048 bits are RECOMMENDED.</t>
+<t> Rationale: For various reasons, in practice DH keys are typically generated in lengths that are powers of two (e.g., 2^10 = 1024 bits, 2^11 = 2048 bits, 2^12 = 4096 bits). Because a DH key of 1228 bits would be roughly equivalent to only an 80-bit symmetric key <xref target='RFC3766'/>, it is better to use keys longer than that for the "DHE" family of cipher suites. A DH key of 1926 bits would be roughly equivalent to a 100-bit symmetric key <xref target='RFC3766'/> and a DH key of 2048 bits might be sufficient for at least the next 10&nbsp;years. See <xref target="detail-alt"/> for additional information on the use of modular Diffie-Hellman in TLS.
 </t>
-<t>Servers SHOULD authenticate using 2048-bit certificates. In addition, the use of SHA-256 fingerprints is RECOMMENDED (see <xref target="CAB-Baseline"/> for more details). Clients SHOULD indicate to servers that they request SHA-256, by using the "Signature Algorithms" extension defined in TLS&nbsp;1.2. </t>
+<t>As noted in <xref target='RFC3766'/>, correcting for the emergence of a TWIRL machine would imply that 1024-bit DH keys yield about 65 bits of equivalent strength and that a 2048-bit DH key would yield about 92 bits of equivalent strength.</t>
+<t>Servers SHOULD authenticate using at least 2048-bit certificates. In addition, the use of SHA-256 fingerprints is RECOMMENDED (see <xref target="CAB-Baseline"/> for more details). Clients SHOULD indicate to servers that they request SHA-256, by using the "Signature Algorithms" extension defined in TLS&nbsp;1.2. </t>
       </section>
 
 	<section title="Modular vs. Elliptic Curve DH Cipher Suites" anchor="detail-alt">
@@ -491,7 +505,7 @@ Rationale: Cipher suites that offer between 112-bits and 128-bits of security
             <t>TLS_DHE_RSA_WITH_AES_128_GCM_SHA256, with 1024-bit parameters.</t>
           </list>
         </t>
-        <t>Rationale: Elliptic Curve Cryptography is not universally deployed for several reasons, including its complexity compared to modular arithmetic and longstanding IPR concerns. On the other hand, there are two related issues hindering effective use of modular Diffie-Hellman cipher suites in TLS:</t>
+        <t>Rationale: Elliptic Curve Cryptography is not universally deployed for several reasons, including its complexity compared to modular arithmetic and longstanding perceptions of IPR concerns (which, for the most part, have now been resolved <xref target='RFC6090'/>). On the other hand, there are two related issues hindering effective use of modular Diffie-Hellman cipher suites in TLS:</t>
         <t>
           <list style="symbols">
             <t>There are no protocol mechanisms to negotiate the DH groups or parameter lengths supported by client and server.</t>
@@ -546,6 +560,13 @@ Rationale: the extension does not apply to the AEAD
 	name is discovered securely (for further discussion, see for example
 	<xref target="I-D.ietf-dane-srv"/> and <xref target="I-D.ietf-dane-smtp-with-dane"/>).
  	</t>
+        <t>
+        Host name validation typically applies only to the leaf "end entity"
+        certificate. Naturally, in order to ensure proper authentication in
+        the context of the PKI, application clients need to verify the entire 
+        certification path in accordance with <xref target='RFC5280'/> (see also 
+        <xref target='RFC6125'/>).
+ 	</t>
       </section>
 
 	<section title="AES-GCM" anchor="sec-aes">
@@ -566,10 +587,10 @@ Please refer to <xref target="RFC5246"/>, Sec. 11 for general security considera
           </list>
         </t>
         <t>
-PFS ensures in such cases that the session keys cannot be determined even by an attacker who obtains the long-term keys some time after the conversation. It also protects against an attacker who is in possession of the long-term keys, but remains passive during the conversation.</t>
+Forward secrecy ensures in such cases that the session keys cannot be determined even by an attacker who obtains the long-term keys some time after the conversation. It also protects against an attacker who is in possession of the long-term keys, but remains passive during the conversation.</t>
         <t>
-PFS is generally achieved by using the Diffie-Hellman scheme to derive session keys. The Diffie-Hellman scheme has both parties maintain private secrets and send parameters over the network as modular powers over certain cyclic groups. The properties of the so-called Discrete Logarithm Problem (DLP) allow to derive the session keys without an eavesdropper being able to do so. There is currently no known attack against DLP if sufficiently large parameters are chosen. A variant of the Diffie-Hellman scheme uses Elliptic Curves instead of the originally proposed modular arithmetics.</t>
-        <t>Unfortunately, many TLS/DTLS cipher suites were defined that do not feature PFS, e.g. TLS_RSA_WITH_AES_256_CBC_SHA256.  We thus advocate strict use of PFS-only ciphers.</t>
+Forward secrecy is generally achieved by using the Diffie-Hellman scheme to derive session keys. The Diffie-Hellman scheme has both parties maintain private secrets and send parameters over the network as modular powers over certain cyclic groups. The properties of the so-called Discrete Logarithm Problem (DLP) allow to derive the session keys without an eavesdropper being able to do so. There is currently no known attack against DLP if sufficiently large parameters are chosen. A variant of the Diffie-Hellman scheme uses Elliptic Curves instead of the originally proposed modular arithmetics.</t>
+        <t>Unfortunately, many TLS/DTLS cipher suites were defined that do not feature forward secrecy, e.g. TLS_RSA_WITH_AES_256_CBC_SHA256.  We thus advocate strict use of forward-secrecy-only ciphers.</t>
       </section>
       
       <section title="Diffie-Hellman Exponent Reuse">
@@ -619,7 +640,7 @@ PFS is generally achieved by using the Diffie-Hellman scheme to derive session k
     </section>
 
     <section title="Acknowledgments" anchor="d1e1127">
-      <t>We would like to thank Uri Blumenthal, Viktor Dukhovni, Stephen Farrell, Simon Josefsson, Watson Ladd, Orit Levin, Johannes Merkle, Bodo Moeller, Yoav Nir, Kenny Paterson, Patrick Pelletier, Tom Ritter, Rich Salz, Sean Turner, and Aaron Zauner for their feedback and suggested improvements. Thanks to Brian Smith whose "browser cipher suites" page is a great resource. Finally, thanks to all others who commented on the TLS, UTA and other lists and are not mentioned here by name.</t>
+      <t>We would like to thank Uri Blumenthal, Viktor Dukhovni, Stephen Farrell, Paul Hoffman, Simon Josefsson, Watson Ladd, Orit Levin, Ilari Liusvaara, Johannes Merkle, Bodo Moeller, Yoav Nir, Kenny Paterson, Patrick Pelletier, Tom Ritter, Rich Salz, Sean Turner, and Aaron Zauner for their feedback and suggested improvements. Thanks to Brian Smith, whose "browser cipher suites" page is a great resource. Finally, thanks to all others who commented on the TLS, UTA and other lists but who are not mentioned here by name.</t>
     </section>
 
   </middle>
@@ -655,6 +676,7 @@ PFS is generally achieved by using the Diffie-Hellman scheme to derive session k
 <?rfc include="reference.RFC.5116.xml"?>
 <?rfc include="reference.RFC.5280.xml"?>
 <?rfc include="reference.RFC.6066.xml"?>
+<?rfc include="reference.RFC.6090.xml"?>
 <?rfc include="reference.RFC.6101.xml"?>
 <?rfc include="reference.RFC.6460.xml"?>
 <?rfc include="reference.RFC.6698.xml"?>
@@ -763,7 +785,7 @@ Note to RFC Editor: please remove this section before publication.</t>
         <t>
           <list style="symbols">
             <t>Clarified our motivation in the introduction.</t>
-            <t>Added a section justifying the need for PFS.</t>
+            <t>Added a section justifying the need for forward secrecy.</t>
             <t>Added recommendations for RSA and DH parameter lengths. Moved from DHE to ECDHE, with a discussion on whether/when DHE is appropriate.</t>
             <t>Recommendation to avoid fallback to SSLv3.</t>
             <t>Initial information about browser support - more still needed!</t>
