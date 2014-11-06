@@ -604,7 +604,7 @@ Forward secrecy is generally achieved by using the Diffie-Hellman scheme to deri
       who gains access to the host can decrypt previous connections. In other words,
       exponent reuse negates the effects of forward secrecy.</t>
       <t>TLS implementations that reuse exponents should test the DH public key they
-      receive, in order to avoid some known attacks. These tests are not 
+      receive for group membership, in order to avoid some known attacks. These tests are not 
       standardized in TLS at the time of writing. See <xref target="RFC6989"/> for recipient tests
       required of IKEv2 implementations that reuse DH exponents.</t>
       </list>
