@@ -399,6 +399,42 @@ Rationale: the extension does not apply to the AEAD
       </t>
       </section>
     </section>
+    
+          <section title="Applicability Statement" anchor="sec-app">
+
+        <t>The deployment recommendations of this document address the operators of application layer services that are most commonly used on the Internet, including, but not limited to:</t>
+        <t>
+          <list style="symbols">
+            <t>Operators of web servers that wish to protect HTTP with TLS.</t>
+            <t>Operators of email servers who wish to protect the application-layer protocols with TLS (e.g., IMAP, POP3 or SMTP).</t>
+            <t>Operators of instant-messaging services who wish to protect their application-layer protocols with TLS (e.g., XMPP or IRC).</t>
+          </list>
+        </t>
+
+        <section title="Security Services">
+          <t>This document provides recommendations for an audience that wishes to secure their communication with TLS to achieve the following:</t>
+          <t>
+            <list style="symbols">
+              <t>Confidentiality: all application-layer communication is encrypted with the goal that no party should be able to decrypt it except the intended receiver.</t>
+              <t>Data integrity: any changes made to the communication in transit are detectable by the receiver.</t>
+              <t>Authentication: an end-point of the TLS communication is authenticated as the intended entity to communicate with.</t>
+            </list>
+          </t>
+          <t>With regard to authentication, TLS enables authentication of one or both end-points in the communication. Although some TLS usage scenarios do not require authentication, those scenarios are not in scope for this document (a rationale for this decision is provided under <xref target="unauth-opp"/>).</t>
+          <t>If deployers deviate from the recommendations given in this document, they MUST verify that they do not need one of the foregoing security services.</t>
+          <t>This document applies only to environments where confidentiality is required. It recommends algorithms and configuration options that enforce secrecy of the data-in-transit.</t>
+          <t>This document also assumes that data integrity protection is always one of the goals of a deployment. In cases where integrity is not required, it does not make sense to employ TLS in the first place. There are attacks against confidentiality-only protection that utilize the lack of integrity to also break confidentiality (see for instance <xref target="DegabrieleP07"/> in the context of IPsec).</t>
+          <t>The intended audience covers those services that are most commonly used on the Internet. Typically, all communication between TLS clients and TLS servers requires all three of the above security services. This is particularly true where TLS clients are user agents like Web browsers or email software.</t>
+          <t>This document does not address the rarer deployment scenarios where one of the above three properties is not desired, such as the use case described under <xref target="unauth-opp"/> below.  Another example of an audience not needing confidentiality is the following: a monitored network where the authorities in charge of the respective traffic domain require full access to unencrypted (plaintext) traffic, and where users collaborate and send their traffic in the clear.</t>
+        </section>
+        <section title="Unauthenticated TLS and Opportunistic Encryption" anchor="unauth-opp">
+          <t>Several important applications use TLS to protect data between a TLS client and a TLS server, but do so without the TLS client necessarily verifying the server's certificate. This practice is often called "unauthenticated TLS".  The reader is referred to <xref target="I-D.ietf-dane-smtp-with-dane"/> for an example and an explanation of why this less secure practice will likely remain common in the context of SMTP (especially for MTA-to-MTA communications).  The practice is also encountered in similar contexts such as server-to-server traffic on the XMPP network (where multi-tenant hosting environments make it difficult for operators to obtain proper certificates for all of the domains they service).</t>
+          <t>Furthermore, in some scenarios the use of TLS itself is optional, i.e. the client decides dynamically ("opportunistically") whether to use TLS with a particular server or to connect in the clear.  This practice, often called "opportunistic encryption", and is described at length in Section 2 of <xref target="I-D.farrelll-mpls-opportunistic-encrypt"/>.</t>
+          <t>It can be argued that the recommendations provided in this document ought to apply equally to unauthenticated TLS as well as authenticated TLS.  That would keep TLS implementations and deployments in sync, which is a desirable property given that servers can be used simultaneously for unauthenticated TLS and for authenticated TLS (indeed, a server cannot know whether a client might attempt authenticated or unauthenticated TLS). On the other hand, it has been argued that some of the recommendations in this document might be too strict for unauthenticated scenarios and that any security is better than no security at all (i.e., sending traffic in the clear), even if it means deploying outdated protocol versions and ciphers in unauthenticated scenarios.  The sense of the UTA Working Group was to complete work on this document about authenticated TLS and to initiate work on a separate document about unauthenticated TLS.</t>
+          <t>In summary: this document does not apply to unauthenticated TLS use cases.</t>
+        </section>
+      </section>
+
 
     <section title="IANA Considerations" anchor="sec_IANA_Considerations">
       <t>This document requests no actions of IANA. [Note to RFC Editor: please remove this whole section before publication.]</t>
@@ -510,40 +546,6 @@ Forward secrecy is generally achieved by using the Diffie-Hellman scheme to deri
          signal to a client which certificate a server considers valid and good to use for TLS connections.</t>
       </section>
         
-      <section title="Applicability Statement" anchor="sec-app">
-
-        <t>The deployment recommendations of this document address the operators of application layer services that are most commonly used on the Internet, including, but not limited to:</t>
-        <t>
-          <list style="symbols">
-            <t>Operators of web servers that wish to protect HTTP with TLS.</t>
-            <t>Operators of email servers who wish to protect the application-layer protocols with TLS (e.g., IMAP, POP3 or SMTP).</t>
-            <t>Operators of instant-messaging services who wish to protect their application-layer protocols with TLS (e.g., XMPP or IRC).</t>
-          </list>
-        </t>
-
-        <section title="Security Services">
-          <t>This document provides recommendations for an audience that wishes to secure their communication with TLS to achieve the following:</t>
-          <t>
-            <list style="symbols">
-              <t>Confidentiality: all application-layer communication is encrypted with the goal that no party should be able to decrypt it except the intended receiver.</t>
-              <t>Data integrity: any changes made to the communication in transit are detectable by the receiver.</t>
-              <t>Authentication: an end-point of the TLS communication is authenticated as the intended entity to communicate with.</t>
-            </list>
-          </t>
-          <t>With regard to authentication, TLS enables authentication of one or both end-points in the communication. Although some TLS usage scenarios do not require authentication, those scenarios are not in scope for this document (a rationale for this decision is provided under <xref target="unauth-opp"/>).</t>
-          <t>If deployers deviate from the recommendations given in this document, they MUST verify that they do not need one of the foregoing security services.</t>
-          <t>This document applies only to environments where confidentiality is required. It recommends algorithms and configuration options that enforce secrecy of the data-in-transit.</t>
-          <t>This document also assumes that data integrity protection is always one of the goals of a deployment. In cases where integrity is not required, it does not make sense to employ TLS in the first place. There are attacks against confidentiality-only protection that utilize the lack of integrity to also break confidentiality (see for instance <xref target="DegabrieleP07"/> in the context of IPsec).</t>
-          <t>The intended audience covers those services that are most commonly used on the Internet. Typically, all communication between TLS clients and TLS servers requires all three of the above security services. This is particularly true where TLS clients are user agents like Web browsers or email software.</t>
-          <t>This document does not address the rarer deployment scenarios where one of the above three properties is not desired, such as the use case described under <xref target="unauth-opp"/> below.  Another example of an audience not needing confidentiality is the following: a monitored network where the authorities in charge of the respective traffic domain require full access to unencrypted (plaintext) traffic, and where users collaborate and send their traffic in the clear.</t>
-        </section>
-        <section title="Unauthenticated TLS and Opportunistic Encryption" anchor="unauth-opp">
-          <t>Several important applications use TLS to protect data between a TLS client and a TLS server, but do so without the TLS client necessarily verifying the server's certificate. This practice is often called "unauthenticated TLS".  The reader is referred to <xref target="I-D.ietf-dane-smtp-with-dane"/> for an example and an explanation of why this less secure practice will likely remain common in the context of SMTP (especially for MTA-to-MTA communications).  The practice is also encountered in similar contexts such as server-to-server traffic on the XMPP network (where multi-tenant hosting environments make it difficult for operators to obtain proper certificates for all of the domains they service).</t>
-          <t>Furthermore, in some scenarios the use of TLS itself is optional, i.e. the client decides dynamically ("opportunistically") whether to use TLS with a particular server or to connect in the clear.  This practice, often called "opportunistic encryption", and is described at length in Section 2 of <xref target="I-D.farrelll-mpls-opportunistic-encrypt"/>.</t>
-          <t>It can be argued that the recommendations provided in this document ought to apply equally to unauthenticated TLS as well as authenticated TLS.  That would keep TLS implementations and deployments in sync, which is a desirable property given that servers can be used simultaneously for unauthenticated TLS and for authenticated TLS (indeed, a server cannot know whether a client might attempt authenticated or unauthenticated TLS). On the other hand, it has been argued that some of the recommendations in this document might be too strict for unauthenticated scenarios and that any security is better than no security at all (i.e., sending traffic in the clear), even if it means deploying outdated protocol versions and ciphers in unauthenticated scenarios.  The sense of the UTA Working Group was to complete work on this document about authenticated TLS and to initiate work on a separate document about unauthenticated TLS.</t>
-          <t>In summary: this document does not apply to unauthenticated TLS use cases.</t>
-        </section>
-      </section>
     </section>
 
     <section title="Acknowledgments" anchor="d1e1127">
