@@ -64,7 +64,7 @@ deployment, this document targets a wide audience, namely all
 deployers who wish to add authentication (be it one-way only or mutual), confidentiality, and data integrity protection
 to their communications.
 </t>
-      <t>The recommendations herein take into consideration the security of various mechanisms, their technical maturity and interoperability, and their prevalence in implementations at the time of writing.  Unless noted otherwise, these recommendations apply to both TLS and DTLS.</t>
+      <t>The recommendations herein take into consideration the security of various mechanisms, their technical maturity and interoperability, and their prevalence in implementations at the time of writing.  Unless it is explicitly called out that a recommendation applies to TLS alone or to DTLS alone, each recommendation applies to both TLS and DTLS.</t>
       <t>
          It is expected that the TLS 1.3 specification will resolve many of
          the vulnerabilities listed in this document. A system that deploys
@@ -73,134 +73,18 @@ to their communications.
          deployment.
       </t>
       <t>
-	These are minimum recommendations for the use of TLS for the
-	specified audience. Individual specifications can have stricter
+	These are minimum recommendations for the use of TLS in the vast
+        majority of implementation and deployment scenarios, with the 
+        exception of unauthenticated TLS (see <xref target='sec-app'/>). 
+	Other specifications that reference this document can have stricter
 	requirements related to one or more aspects of the protocol,
 	based on their particular circumstances (e.g., for use with a 
-        particular application protocol).  When that is the case,
+        particular application protocol); when that is the case,
 	implementers are advised to adhere to those stricter requirements.
       </t>
       <t>Community knowledge about the strength of various algorithms and feasible attacks can change quickly, and experience shows that a security BCP is a point-in-time statement.  Readers are advised to seek out any errata or updates that apply to this document.</t>
     </section>
     
-<section title="Intended Audience and Applicability Statement">
-<t>
-The deployment recommendations of this document address the operators of application
-  layer services that are most commonly used on the Internet, including,
-  but not limited to:
-</t>
-<t>
-<list style="symbols">
-<t>Operators of web servers that wish to protect HTTP with TLS.</t>
-
-<t>Operators of email servers who wish to protect the 
-application-layer protocols with TLS (e.g., IMAP, POP3 or
-SMTP).</t>
-
-<t>Operators of instant-messaging services who wish to 
-protect their application-layer protocols with TLS (e.g., XMPP 
-or IRC).</t>
-</list>
-</t>
-<section title="Security Services">
-<t>
-This document provides recommendations for an audience that wishes to secure
-their communication with TLS to achieve the following:
-</t>
-<t>
-<list style="symbols">
-<t>Confidentiality: all application-layer communication is encrypted with the 
-goal that no party should be able to decrypt it except the intended receiver.</t>
-
-<t>Data integrity: any changes made to the communication in transit are detectable by
-the receiver.</t>
-
-<t>Authentication: an end-point of the TLS communication is authenticated as the 
-intended entity to communicate with.</t>
-
-</list>
-</t>
-<t>With regard to authentication, TLS enables authentication of one or both 
-end-points in the communication. Although some TLS usage scenarios do not 
-require authentication, those scenarios are not in scope for this document (a
-rationale for this decision is provided under <xref target="unauth-opp"/>).</t>
-<t>
-If deployers deviate from the recommendations given in this document,
-they MUST verify that they do not need one of the foregoing security services.
-</t>
-<t>
-This document applies only to environments where 
-confidentiality is required. It recommends algorithms and configuration 
-options that enforce secrecy of the data-in-transit.
-</t>
-<t>
-This document also assumes that data integrity protection is always one of 
-the goals of a deployment. In cases where integrity is not required, it does not 
-make sense to employ TLS in the first place. There are attacks against 
-confidentiality-only protection that utilize the lack of integrity 
-to also break confidentiality (see for instance <xref target="DegabrieleP07"/>
-in the context of IPsec).
-</t>
-
-<t>
-The intended audience covers those services that are most commonly
-used on the Internet. Typically, all communication between TLS clients
-and TLS servers requires all three of the above security services. This
-is particularly true where TLS clients are user agents like Web browsers
-or email software.
-</t>
-<t>
-This document does not address the rarer deployment scenarios where
-  one of the above three properties is not desired, such as the use case
-  described under <xref target="unauth-opp"/> below.  
-  Another example of an audience not needing confidentiality is the 
-following: a monitored network where the authorities in charge of 
-the respective traffic domain require full access to unencrypted (plaintext) 
-traffic, and where users collaborate and send their traffic in the 
-clear.
-</t>
-</section>
-<section title="Unauthenticated TLS and Opportunistic Encryption" anchor="unauth-opp">
-<t>
-Several important applications use TLS to protect data between a TLS client 
-and a TLS server, but do so without the TLS client necessarily verifying the 
-server's certificate. This practice is often called "unauthenticated TLS".  
-The reader is referred to <xref target="I-D.ietf-dane-smtp-with-dane"/> for an 
-example and an explanation of why this less secure practice will likely remain 
-common in the context of SMTP (especially for MTA-to-MTA communications).  
-The practice is also encountered in similar contexts such as server-to-server 
-traffic on the XMPP network (where multi-tenant hosting environments make it 
-difficult for operators to obtain proper certificates for all of the domains 
-they service).
-</t>
-<t>
-Furthermore, in some scenarios the use of TLS itself is optional, i.e. the client
-decides dynamically ("opportunistically") whether to use TLS with a particular 
-server or to connect in the clear.  This practice, often called "opportunistic
-encryption", and is described at length in Section 2 of 
-<xref target="I-D.farrelll-mpls-opportunistic-encrypt"/>.
-</t>
-<t>
-It can be argued that the recommendations provided in this document ought to 
-apply equally to unauthenticated TLS as well as authenticated TLS.  That would
-keep TLS implementations and deployments in sync, which is a desirable 
-property given that servers can be used simultaneously for unauthenticated 
-TLS and for authenticated TLS (indeed, a server cannot know whether
-a client might attempt authenticated or unauthenticated TLS). On the other 
-hand, it has been argued that some of the recommendations in this document 
-might be too strict for unauthenticated scenarios and that any security 
-is better than no security at all (i.e., sending traffic in the clear), even if 
-it means deploying outdated protocol versions and ciphers in unauthenticated
-scenarios.  The sense of the UTA Working Group was to complete work on this
-document about authenticated TLS and to initiate work on a separate document 
-about unauthenticated TLS.
-</t>
-<t>
-In summary: this document does not apply to unauthenticated TLS use cases.
-</t>
-</section>
-</section>
-
     <section title="Terminology" anchor="terms">
       <t>A number of security-related terms in this document are used in the sense defined in <xref target="RFC4949"/>.</t>
       <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in <xref target="RFC2119"/>.</t>
@@ -223,7 +107,7 @@ In summary: this document does not apply to unauthenticated TLS use cases.
             </t>
             <t>Implementations MUST NOT negotiate SSL version 3.
                <vspace blankLines='1'/>
-               Rationale: SSLv3 <xref target='RFC6101'/> was an improvement over SSLv2 and plugged some significant security holes, but did not support strong cipher suites. SSLv3 does not support TLS extensions, some of which (e.g. renegotiation_info) are security-critical.  In addition, with the emergence of the POODLE attack <xref target='POODLE'/>, SSLv3 is now widely recognized as fundamentally insecure.
+               Rationale: SSLv3 <xref target='RFC6101'/> was an improvement over SSLv2 and plugged some significant security holes, but did not support strong cipher suites. SSLv3 does not support TLS extensions, some of which (e.g., renegotiation_info) are security-critical.  In addition, with the emergence of the POODLE attack <xref target='POODLE'/>, SSLv3 is now widely recognized as fundamentally insecure.
             </t>
             <t>Implementations SHOULD NOT negotiate TLS version 1.0 <xref target='RFC2246'/>.
                <vspace blankLines='1'/>
@@ -259,11 +143,6 @@ In summary: this document does not apply to unauthenticated TLS use cases.
 </t>
 </list>
 </t>
-<t>
-  Note: DTLS and TLS are nearly identical.  The most notable exception is that
-  RC4, which is a stream-based bulk encryption algorithm, cannot be supported by
-  DTLS.
-    </t>
     </section>
 
       <section title="Fallback to Lower Versions" anchor="rec-fallback">
@@ -323,13 +202,13 @@ In summary: this document does not apply to unauthenticated TLS use cases.
       </section>
 
       <section title="Compression" anchor="rec-compress">
-        <t>Implementations and deployments SHOULD disable TLS-level compression (<xref target="RFC5246"/>, Sec. 6.2.2).</t>
+        <t>Implementations and deployments SHOULD disable TLS-level compression (<xref target="RFC5246"/>, Section 6.2.2).</t>
 	<t>
 	Rationale: TLS compression has been subject to security attacks,
 	such as the CRIME attack.</t>
 	<t>Implementers should note that compression at higher protocol levels can allow an active attacker to extract cleartext
 	information from the connection. The BREACH attack is one such case. These issues can only be mitigated outside
-	of TLS and are thus out of scope of the current document. See Sec. 2.5 of <xref target="I-D.ietf-uta-tls-attacks"/> for 
+	of TLS and are thus out of scope of the current document. See Section 2.5 of <xref target="I-D.ietf-uta-tls-attacks"/> for 
 	further details.</t>
       </section>
 
@@ -340,9 +219,9 @@ In summary: this document does not apply to unauthenticated TLS use cases.
 	and encrypted to prevent modification or eavesdropping by an attacker. Further recommendations apply to session tickets:
 	<list style="symbols">
 	<t>A strong cipher suite MUST be used when encrypting the ticket (as least as strong as the main TLS cipher suite).</t>
-	<t>Ticket keys MUST be changed regularly, e.g. once every week, so as not to negate the benefits of forward secrecy
+	<t>Ticket keys MUST be changed regularly, e.g., once every week, so as not to negate the benefits of forward secrecy
 	(see <xref target='sec-pfs'/> for details on forward secrecy).</t>
-	<t>Session ticket validity SHOULD be limited to a reasonable duration (e.g. 1 day), for similar reasons.</t>
+	<t>Session ticket validity SHOULD be limited to a reasonable duration (e.g., 1 day), for similar reasons.</t>
 	</list>
 	</t>
 	<t>
@@ -434,14 +313,14 @@ Rationale: Cipher suites that offer between 112-bits and 128-bits of security
   128-bit ciphers are expected to remain secure for at least several years,
   and 256-bit ciphers "until the next fundamental technology breakthrough".
   Note that
-  some legacy cipher suites (e.g. 168-bit 3DES) have an effective
+  some legacy cipher suites (e.g., 168-bit 3DES) have an effective
   key length which is smaller than their nominal key length (112
   bits in the case of 3DES).  Such cipher suites should be evaluated
    according to their effective key length.
             </t>
             <t>Implementations MUST support, and SHOULD prefer to negotiate, cipher suites offering forward secrecy, such as those in the Ephemeral Diffie-Hellman and Elliptic Curve Ephemeral Diffie-Hellman ("DHE" and "ECDHE") families.
                <vspace blankLines='1'/>
-               Rationale: Forward secrecy (sometimes called "perfect forward secrecy") prevents the recovery of information that was encrypted with older session keys, thus limiting the amount of time during which attacks can be successful.
+               Rationale: Forward secrecy (sometimes called "perfect forward secrecy") prevents the recovery of information that was encrypted with older session keys, thus limiting the amount of time during which attacks can be successful. See <xref target="sec-pfs"/> for a detailed discussion.
             </t>
           </list>
         </t>
@@ -461,22 +340,16 @@ Rationale: Cipher suites that offer between 112-bits and 128-bits of security
         <t>These cipher suites are supported only in TLS 1.2 since they
 	are authenticated encryption (AEAD) algorithms <xref target="RFC5116"/>.</t>
         <t>Typically, in order to prefer these suites, the order of suites needs to be explicitly configured in server software.</t>
-        <t><xref target="RFC4492"/> allows clients and servers to negotiate ECDH parameters (curves).
-        Both clients and servers SHOULD include the "Supported Elliptic Curves" extension <xref
-	target="RFC4492"/>.
-	For interoperability,
-	clients and servers SHOULD support 
-	the NIST P-256 (secp256r1) curve <xref target="RFC4492"/>. In addition, clients SHOULD send
-	an ec_point_formats extension with
-	a single element, "uncompressed".</t>
-      </section>
 
-	<section title="Cipher Suite Negotiation Details" anchor="detail-neg">
-        <t>Clients SHOULD include TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 as the first proposal to any server, unless they have prior knowledge that the server cannot respond to a TLS 1.2 client_hello message.</t>
-        <t>Servers SHOULD prefer this cipher suite whenever it is proposed, even if it is not the first proposal.</t>
-        <t>Clients are of course free to offer stronger cipher suites, e.g. using AES-256; when they do, the server SHOULD prefer the stronger cipher suite unless there are compelling reasons (e.g., seriously degraded performance) to choose otherwise.</t>
-        <t>Note that other profiles of TLS 1.2 exist that use different cipher suites. For example, <xref target="RFC6460"/> defines a profile that uses the TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256 and TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384 cipher suites.</t>
-        <t>This document is not an application profile standard, in the sense of Sec. 9 of <xref target="RFC5246"/>. As a result, clients and servers are still REQUIRED to support the mandatory TLS cipher suite, TLS_RSA_WITH_AES_128_CBC_SHA.</t>
+	<section title="Implementation Details" anchor="detail-neg">
+          <t>Clients SHOULD include TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 as the first proposal to any server, unless they have prior knowledge that the server cannot respond to a TLS 1.2 client_hello message.</t>
+          <t>Servers SHOULD prefer this cipher suite whenever it is proposed, even if it is not the first proposal.</t>
+          <t>Clients are of course free to offer stronger cipher suites, e.g., using AES-256; when they do, the server SHOULD prefer the stronger cipher suite unless there are compelling reasons (e.g., seriously degraded performance) to choose otherwise.</t>
+          <t>This document is not an application profile standard, in the sense of Section 9 of <xref target="RFC5246"/>. As a result, clients and servers are still REQUIRED to support the mandatory TLS cipher suite, TLS_RSA_WITH_AES_128_CBC_SHA.</t>
+          <t>Note that some profiles of TLS 1.2 use different cipher suites. For example, <xref target="RFC6460"/> defines a profile that uses the TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256 and TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384 cipher suites.</t>
+          <t><xref target="RFC4492"/> allows clients and servers to negotiate ECDH parameters (curves).  Both clients and servers SHOULD include the "Supported Elliptic Curves" extension <xref target="RFC4492"/>.  For interoperability, clients and servers SHOULD support the NIST P-256 (secp256r1) curve <xref target="RFC4492"/>. In addition, clients SHOULD send an ec_point_formats extension with a single element, "uncompressed".</t>
+        </section>
+
       </section>
 
       <section title="Public Key Length" anchor="rec-keylength">
@@ -517,7 +390,7 @@ Rationale: Cipher suites that offer between 112-bits and 128-bits of security
       </section>
       
       <section title="Truncated HMAC">
-      <t>Implementations MUST NOT use the Truncated HMAC extension, defined in Sec. 7 of <xref target="RFC6066"/>.
+      <t>Implementations MUST NOT use the Truncated HMAC extension, defined in Section 7 of <xref target="RFC6066"/>.
 </t>
 <t>
 Rationale: the extension does not apply to the AEAD
@@ -545,7 +418,7 @@ Rationale: the extension does not apply to the AEAD
 	<t>
 	It is noted that the requirements regarding host name validation (and in general,
 	binding between the TLS layer and the protocol that runs above it) vary between different
-	protocols. For HTTPS, these requirements are defined by Sec. 3 of <xref target="RFC2818"/>.
+	protocols. For HTTPS, these requirements are defined by Section 3 of <xref target="RFC2818"/>.
 	</t>
 	<t>
 	Readers are referred to <xref target="RFC6125"/> for further details regarding 
@@ -573,7 +446,7 @@ Rationale: the extension does not apply to the AEAD
         <t>
 	<xref target="rec-cipher"/> above recommends the use of the AES-GCM authenticated
 	encryption algorithm.
-Please refer to <xref target="RFC5246"/>, Sec. 11 for general security considerations when using TLS 1.2, and to <xref target="RFC5288"/>, Sec. 6 for security considerations that apply specifically to AES-GCM when used with TLS.</t>
+Please refer to <xref target="RFC5246"/>, Section 11 for general security considerations when using TLS 1.2, and to <xref target="RFC5288"/>, Section 6 for security considerations that apply specifically to AES-GCM when used with TLS.</t>
       </section>
       <section title="Forward Secrecy" anchor="sec-pfs">
         <t>Forward secrecy (also often called Perfect Forward Secrecy or "PFS" and defined in <xref target="RFC4949"/>) is a defense against an attacker who records encrypted conversations where the session keys are only encrypted with the communicating parties' long-term keys. Should the attacker be able to obtain these long-term keys at some point later in time, he will be able to decrypt the session keys and thus the entire conversation. In the context of TLS and DTLS, such compromise of long-term keys is not entirely implausible. It can happen, for example, due to:</t>
@@ -590,7 +463,7 @@ Please refer to <xref target="RFC5246"/>, Sec. 11 for general security considera
 Forward secrecy ensures in such cases that the session keys cannot be determined even by an attacker who obtains the long-term keys some time after the conversation. It also protects against an attacker who is in possession of the long-term keys, but remains passive during the conversation.</t>
         <t>
 Forward secrecy is generally achieved by using the Diffie-Hellman scheme to derive session keys. The Diffie-Hellman scheme has both parties maintain private secrets and send parameters over the network as modular powers over certain cyclic groups. The properties of the so-called Discrete Logarithm Problem (DLP) allow to derive the session keys without an eavesdropper being able to do so. There is currently no known attack against DLP if sufficiently large parameters are chosen. A variant of the Diffie-Hellman scheme uses Elliptic Curves instead of the originally proposed modular arithmetics.</t>
-        <t>Unfortunately, many TLS/DTLS cipher suites were defined that do not feature forward secrecy, e.g. TLS_RSA_WITH_AES_256_CBC_SHA256.  We thus advocate strict use of forward-secrecy-only ciphers.</t>
+        <t>Unfortunately, many TLS/DTLS cipher suites were defined that do not feature forward secrecy, e.g., TLS_RSA_WITH_AES_256_CBC_SHA256.  We thus advocate strict use of forward-secrecy-only ciphers.</t>
       </section>
       
       <section title="Diffie-Hellman Exponent Reuse">
@@ -636,11 +509,45 @@ Forward secrecy is generally achieved by using the Diffie-Hellman scheme to deri
       <t>The foregoing considerations do not apply to scenarios where the DANE-TLSA resource record <xref target='RFC6698'/> is used to
          signal to a client which certificate a server considers valid and good to use for TLS connections.</t>
       </section>
+        
+      <section title="Applicability Statement" anchor="sec-app">
 
+        <t>The deployment recommendations of this document address the operators of application layer services that are most commonly used on the Internet, including, but not limited to:</t>
+        <t>
+          <list style="symbols">
+            <t>Operators of web servers that wish to protect HTTP with TLS.</t>
+            <t>Operators of email servers who wish to protect the application-layer protocols with TLS (e.g., IMAP, POP3 or SMTP).</t>
+            <t>Operators of instant-messaging services who wish to protect their application-layer protocols with TLS (e.g., XMPP or IRC).</t>
+          </list>
+        </t>
+
+        <section title="Security Services">
+          <t>This document provides recommendations for an audience that wishes to secure their communication with TLS to achieve the following:</t>
+          <t>
+            <list style="symbols">
+              <t>Confidentiality: all application-layer communication is encrypted with the goal that no party should be able to decrypt it except the intended receiver.</t>
+              <t>Data integrity: any changes made to the communication in transit are detectable by the receiver.</t>
+              <t>Authentication: an end-point of the TLS communication is authenticated as the intended entity to communicate with.</t>
+            </list>
+          </t>
+          <t>With regard to authentication, TLS enables authentication of one or both end-points in the communication. Although some TLS usage scenarios do not require authentication, those scenarios are not in scope for this document (a rationale for this decision is provided under <xref target="unauth-opp"/>).</t>
+          <t>If deployers deviate from the recommendations given in this document, they MUST verify that they do not need one of the foregoing security services.</t>
+          <t>This document applies only to environments where confidentiality is required. It recommends algorithms and configuration options that enforce secrecy of the data-in-transit.</t>
+          <t>This document also assumes that data integrity protection is always one of the goals of a deployment. In cases where integrity is not required, it does not make sense to employ TLS in the first place. There are attacks against confidentiality-only protection that utilize the lack of integrity to also break confidentiality (see for instance <xref target="DegabrieleP07"/> in the context of IPsec).</t>
+          <t>The intended audience covers those services that are most commonly used on the Internet. Typically, all communication between TLS clients and TLS servers requires all three of the above security services. This is particularly true where TLS clients are user agents like Web browsers or email software.</t>
+          <t>This document does not address the rarer deployment scenarios where one of the above three properties is not desired, such as the use case described under <xref target="unauth-opp"/> below.  Another example of an audience not needing confidentiality is the following: a monitored network where the authorities in charge of the respective traffic domain require full access to unencrypted (plaintext) traffic, and where users collaborate and send their traffic in the clear.</t>
+        </section>
+        <section title="Unauthenticated TLS and Opportunistic Encryption" anchor="unauth-opp">
+          <t>Several important applications use TLS to protect data between a TLS client and a TLS server, but do so without the TLS client necessarily verifying the server's certificate. This practice is often called "unauthenticated TLS".  The reader is referred to <xref target="I-D.ietf-dane-smtp-with-dane"/> for an example and an explanation of why this less secure practice will likely remain common in the context of SMTP (especially for MTA-to-MTA communications).  The practice is also encountered in similar contexts such as server-to-server traffic on the XMPP network (where multi-tenant hosting environments make it difficult for operators to obtain proper certificates for all of the domains they service).</t>
+          <t>Furthermore, in some scenarios the use of TLS itself is optional, i.e. the client decides dynamically ("opportunistically") whether to use TLS with a particular server or to connect in the clear.  This practice, often called "opportunistic encryption", and is described at length in Section 2 of <xref target="I-D.farrelll-mpls-opportunistic-encrypt"/>.</t>
+          <t>It can be argued that the recommendations provided in this document ought to apply equally to unauthenticated TLS as well as authenticated TLS.  That would keep TLS implementations and deployments in sync, which is a desirable property given that servers can be used simultaneously for unauthenticated TLS and for authenticated TLS (indeed, a server cannot know whether a client might attempt authenticated or unauthenticated TLS). On the other hand, it has been argued that some of the recommendations in this document might be too strict for unauthenticated scenarios and that any security is better than no security at all (i.e., sending traffic in the clear), even if it means deploying outdated protocol versions and ciphers in unauthenticated scenarios.  The sense of the UTA Working Group was to complete work on this document about authenticated TLS and to initiate work on a separate document about unauthenticated TLS.</t>
+          <t>In summary: this document does not apply to unauthenticated TLS use cases.</t>
+        </section>
+      </section>
     </section>
 
     <section title="Acknowledgments" anchor="d1e1127">
-      <t>We would like to thank Uri Blumenthal, Viktor Dukhovni, Stephen Farrell, Paul Hoffman, Simon Josefsson, Watson Ladd, Orit Levin, Ilari Liusvaara, Johannes Merkle, Bodo Moeller, Yoav Nir, Kenny Paterson, Patrick Pelletier, Tom Ritter, Rich Salz, Sean Turner, and Aaron Zauner for their feedback and suggested improvements. Thanks to Brian Smith, whose "browser cipher suites" page is a great resource. Finally, thanks to all others who commented on the TLS, UTA and other lists but who are not mentioned here by name.</t>
+      <t>We would like to thank Uri Blumenthal, Viktor Dukhovni, Stephen Farrell, Paul Hoffman, Simon Josefsson, Watson Ladd, Orit Levin, Ilari Liusvaara, Johannes Merkle, Bodo Moeller, Yoav Nir, Kenny Paterson, Patrick Pelletier, Tom Ritter, Rich Salz, Sean Turner, and Aaron Zauner for their feedback and suggested improvements. Thanks to Brian Smith, whose "browser cipher suites" page is a great resource. Finally, thanks to all others who commented on the TLS, UTA, and other discussion lists but who are not mentioned here by name.</t>
     </section>
 
   </middle>
@@ -703,6 +610,13 @@ initials="" surname="CA/Browser Forum"></author><date year="2013"/></front></ref
     <section title="Change Log" anchor="changes">
       <t>
 Note to RFC Editor: please remove this section before publication.</t>
+      <section title="draft-ietf-uta-tls-bcp-07" anchor="changes-07">
+        <t>
+          <list style="symbols">
+            <t>WGLC feedback.</t>
+          </list>
+        </t>
+      </section>
       <section title="draft-ietf-uta-tls-bcp-06" anchor="changes-06">
         <t>
           <list style="symbols">
