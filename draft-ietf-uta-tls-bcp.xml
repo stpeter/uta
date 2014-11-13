@@ -11,7 +11,7 @@
 <?rfc toc="yes"?>
 <?rfc tocdepth="4"?>
 
-<rfc docName="draft-ietf-uta-tls-bcp-07" ipr="trust200902" category="bcp">
+<rfc docName="draft-ietf-uta-tls-bcp-08" ipr="trust200902" category="bcp">
   <front>
     <title abbrev="TLS Recommendations">Recommendations for Secure Use of TLS and DTLS</title>
     <author initials="Y." surname="Sheffer" fullname="Yaron Sheffer">
@@ -208,7 +208,7 @@ to their communications.
 	such as the CRIME attack.</t>
 	<t>Implementers should note that compression at higher protocol levels can allow an active attacker to extract cleartext
 	information from the connection. The BREACH attack is one such case. These issues can only be mitigated outside
-	of TLS and are thus out of scope of the current document. See Section 2.5 of <xref target="I-D.ietf-uta-tls-attacks"/> for 
+	of TLS and are thus out of scope of the current document. See Section 2.6 of <xref target="I-D.ietf-uta-tls-attacks"/> for 
 	further details.</t>
       </section>
 
@@ -363,7 +363,7 @@ Rationale: Cipher suites that offer between 112-bits and 128-bits of security
 <t> Rationale: For various reasons, in practice DH keys are typically generated in lengths that are powers of two (e.g., 2^10 = 1024 bits, 2^11 = 2048 bits, 2^12 = 4096 bits). Because a DH key of 1228 bits would be roughly equivalent to only an 80-bit symmetric key <xref target='RFC3766'/>, it is better to use keys longer than that for the "DHE" family of cipher suites. A DH key of 1926 bits would be roughly equivalent to a 100-bit symmetric key <xref target='RFC3766'/> and a DH key of 2048 bits might be sufficient for at least the next 10&nbsp;years. See <xref target="detail-alt"/> for additional information on the use of modular Diffie-Hellman in TLS.
 </t>
 <t>As noted in <xref target='RFC3766'/>, correcting for the emergence of a TWIRL machine would imply that 1024-bit DH keys yield about 65 bits of equivalent strength and that a 2048-bit DH key would yield about 92 bits of equivalent strength.</t>
-<t>Servers SHOULD authenticate using at least 2048-bit certificates. In addition, the use of SHA-256 fingerprints is RECOMMENDED (see <xref target="CAB-Baseline"/> for more details). Clients SHOULD indicate to servers that they request SHA-256, by using the "Signature Algorithms" extension defined in TLS&nbsp;1.2. </t>
+<t>When using RSA servers SHOULD authenticate using certificates with at least a 2048-bit modulus for the public key.  In addition, the use of SHA-256 fingerprints is RECOMMENDED (see <xref target="CAB-Baseline"/> for more details). Clients SHOULD indicate to servers that they request SHA-256, by using the "Signature Algorithms" extension defined in TLS&nbsp;1.2. </t>
       </section>
 
 	<section title="Modular vs. Elliptic Curve DH Cipher Suites" anchor="detail-alt">
@@ -382,6 +382,7 @@ Rationale: Cipher suites that offer between 112-bits and 128-bits of security
         <t>
           <list style="symbols">
             <t>There are no protocol mechanisms to negotiate the DH groups or parameter lengths supported by client and server.</t>
+            <t>Many servers choose DH parameters of 1024 bits or fewer.</t>
             <t>There are widely deployed client implementations that reject received DH parameters if they are longer than 1024 bits.</t>
           </list>
         </t>
@@ -427,9 +428,9 @@ Rationale: the extension does not apply to the AEAD
           <t>The intended audience covers those services that are most commonly used on the Internet. Typically, all communication between TLS clients and TLS servers requires all three of the above security services. This is particularly true where TLS clients are user agents like Web browsers or email software.</t>
           <t>This document does not address the rarer deployment scenarios where one of the above three properties is not desired, such as the use case described under <xref target="unauth-opp"/> below.  Another example of an audience not needing confidentiality is the following: a monitored network where the authorities in charge of the respective traffic domain require full access to unencrypted (plaintext) traffic, and where users collaborate and send their traffic in the clear.</t>
         </section>
-        <section title="Unauthenticated TLS and Opportunistic Encryption" anchor="unauth-opp">
+        <section title="Unauthenticated TLS and Opportunistic Security" anchor="unauth-opp">
           <t>Several important applications use TLS to protect data between a TLS client and a TLS server, but do so without the TLS client necessarily verifying the server's certificate. This practice is often called "unauthenticated TLS".  The reader is referred to <xref target="I-D.ietf-dane-smtp-with-dane"/> for an example and an explanation of why this less secure practice will likely remain common in the context of SMTP (especially for MTA-to-MTA communications).  The practice is also encountered in similar contexts such as server-to-server traffic on the XMPP network (where multi-tenant hosting environments make it difficult for operators to obtain proper certificates for all of the domains they service).</t>
-          <t>Furthermore, in some scenarios the use of TLS itself is optional, i.e. the client decides dynamically ("opportunistically") whether to use TLS with a particular server or to connect in the clear.  This practice, often called "opportunistic encryption", and is described at length in Section 2 of <xref target="I-D.farrelll-mpls-opportunistic-encrypt"/>.</t>
+          <t>Furthermore, in some scenarios the use of TLS itself is optional, i.e. the client decides dynamically ("opportunistically") whether to use TLS with a particular server or to connect in the clear.  This practice, often called "opportunistic security", and is described at length in Section 2 of <xref target="I-D.farrelll-mpls-opportunistic-encrypt"/>.</t>
           <t>It can be argued that the recommendations provided in this document ought to apply equally to unauthenticated TLS as well as authenticated TLS.  That would keep TLS implementations and deployments in sync, which is a desirable property given that servers can be used simultaneously for unauthenticated TLS and for authenticated TLS (indeed, a server cannot know whether a client might attempt authenticated or unauthenticated TLS). On the other hand, it has been argued that some of the recommendations in this document might be too strict for unauthenticated scenarios and that any security is better than no security at all (i.e., sending traffic in the clear), even if it means deploying outdated protocol versions and ciphers in unauthenticated scenarios.  The sense of the UTA Working Group was to complete work on this document about authenticated TLS and to initiate work on a separate document about unauthenticated TLS.</t>
           <t>In summary: this document does not apply to unauthenticated TLS use cases.</t>
         </section>
@@ -541,7 +542,7 @@ Forward secrecy is generally achieved by using the Diffie-Hellman scheme to deri
          heavily used Web servers.</t>
       </list>
       </t>
-      <t>With regard to PKIX certificates, servers SHOULD support OCSP and OCSP stapling, including the OCSP stapling extension defined in <xref target='RFC6961'/>, as a best practice given the current state of the art and as a foundation for a possible future solution.</t>
+      <t>With regard to PKIX certificates, servers SHOULD support OCSP and OCSP stapling, including both the status_request_v2 extension defined in <xref target='RFC6961'/> and the OCSP stapling extension defined in <xref target='RFC6961'/>, as a best practice given the current state of the art and as a foundation for a possible future solution.</t>
       <t>The foregoing considerations do not apply to scenarios where the DANE-TLSA resource record <xref target='RFC6698'/> is used to
          signal to a client which certificate a server considers valid and good to use for TLS connections.</t>
       </section>
@@ -549,7 +550,7 @@ Forward secrecy is generally achieved by using the Diffie-Hellman scheme to deri
     </section>
 
     <section title="Acknowledgments" anchor="d1e1127">
-      <t>We would like to thank Uri Blumenthal, Viktor Dukhovni, Stephen Farrell, Paul Hoffman, Simon Josefsson, Watson Ladd, Orit Levin, Ilari Liusvaara, Johannes Merkle, Bodo Moeller, Yoav Nir, Kenny Paterson, Patrick Pelletier, Tom Ritter, Rich Salz, Sean Turner, and Aaron Zauner for their feedback and suggested improvements. Thanks to Brian Smith, whose "browser cipher suites" page is a great resource. Finally, thanks to all others who commented on the TLS, UTA, and other discussion lists but who are not mentioned here by name.</t>
+      <t>We would like to thank Uri Blumenthal, Viktor Dukhovni, Stephen Farrell, Paul Hoffman, Simon Josefsson, Watson Ladd, Orit Levin, Ilari Liusvaara, Johannes Merkle, Bodo Moeller, Yoav Nir, Kenny Paterson, Patrick Pelletier, Tom Ritter, Rich Salz, Brian Smith, Sean Turner, and Aaron Zauner for their feedback and suggested improvements. Thanks to Brian Smith, whose "browser cipher suites" page is a great resource. Finally, thanks to all others who commented on the TLS, UTA, and other discussion lists but who are not mentioned here by name.</t>
     </section>
 
   </middle>
