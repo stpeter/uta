@@ -10,7 +10,7 @@
 <?rfc toc="yes"?>
 <?rfc tocdepth="4"?>
 
-<rfc category="std" docName="draft-ietf-uta-xmpp-03" ipr="trust200902" updates="6120">
+<rfc category="std" docName="draft-ietf-uta-xmpp-04" ipr="trust200902" updates="6120">
 
   <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
 
@@ -60,16 +60,16 @@
       </section>
 
       <section title="Session Resumption" anchor="rec-resume">
-        <t>Use of session IDs <xref target='RFC5246'/> is RECOMMENDED instead of session tickets <xref target='RFC5077'/>, since XMPP does not in general use state management technologies such as tickets or "cookies" <xref target='RFC6265'/>.</t>
         <t>In XMPP, TLS session resumption can be used in concert with the XMPP Stream Management extension; see <xref target='XEP-0198'/> for further details.</t>
       </section>
 
       <section title="Authenticated Connections" anchor="rec-auth">
-        <t>Both the core XMPP specification <xref target='RFC6120'/> and the "CertID" specification <xref target='RFC6125'/> provide recommendations and requirements for certificate validation in the context of authenticated connections.  This document does not supersede those specifications.  Wherever possible, it is best to prefer authenticated connections (along with SASL <xref target='RFC4422'/>), as already stated in the core XMPP specification <xref target='RFC6120'/>.  In particular, clients MUST authenticate servers.</t>
+        <t>Both the core XMPP specification <xref target='RFC6120'/> and the "CertID" specification <xref target='RFC6125'/> provide recommendations and requirements for certificate validation in the context of authenticated connections.  This document does not supersede those specifications.  Wherever possible, it is best to prefer authenticated connections (along with SASL <xref target='RFC4422'/>), as already stated in the core XMPP specification <xref target='RFC6120'/>.  In particular, clients MUST authenticate servers.  Because this document does not mandate that servers need to authenticate peer servers, unauthenticated server-to-server connections are allowed (consistent with current practice on the XMPP network).</t>
+        <t>This document does not modify the recommendations in <xref target='RFC6120'/> regarding the Subject Alternative Names (or other certificate details) that need to be supported for authentication of XMPP connections.</t>
       </section>
 
       <section title="Unauthenticated Connections" anchor="rec-unauth">
-        <t>Given the pervasiveness of passive eavesdropping, even an unauthenticated connection might be better than an unencrypted connection (this is similar to the "better than nothing security" approach for IPsec <xref target='RFC5386'/>).  In particular, because of current deployment challenges for authenticated connections between XMPP servers (see <xref target='I-D.ietf-xmpp-dna'/> and <xref target='I-D.ietf-xmpp-posh'/> for details), it might be reasonable for XMPP server implementations to accept unauthenticated connections when the Server Dialback protocol <xref target='XEP-0220'/> is used for weak identity verification; this will at least enable encryption of server-to-server connections.  Unauthenticated connections include connections negotiated using anonymous Diffie-Hellman algorithms or using self-signed certificates, among other scenarios.</t>
+        <t>Given the pervasiveness of passive eavesdropping, even an unauthenticated connection might be better than an unencrypted connection (this is similar to the "better than nothing security" approach for IPsec <xref target='RFC5386'/>).  In particular, because of current deployment challenges for authenticated connections between XMPP servers (see <xref target='I-D.ietf-xmpp-dna'/> and <xref target='I-D.ietf-xmpp-posh'/> for details), it can be reasonable for XMPP server implementations to accept unauthenticated connections when the Server Dialback protocol <xref target='XEP-0220'/> is used for weak identity verification; this will at least enable encryption of server-to-server connections.  Unauthenticated connections include connections negotiated using anonymous Diffie-Hellman algorithms or using self-signed certificates, among other scenarios.</t>
       </section>
 
       <section title="Server Name Indication" anchor="rec-sni">
@@ -178,24 +178,6 @@
 <t>This Glossary provides definitions, abbreviations, and explanations of terminology for information system security.  The 334 pages of entries offer recommendations to improve the comprehensibility of written material that is generated in the Internet Standards Process (RFC 2026).  The recommendations follow the principles that such writing should (a) use the same term or definition whenever the same concept is mentioned; (b) use terms in their plainest, dictionary sense; (c) use terms that are already well-established in open publications; and (d) avoid terms that either favor a particular vendor or favor a particular technology or mechanism over other, competing techniques that already exist or could be developed.  This memo provides information for the Internet community.</t></abstract></front>
 <seriesInfo name='RFC' value='4949' />
 <format type='TXT' octets='867626' target='http://www.rfc-editor.org/rfc/rfc4949.txt' />
-</reference>
-
-<reference anchor='RFC5077'>
-<front>
-<title>Transport Layer Security (TLS) Session Resumption without Server-Side State</title>
-<author initials='J.' surname='Salowey' fullname='J. Salowey'>
-<organization /></author>
-<author initials='H.' surname='Zhou' fullname='H. Zhou'>
-<organization /></author>
-<author initials='P.' surname='Eronen' fullname='P. Eronen'>
-<organization /></author>
-<author initials='H.' surname='Tschofenig' fullname='H. Tschofenig'>
-<organization /></author>
-<date year='2008' month='January' />
-<abstract>
-<t>This document describes a mechanism that enables the Transport Layer Security (TLS) server to resume sessions and avoid keeping per-client session state.  The TLS server encapsulates the session state into a ticket and forwards it to the client.  The client can subsequently resume a session using the obtained ticket.  This document obsoletes RFC 4507. [STANDARDS-TRACK]</t></abstract></front>
-<seriesInfo name='RFC' value='5077' />
-<format type='TXT' octets='41989' target='http://www.rfc-editor.org/rfc/rfc5077.txt' />
 </reference>
 
 <reference anchor='RFC5246'>
@@ -365,18 +347,6 @@
 <t>This document provides specifications for existing TLS extensions.  It is a companion document for RFC 5246, "The Transport Layer Security (TLS) Protocol Version 1.2".  The extensions specified are server_name, max_fragment_length, client_certificate_url, trusted_ca_keys, truncated_hmac, and status_request. [STANDARDS-TRACK]</t></abstract></front>
 <seriesInfo name='RFC' value='6066' />
 <format type='TXT' octets='55079' target='http://www.rfc-editor.org/rfc/rfc6066.txt' />
-</reference>
-
-<reference anchor='RFC6265'>
-<front>
-<title>HTTP State Management Mechanism</title>
-<author initials='A.' surname='Barth' fullname='A. Barth'>
-<organization /></author>
-<date year='2011' month='April' />
-<abstract>
-<t>This document defines the HTTP Cookie and Set-Cookie header fields.  These header fields can be used by HTTP servers to store state (called cookies) at HTTP user agents, letting the servers maintain a stateful session over the mostly stateless HTTP protocol.  Although cookies have many historical infelicities that degrade their security and privacy, the Cookie and Set-Cookie header fields are widely used on the Internet.  This document obsoletes RFC 2965. [STANDARDS-TRACK]</t></abstract></front>
-<seriesInfo name='RFC' value='6265' />
-<format type='TXT' octets='79724' target='http://www.rfc-editor.org/rfc/rfc6265.txt' />
 </reference>
 
 <reference anchor="XEP-0138">
