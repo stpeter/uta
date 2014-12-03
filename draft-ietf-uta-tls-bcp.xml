@@ -81,6 +81,9 @@ to their communications.
 	based on their particular circumstances (e.g., for use with a 
         particular application protocol); when that is the case,
 	implementers are advised to adhere to those stricter requirements.
+        Furthermore, this document provides a floor, not a ceiling, so stronger 
+        options are always allowed (e.g., depending on differing evaluations 
+        of the importance of cryptographic strength vs. computational load).
       </t>
       <t>Community knowledge about the strength of various algorithms and feasible attacks can change quickly, and experience shows that a security BCP is a point-in-time statement.  Readers are advised to seek out any errata or updates that apply to this document.</t>
     </section>
@@ -111,13 +114,13 @@ to their communications.
             </t>
             <t>Implementations SHOULD NOT negotiate TLS version 1.0 <xref target='RFC2246'/>.
                <vspace blankLines='1'/>
-               Rationale: TLS 1.0 (published in 1999) does not support many modern, strong cipher suites.
+               Rationale: TLS 1.0 (published in 1999) does not support many modern, strong cipher suites. In addition, TLS 1.0 lacks a per-record IV for CBC-based cipher suites and does not warn against common padding errors.
             </t>
-            <t>Implementations MAY negotiate TLS version 1.1 <xref target='RFC4346'/>.
+            <t>Implementations SHOULD NOT negotiate TLS version 1.1 <xref target='RFC4346'/>.
                <vspace blankLines='1'/>
                Rationale: TLS 1.1 (published in 2006) is a security improvement over TLS 1.0, but still does not support certain stronger cipher suites.
             </t>
-            <t>Implementations MUST support, and prefer to negotiate, TLS version 1.2 <xref target='RFC5246'/>.
+            <t>Implementations MUST support TLS 1.2 <xref target='RFC5246'/> and MUST prefer to negotiate TLS version 1.2 over earlier versions of TLS.
                <vspace blankLines='1'/>
                Rationale: Several stronger cipher suites are available only with TLS 1.2 (published in 2008). In fact, the cipher suites recommended by this document
 	       (<xref target="rec-cipher"/> below) are only available in TLS 1.2.
@@ -147,8 +150,8 @@ to their communications.
 
       <section title="Fallback to Lower Versions" anchor="rec-fallback">
       <t>
-       Clients that “fallback" to lower versions of the protocol after the server
-  rejects higher versions of the protocol MUST NOT fallback to SSLv3.
+       Clients that “fall back" to lower versions of the protocol after the server
+  rejects higher versions of the protocol MUST NOT fall back to SSLv3.
 </t>
 <t>
   Rationale: Some client implementations revert to lower versions of TLS or even
@@ -157,7 +160,9 @@ to their communications.
   TLS 1.0 and SSLv3 are significantly less secure than TLS
   1.2, the version recommended by this document.  While TLS 1.0-only
   servers are still quite common, IP scans show that SSLv3-only servers
-  amount to only about 3% of the current Web server population.
+  amount to only about 3% of the current Web server population.  
+  (At the time of this writing, an explicit method for preventing downgrade 
+  attacks is being defined in <xref target='I-D.ietf-tls-downgrade-scsv'/>.)
   </t>
       </section>
       </section>
@@ -221,7 +226,7 @@ to their communications.
 	<t>A strong cipher suite MUST be used when encrypting the ticket (as least as strong as the main TLS cipher suite).</t>
 	<t>Ticket keys MUST be changed regularly, e.g., once every week, so as not to negate the benefits of forward secrecy
 	(see <xref target='sec-pfs'/> for details on forward secrecy).</t>
-	<t>Session ticket validity SHOULD be limited to a reasonable duration (e.g., 1 day), for similar reasons.</t>
+	<t>For similar reasons, session ticket validity SHOULD be limited to a reasonable duration (e.g., half as long as ticket key validity).</t>
 	</list>
 	</t>
 	<t>
@@ -241,8 +246,8 @@ to their communications.
       Where handshake renegotiation is implemented, both clients and servers MUST implement the renegotiation_info extension, 
       as defined in <xref target="RFC5746"/>.
       </t>
-      <t>To counter the Triple Handshake attack, we adopt the recommendation from <xref target="triple-handshake"/>:
-      TLS clients SHOULD ensure that all certificates received over a connection are valid for the current server endpoint, and abort the handshake if they are not. In some usages, it may be simplest to refuse any change of certificates during renegotiation.
+      <t>To counter the Triple Handshake attack, we adopt the recommended countermeasures from <xref target="triple-handshake"/>:
+      TLS clients SHOULD apply the same validation policy for all certificates received over a connection, bind the master secret to the full handshake, and bind the abbreviated session resumption handshake to the original full handshake.  In some usages, it may be simplest to refuse any change of certificates during renegotiation.
       </t>
       </section>
 
@@ -337,15 +342,16 @@ Rationale: Cipher suites that offer between 112-bits and 128-bits of security
             <t>TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384</t>
           </list>
         </t>
-        <t>These cipher suites are supported only in TLS 1.2 since they
+        <t>These cipher suites are supported only in TLS 1.2 because they
 	are authenticated encryption (AEAD) algorithms <xref target="RFC5116"/>.</t>
         <t>Typically, in order to prefer these suites, the order of suites needs to be explicitly configured in server software.</t>
+        <t>Some devices have hardware support for AES-CCM but not AES-GCM.  There are even devices that do not public key cryptography at all.  This BCP does not cover such devices.</t>
 
 	<section title="Implementation Details" anchor="detail-neg">
           <t>Clients SHOULD include TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 as the first proposal to any server, unless they have prior knowledge that the server cannot respond to a TLS 1.2 client_hello message.</t>
           <t>Servers SHOULD prefer this cipher suite whenever it is proposed, even if it is not the first proposal.</t>
           <t>Clients are of course free to offer stronger cipher suites, e.g., using AES-256; when they do, the server SHOULD prefer the stronger cipher suite unless there are compelling reasons (e.g., seriously degraded performance) to choose otherwise.</t>
-          <t>This document is not an application profile standard, in the sense of Section 9 of <xref target="RFC5246"/>. As a result, clients and servers are still REQUIRED to support the mandatory TLS cipher suite, TLS_RSA_WITH_AES_128_CBC_SHA.</t>
+          <t>This document does not change the mandatory-to-implement TLS cipher suite(s) prescribed by TLS or application protocols using TLS. To maximize interoperability, RFC 5246 mandates implementation of the TLS_RSA_WITH_AES_128_CBC_SHA cipher suite, which is significantly weaker than the cipher suites recommended here. Implementers should consider the interoperability gain against the loss in security when deploying that cipher suite. Other application protocols specify other cipher suites as mandatory to implement (MTI).</t>
           <t>Note that some profiles of TLS 1.2 use different cipher suites. For example, <xref target="RFC6460"/> defines a profile that uses the TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256 and TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384 cipher suites.</t>
           <t><xref target="RFC4492"/> allows clients and servers to negotiate ECDH parameters (curves).  Both clients and servers SHOULD include the "Supported Elliptic Curves" extension <xref target="RFC4492"/>.  For interoperability, clients and servers SHOULD support the NIST P-256 (secp256r1) curve <xref target="RFC4492"/>. In addition, clients SHOULD send an ec_point_formats extension with a single element, "uncompressed".</t>
         </section>
@@ -363,7 +369,8 @@ Rationale: Cipher suites that offer between 112-bits and 128-bits of security
 <t> Rationale: For various reasons, in practice DH keys are typically generated in lengths that are powers of two (e.g., 2^10 = 1024 bits, 2^11 = 2048 bits, 2^12 = 4096 bits). Because a DH key of 1228 bits would be roughly equivalent to only an 80-bit symmetric key <xref target='RFC3766'/>, it is better to use keys longer than that for the "DHE" family of cipher suites. A DH key of 1926 bits would be roughly equivalent to a 100-bit symmetric key <xref target='RFC3766'/> and a DH key of 2048 bits might be sufficient for at least the next 10&nbsp;years. See <xref target="detail-alt"/> for additional information on the use of modular Diffie-Hellman in TLS.
 </t>
 <t>As noted in <xref target='RFC3766'/>, correcting for the emergence of a TWIRL machine would imply that 1024-bit DH keys yield about 65 bits of equivalent strength and that a 2048-bit DH key would yield about 92 bits of equivalent strength.</t>
-<t>When using RSA servers SHOULD authenticate using certificates with at least a 2048-bit modulus for the public key.  In addition, the use of SHA-256 fingerprints is RECOMMENDED (see <xref target="CAB-Baseline"/> for more details). Clients SHOULD indicate to servers that they request SHA-256, by using the "Signature Algorithms" extension defined in TLS&nbsp;1.2. </t>
+<t>With regard to ECDH keys, the IANA named curve registry contains 160-bit elliptic curves which are considered to be roughly equivalent to only an 80-bit symmetric key <xref target='ECRYPT-II'/>.   The use of curves of less than 192-bits is NOT RECOMMENDED.</t>
+<t>When using RSA servers SHOULD authenticate using certificates with at least a 2048-bit modulus for the public key.  In addition, the use of the SHA-256 hash algorithm is RECOMMENDED (see <xref target="CAB-Baseline"/> for more details). Clients SHOULD indicate to servers that they request SHA-256, by using the "Signature Algorithms" extension defined in TLS&nbsp;1.2. </t>
       </section>
 
 	<section title="Modular vs. Elliptic Curve DH Cipher Suites" anchor="detail-alt">
@@ -378,12 +385,13 @@ Rationale: Cipher suites that offer between 112-bits and 128-bits of security
             <t>TLS_DHE_RSA_WITH_AES_128_GCM_SHA256, with 1024-bit parameters.</t>
           </list>
         </t>
-        <t>Rationale: Elliptic Curve Cryptography is not universally deployed for several reasons, including its complexity compared to modular arithmetic and longstanding perceptions of IPR concerns (which, for the most part, have now been resolved <xref target='RFC6090'/>). On the other hand, there are two related issues hindering effective use of modular Diffie-Hellman cipher suites in TLS:</t>
+        <t>Rationale: Although Elliptic Curve Cryptography is widely deployed there are some communities where its uptake has been limited for several reasons, including its complexity compared to modular arithmetic and longstanding perceptions of IPR concerns (which, for the most part, have now been resolved <xref target='RFC6090'/>).  Note that ECDHE cipher suites exist for both RSA and ECDSA certificates so moving to ECDHE cipher suites does not require moving away from RSA based certificates.  On the other hand, there are two related issues hindering effective use of modular Diffie-Hellman cipher suites in TLS:</t>
         <t>
           <list style="symbols">
             <t>There are no protocol mechanisms to negotiate the DH groups or parameter lengths supported by client and server.</t>
             <t>Many servers choose DH parameters of 1024 bits or fewer.</t>
-            <t>There are widely deployed client implementations that reject received DH parameters if they are longer than 1024 bits.</t>
+            <t>There are widely deployed client implementations that reject received DH parameters if they are longer than 1024 bits.  In
+                 addition, several implementations do not perform appropriate validation of group parameters and are vulnerable to attacks referenced in Section 2.9 of <xref target='I-D.ietf-uta-tls-attacks'/></t>
           </list>
         </t>
         <t>We note that with DHE and ECDHE cipher suites, the TLS master key only depends on the Diffie-Hellman parameters and not on the strength of the RSA certificate; moreover, 1024 bit modular DH parameters are generally considered insufficient at this time.</t>
@@ -494,6 +502,8 @@ Please refer to <xref target="RFC5246"/>, Section 11 for general security consid
             <t>A long-term key used on a device as a default key <xref target="Heninger2012"/>.</t>
             <t>A key generated by a Trusted Third Party like a CA, and later retrieved from it either by extortion or compromise <xref target="Soghoian2011"/>.</t>
             <t>A cryptographic break-through, or the use of asymmetric keys with insufficient length <xref target="Kleinjung2010"/>.</t>
+            <t>Social engineering attacks against system administrators.</t>
+            <t>Collection of private keys from inadequately protected backups.</t>
           </list>
         </t>
         <t>
@@ -524,11 +534,21 @@ Forward secrecy is generally achieved by using the Diffie-Hellman scheme to deri
       <t>Unfortunately, no mechanism exists at this time that we can recommend as a complete and efficient solution for the problem of checking the revocation status of common public key certificates (a.k.a. PKIX certificates, <xref target='RFC5280'/>).  The current state of the art is as follows:</t>
       <t>
       <list style='symbols'>
-      <t>Certificate Revocation Lists (CRLs) are not scalable and therefore rarely used.</t>
-      <t>The On-Line Certification Status Protocol (OCSP) presents both scaling 
-         and privacy issues when used for heavy traffic Web servers. In addition, 
-         clients typically "soft-fail", meaning they do not abort the TLS connection 
-         if the OCSP server does not respond.</t>
+      <t>Although Certificate Revocation Lists (CRLs) are the most widely supported
+         mechanism for distributing revocation information, they have known scaling
+         challenges that limit their usefulness (despite workarounds such as partitioned
+         CRLS and delta CRLs).  However, CRLs might provide better 
+         privacy-preserving properties than other techniques (e.g., OCSP), since there is
+         no need to communicate with a third party regarding the certificate that a client
+         is checking.</t>
+      <t>Proprietary mechanisms that embed revocation lists in the Web browser's 
+         configuration database cannot scale beyond a small number of the most 
+         heavily used Web servers.</t>
+      <t>The On-Line Certification Status Protocol (OCSP) presents both scaling
+         and privacy issues. In addition, clients typically "soft-fail", meaning 
+         that they do not abort the TLS connection if the OCSP server does not 
+         respond (however, this might be a workaround to avoid denial of service
+         attacks if an OSCP responder is taken offline).</t>
       <t>OCSP stapling (Section 8 of <xref target="RFC6066"/>) resolves the 
          operational issues with OCSP, but is still ineffective in the presence of 
          a MITM attacker because the attacker can simply ignore the client's
@@ -537,9 +557,10 @@ Forward secrecy is generally achieved by using the Diffie-Hellman scheme to deri
          intermediate certificates used in a certificate chain. 
          <xref target="RFC6961"/> addresses this shortcoming, but is a recent 
          addition without much deployment.</t>
-      <t>Proprietary mechanisms that embed revocation lists in the Web browser's 
-         configuration database cannot scale beyond a small number of the most 
-         heavily used Web servers.</t>
+      <t>Both CRLs and OSCP depend on relatively reliable connectivity to the 
+         Internet, which might not be available to certain kinds of nodes (such
+         as newly provisioned devices that need to establish a secure connection
+         in order to boot up for the first time).</t>
       </list>
       </t>
       <t>With regard to PKIX certificates, servers SHOULD support OCSP and OCSP stapling, including both the status_request_v2 extension defined in <xref target='RFC6961'/> and the OCSP stapling extension defined in the same document, as a best practice given the current state of the art and as a foundation for a possible future solution.</t>
@@ -550,7 +571,7 @@ Forward secrecy is generally achieved by using the Diffie-Hellman scheme to deri
     </section>
 
     <section title="Acknowledgments" anchor="d1e1127">
-      <t>We would like to thank Uri Blumenthal, Viktor Dukhovni, Stephen Farrell, Paul Hoffman, Simon Josefsson, Watson Ladd, Orit Levin, Ilari Liusvaara, Johannes Merkle, Bodo Moeller, Yoav Nir, Kenny Paterson, Patrick Pelletier, Tom Ritter, Rich Salz, Brian Smith, Sean Turner, and Aaron Zauner for their feedback and suggested improvements. Thanks to Brian Smith, whose "browser cipher suites" page is a great resource. Finally, thanks to all others who commented on the TLS, UTA, and other discussion lists but who are not mentioned here by name.</t>
+      <t>We would like to thank Uri Blumenthal, Viktor Dukhovni, Stephen Farrell, Paul Hoffman, Simon Josefsson, Watson Ladd, Orit Levin, Ilari Liusvaara, Johannes Merkle, Bodo Moeller, Yoav Nir, Massimiliano Pala, Kenny Paterson, Patrick Pelletier, Tom Ritter, Joe St. Sauver, Joe Salowey, Rich Salz, Brian Smith, Sean Turner, and Aaron Zauner for their feedback and suggested improvements. Thanks to Brian Smith, who has provided a great resource in his "Proposal to Change the Default TLS Ciphersuites Offered by Browsers" <xref target='Smith2013'/>. Finally, thanks to all others who commented on the TLS, UTA, and other discussion lists but who are not mentioned here by name.</t>
     </section>
 
   </middle>
@@ -573,6 +594,24 @@ Forward secrecy is generally achieved by using the Diffie-Hellman scheme to deri
     <references title="Informative References">
 
 <?rfc include="reference.I-D.ietf-tls-prohibiting-rc4.xml"?>
+
+<reference anchor='I-D.ietf-tls-downgrade-scsv'>
+<front>
+<title>TLS Fallback Signaling Cipher Suite Value (SCSV) for Preventing Protocol Downgrade Attacks</title>
+<author initials='B' surname='Moeller' fullname='Bodo Moeller'>
+    <organization />
+</author>
+<author initials='A' surname='Langley' fullname='Adam Langley'>
+    <organization />
+</author>
+<date month='November' day='12' year='2014' />
+<abstract><t>This document defines a Signaling Cipher Suite Value (SCSV) that prevents protocol downgrade attacks on the Transport Layer Security (TLS) protocol.  It updates RFC 2246, RFC 4346, and RFC 5246.</t></abstract>
+</front>
+<seriesInfo name='Internet-Draft' value='draft-ietf-tls-downgrade-scsv-02' />
+<format type='TXT'
+        target='http://www.ietf.org/internet-drafts/draft-ietf-tls-downgrade-scsv-02.txt' />
+</reference>
+
 <?rfc include="reference.I-D.ietf-uta-tls-attacks.xml"?>
 <?rfc include="reference.I-D.ietf-dane-srv.xml"?>
 <?rfc include="reference.I-D.ietf-dane-smtp-with-dane.xml"?>
@@ -601,13 +640,14 @@ Breaking and Fixing Authentication over TLS</title>
 <author initials="K." surname="Bhargavan" fullname="Karthikeyan Bhargavan"></author>
 <author initials="A." surname="Pironti" fullname="Alfredo Pironti"></author><date year="2014"/>
 </front></reference>
-<reference anchor="CAB-Baseline" target="https://www.cabforum.org/documents.html"><front><title>Baseline Requirements for the Issuance and Management of Publicly-Trusted Certificates Version 1.1.6</title><author fullname="CA/Browser Forum"
-initials="" surname="CA/Browser Forum"></author><date year="2013"/></front></reference>
+<reference anchor="CAB-Baseline" target="https://www.cabforum.org/documents.html"><front><title>Baseline Requirements for the Issuance and Management of Publicly-Trusted Certificates Version 1.1.6</title><author fullname="CA/Browser Forum" initials="" surname="CA/Browser Forum"></author><date year="2013"/></front></reference>
+<reference anchor="ECRYPT-II" target="http://www.ecrypt.eu.org/documents/D.SPA.20.pdf"><front><title>ECRYPT II Yearly Report on Algorithms and Keysizes (2011-2012)</title><author fullname="Nigel Smart (ed.)" initials="N." surname="Smart"></author><date year="2012"/></front></reference>
 <reference anchor="Heninger2012"><front><title>Mining Your Ps and Qs: Detection of Widespread Weak Keys in Network Devices</title><author initials="N." surname="Heninger" fullname="Nadia Heninger"/><author initials="Z." surname="Durumeric" fullname="Zakir Durumeric"/><author initials="E." surname="Wustrow" fullname="Eric Wustrow"/><author initials="J.A." surname="Halderman" fullname="J. Alex Halderman"/><date year="2012"/></front><seriesInfo name="Usenix Security Symposium" value="2012"/></reference>
 <reference anchor="Kleinjung2010" target="https://eprint.iacr.org/2010/006.pdf"><front><title>Factorization of a 768-Bit RSA Modulus</title><author initials="T." surname="Kleinjung" fullname="Thorsten Kleinjung"/><date year="2010"/></front><seriesInfo name="CRYPTO" value="10"/></reference>
 <reference anchor="Soghoian2011"><front><title>Certified lies: Detecting and defeating government interception attacks against SSL.</title><author initials="C." surname="Soghoian" fullname="Christopher Soghoian"/><author initials="S." surname="Stamm" fullname="Sid Stamm"/><date year="2011"/></front><seriesInfo name="Proc. 15th Int. Conf. Financial Cryptography and Data Security" value=""/></reference>
 <reference anchor="PatersonRS11" target="http://dx.doi.org/10.1007/978-3-642-25385-0_20"><front><title>Tag size does matter: attacks and proofs for the TLS record protocol</title><author fullname="Kenneth G. Paterson" initials="K. G." surname="Paterson" /><author fullname="Thomas Ristenpart" initials="T." surname="Ristenpart" /><author fullname="Thomas Shrimpton" initials="T." surname="Shrimpton" /><date year="2011" /></front></reference>
 <reference anchor="DegabrieleP07" target="http://dx.doi.org/10.1109/SP.2007.8"><front><title>Attacking the IPsec standards in encryption-only configurations</title><author fullname="Jean Paul Degabriele" initials="J. P." surname="Degabriele" /><author fullname="Kenneth G. Paterson" initials="K. G." surname="Paterson" /><date year="2007" /></front></reference>
+<reference anchor="Smith2013" target="https://briansmith.org/browser-ciphersuites-01.html"><front><title>Proposal to Change the Default TLS Ciphersuites Offered by Browsers.</title><author initials="B." surname="Smith" fullname="Brian Smith"/><date year="2013"/></front></reference>
 </references>
 
     <section title="Change Log" anchor="changes">
