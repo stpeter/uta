@@ -345,7 +345,8 @@ Rationale: Cipher suites that offer between 112-bits and 128-bits of security
         <t>These cipher suites are supported only in TLS 1.2 because they
 	are authenticated encryption (AEAD) algorithms <xref target="RFC5116"/>.</t>
         <t>Typically, in order to prefer these suites, the order of suites needs to be explicitly configured in server software.</t>
-        <t>Some devices have hardware support for AES-CCM but not AES-GCM.  There are even devices that do not public key cryptography at all.  This BCP does not cover such devices.</t>
+        <t>Some devices have hardware support for AES-CCM but not AES-GCM.  There are even devices that do not
+	support public key cryptography at all. This BCP does not cover such devices.</t>
 
 	<section title="Implementation Details" anchor="detail-neg">
           <t>Clients SHOULD include TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 as the first proposal to any server, unless they have prior knowledge that the server cannot respond to a TLS 1.2 client_hello message.</t>
@@ -537,10 +538,7 @@ Forward secrecy is generally achieved by using the Diffie-Hellman scheme to deri
       <t>Although Certificate Revocation Lists (CRLs) are the most widely supported
          mechanism for distributing revocation information, they have known scaling
          challenges that limit their usefulness (despite workarounds such as partitioned
-         CRLS and delta CRLs).  However, CRLs might provide better 
-         privacy-preserving properties than other techniques (e.g., OCSP), since there is
-         no need to communicate with a third party regarding the certificate that a client
-         is checking.</t>
+         CRLS and delta CRLs).</t>
       <t>Proprietary mechanisms that embed revocation lists in the Web browser's 
          configuration database cannot scale beyond a small number of the most 
          heavily used Web servers.</t>
@@ -653,6 +651,15 @@ Breaking and Fixing Authentication over TLS</title>
     <section title="Change Log" anchor="changes">
       <t>
 Note to RFC Editor: please remove this section before publication.</t>
+      <section title="draft-ietf-uta-tls-bcp-08" anchor="changes-08">
+        <t>
+          <list style="symbols">
+            <t>More WGLC feedback.</t>
+	    <t>TLS 1.1 is now SHOULD NOT, just like TLS 1.0.</t>
+	    <t>SHOULD NOT use curves of less than 192 bits for ECDH.</t>
+          </list>
+        </t>
+      </section>
       <section title="draft-ietf-uta-tls-bcp-07" anchor="changes-07">
         <t>
           <list style="symbols">
