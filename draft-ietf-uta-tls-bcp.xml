@@ -562,7 +562,7 @@ Forward secrecy is generally achieved by using the Diffie-Hellman scheme to deri
          in order to boot up for the first time).</t>
       </list>
       </t>
-      <t>With regard to PKIX certificates, servers SHOULD support both OCSP <xref target='RFC6960'/> and OCSP stapling. To enable interoperability with the widest range of clients, servers SHOULD support both the status_request extension defined in <xref target='RFC6066'/> and the status_request_v2 extension defined in <xref target='RFC6961'/>. Servers also SHOULD the OCSP stapling extension defined in <xref target='RFC6961'/> as a best practice given the current state of the art and as a foundation for a possible future solution.</t>
+      <t>With regard to PKIX certificates, servers SHOULD support both OCSP <xref target='RFC6960'/> and OCSP stapling. To enable interoperability with the widest range of clients, servers SHOULD support both the status_request extension defined in <xref target='RFC6066'/> and the status_request_v2 extension defined in <xref target='RFC6961'/>. Servers also SHOULD support the OCSP stapling extension defined in <xref target='RFC6961'/> as a best practice given the current state of the art and as a foundation for a possible future solution.</t>
       <t>The foregoing considerations do not apply to scenarios where the DANE-TLSA resource record <xref target='RFC6698'/> is used to signal to a client which certificate a server considers valid and good to use for TLS connections.</t>
       </section>
         
