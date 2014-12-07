@@ -542,7 +542,8 @@ Forward secrecy is generally achieved by using the Diffie-Hellman scheme to deri
       <t>Proprietary mechanisms that embed revocation lists in the Web browser's 
          configuration database cannot scale beyond a small number of the most 
          heavily used Web servers.</t>
-      <t>The On-Line Certification Status Protocol (OCSP) presents both scaling
+      <t>The On-Line Certification Status Protocol (OCSP) <xref target='RFC6960'/>
+         presents both scaling
          and privacy issues. In addition, clients typically "soft-fail", meaning 
          that they do not abort the TLS connection if the OCSP server does not 
          respond (however, this might be a workaround to avoid denial of service
@@ -553,7 +554,7 @@ Forward secrecy is generally achieved by using the Diffie-Hellman scheme to deri
          request for a stapled OCSP response.</t>
       <t>OCSP stapling as defined in <xref target="RFC6066"/> does not extend to 
          intermediate certificates used in a certificate chain. 
-         <xref target="RFC6961"/> addresses this shortcoming, but is a recent 
+         Although <xref target="RFC6961"/> addresses this shortcoming, it is a recent 
          addition without much deployment.</t>
       <t>Both CRLs and OSCP depend on relatively reliable connectivity to the 
          Internet, which might not be available to certain kinds of nodes (such
@@ -561,9 +562,8 @@ Forward secrecy is generally achieved by using the Diffie-Hellman scheme to deri
          in order to boot up for the first time).</t>
       </list>
       </t>
-      <t>With regard to PKIX certificates, servers SHOULD support OCSP and OCSP stapling, including both the status_request_v2 extension defined in <xref target='RFC6961'/> and the OCSP stapling extension defined in the same document, as a best practice given the current state of the art and as a foundation for a possible future solution.</t>
-      <t>The foregoing considerations do not apply to scenarios where the DANE-TLSA resource record <xref target='RFC6698'/> is used to
-         signal to a client which certificate a server considers valid and good to use for TLS connections.</t>
+      <t>With regard to PKIX certificates, servers SHOULD support both OCSP <xref target='RFC6960'/> and OCSP stapling. To enable interoperability with the widest range of clients, servers SHOULD support both the status_request extension defined in <xref target='RFC6066'/> and the status_request_v2 extension defined in <xref target='RFC6961'/>. Servers also SHOULD the OCSP stapling extension defined in <xref target='RFC6961'/> as a best practice given the current state of the art and as a foundation for a possible future solution.</t>
+      <t>The foregoing considerations do not apply to scenarios where the DANE-TLSA resource record <xref target='RFC6698'/> is used to signal to a client which certificate a server considers valid and good to use for TLS connections.</t>
       </section>
         
     </section>
@@ -628,6 +628,7 @@ Forward secrecy is generally achieved by using the Diffie-Hellman scheme to deri
 <?rfc include="reference.RFC.6460.xml"?>
 <?rfc include="reference.RFC.6698.xml"?>
 <?rfc include="reference.RFC.6797.xml"?>
+<?rfc include="reference.RFC.6960.xml"?>
 <?rfc include="reference.RFC.6961.xml"?>
 <?rfc include="reference.RFC.6989.xml"?>
 
@@ -657,6 +658,7 @@ Note to RFC Editor: please remove this section before publication.</t>
             <t>More WGLC feedback.</t>
 	    <t>TLS 1.1 is now SHOULD NOT, just like TLS 1.0.</t>
 	    <t>SHOULD NOT use curves of less than 192 bits for ECDH.</t>
+            <t>Clarification regarding OCSP and OSCP stapling.</t>
           </list>
         </t>
       </section>
