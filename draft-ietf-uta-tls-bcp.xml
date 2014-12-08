@@ -366,8 +366,8 @@ Rationale: Cipher suites that offer between 112-bits and 128-bits of security
       and one for server authentication. Where a client certificate is used, a third 
       public key is added.
       </t>
-     <t>With a key exchange based on finite field Diffie-Hellman ("DHE" cipher suites), DH key lengths of at least 2048 bits are RECOMMENDED.</t>
-<t> Rationale: For various reasons, in practice DH keys are typically generated in lengths that are powers of two (e.g., 2^10 = 1024 bits, 2^11 = 2048 bits, 2^12 = 4096 bits). Because a DH key of 1228 bits would be roughly equivalent to only an 80-bit symmetric key <xref target='RFC3766'/>, it is better to use keys longer than that for the "DHE" family of cipher suites. A DH key of 1926 bits would be roughly equivalent to a 100-bit symmetric key <xref target='RFC3766'/> and a DH key of 2048 bits might be sufficient for at least the next 10&nbsp;years. See <xref target="detail-alt"/> for additional information on the use of finite field Diffie-Hellman in TLS.
+     <t>With a key exchange based on modular Diffie-Hellman ("DHE" cipher suites), DH key lengths of at least 2048 bits are RECOMMENDED.</t>
+<t> Rationale: For various reasons, in practice DH keys are typically generated in lengths that are powers of two (e.g., 2^10 = 1024 bits, 2^11 = 2048 bits, 2^12 = 4096 bits). Because a DH key of 1228 bits would be roughly equivalent to only an 80-bit symmetric key <xref target='RFC3766'/>, it is better to use keys longer than that for the "DHE" family of cipher suites. A DH key of 1926 bits would be roughly equivalent to a 100-bit symmetric key <xref target='RFC3766'/> and a DH key of 2048 bits might be sufficient for at least the next 10&nbsp;years. See <xref target="detail-alt"/> for additional information on the use of modular Diffie-Hellman in TLS.
 </t>
 <t>As noted in <xref target='RFC3766'/>, correcting for the emergence of a TWIRL machine would imply that 1024-bit DH keys yield about 65 bits of equivalent strength and that a 2048-bit DH key would yield about 92 bits of equivalent strength.</t>
 <t>With regard to ECDH keys, the IANA named curve registry contains 160-bit elliptic curves which are considered to be roughly equivalent to only an 80-bit symmetric key <xref target='ECRYPT-II'/>.   The use of curves of less than 192-bits is NOT RECOMMENDED.</t>
@@ -375,7 +375,7 @@ Rationale: Cipher suites that offer between 112-bits and 128-bits of security
       </section>
 
 	<section title="Modular vs. Elliptic Curve DH Cipher Suites" anchor="detail-alt">
-      <t>Not all TLS implementations support both finite field and elliptic curve Diffie-Hellman groups, as
+      <t>Not all TLS implementations support both modular and elliptic curve Diffie-Hellman groups, as
       required by <xref target="rec-cipher"/>. Some implementations are severely limited in
       the length of DH values. When such implementations need to be accommodated,
       we recommend using (in priority order):</t>
@@ -386,7 +386,7 @@ Rationale: Cipher suites that offer between 112-bits and 128-bits of security
             <t>TLS_DHE_RSA_WITH_AES_128_GCM_SHA256, with 1024-bit parameters.</t>
           </list>
         </t>
-        <t>Rationale: Although Elliptic Curve Cryptography is widely deployed there are some communities where its uptake has been limited for several reasons, including its complexity compared to modular arithmetic and longstanding perceptions of IPR concerns (which, for the most part, have now been resolved <xref target='RFC6090'/>).  Note that ECDHE cipher suites exist for both RSA and ECDSA certificates so moving to ECDHE cipher suites does not require moving away from RSA based certificates.  On the other hand, there are two related issues hindering effective use of finite field Diffie-Hellman cipher suites in TLS:</t>
+        <t>Rationale: Although Elliptic Curve Cryptography is widely deployed there are some communities where its uptake has been limited for several reasons, including its complexity compared to modular arithmetic and longstanding perceptions of IPR concerns (which, for the most part, have now been resolved <xref target='RFC6090'/>).  Note that ECDHE cipher suites exist for both RSA and ECDSA certificates so moving to ECDHE cipher suites does not require moving away from RSA based certificates.  On the other hand, there are two related issues hindering effective use of modular Diffie-Hellman cipher suites in TLS:</t>
         <t>
           <list style="symbols">
             <t>There are no standardized, widely implemented protocol mechanisms to negotiate the DH groups or parameter lengths supported by client and server.</t>
@@ -395,8 +395,8 @@ Rationale: Cipher suites that offer between 112-bits and 128-bits of security
                  addition, several implementations do not perform appropriate validation of group parameters and are vulnerable to attacks referenced in Section 2.9 of <xref target='I-D.ietf-uta-tls-attacks'/></t>
           </list>
         </t>
-        <t>We note that with DHE and ECDHE cipher suites, the TLS master key only depends on the Diffie-Hellman parameters and not on the strength of the RSA certificate; moreover, 1024 bit finite field DH parameters are generally considered insufficient at this time.</t>
-        <t>With finite field ephemeral DH, deployers SHOULD carefully evaluate interoperability vs. security considerations when configuring their TLS endpoints.</t>
+        <t>We note that with DHE and ECDHE cipher suites, the TLS master key only depends on the Diffie-Hellman parameters and not on the strength of the RSA certificate; moreover, 1024 bit modular DH parameters are generally considered insufficient at this time.</t>
+        <t>With modular ephemeral DH, deployers SHOULD carefully evaluate interoperability vs. security considerations when configuring their TLS endpoints.</t>
       </section>
       
       <section title="Truncated HMAC">
@@ -591,29 +591,12 @@ Forward secrecy is generally achieved by using the Diffie-Hellman scheme to deri
 
     <references title="Informative References">
 
-<?rfc include="reference.I-D.ietf-tls-prohibiting-rc4.xml"?>
-
-<reference anchor='I-D.ietf-tls-downgrade-scsv'>
-<front>
-<title>TLS Fallback Signaling Cipher Suite Value (SCSV) for Preventing Protocol Downgrade Attacks</title>
-<author initials='B' surname='Moeller' fullname='Bodo Moeller'>
-    <organization />
-</author>
-<author initials='A' surname='Langley' fullname='Adam Langley'>
-    <organization />
-</author>
-<date month='November' day='12' year='2014' />
-<abstract><t>This document defines a Signaling Cipher Suite Value (SCSV) that prevents protocol downgrade attacks on the Transport Layer Security (TLS) protocol.  It updates RFC 2246, RFC 4346, and RFC 5246.</t></abstract>
-</front>
-<seriesInfo name='Internet-Draft' value='draft-ietf-tls-downgrade-scsv-02' />
-<format type='TXT'
-        target='http://www.ietf.org/internet-drafts/draft-ietf-tls-downgrade-scsv-02.txt' />
-</reference>
-
-<?rfc include="reference.I-D.ietf-uta-tls-attacks.xml"?>
-<?rfc include="reference.I-D.ietf-dane-srv.xml"?>
-<?rfc include="reference.I-D.ietf-dane-smtp-with-dane.xml"?>
 <?rfc include="reference.I-D.farrelll-mpls-opportunistic-encrypt.xml"?>
+<?rfc include="reference.I-D.ietf-dane-smtp-with-dane.xml"?>
+<?rfc include="reference.I-D.ietf-dane-srv.xml"?>
+<?rfc include="reference.I-D.ietf-tls-downgrade-scsv"?>
+<?rfc include="reference.I-D.ietf-tls-prohibiting-rc4.xml"?>
+<?rfc include="reference.I-D.ietf-uta-tls-attacks.xml"?>
 <?rfc include="reference.RFC.2246.xml"?>
 <?rfc include="reference.RFC.3602.xml"?>
 <?rfc include="reference.RFC.4346.xml"?>
