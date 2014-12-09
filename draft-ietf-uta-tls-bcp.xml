@@ -569,7 +569,7 @@ Forward secrecy is generally achieved by using the Diffie-Hellman scheme to deri
     </section>
 
     <section title="Acknowledgments" anchor="d1e1127">
-      <t>We would like to thank Uri Blumenthal, Viktor Dukhovni, Stephen Farrell, Daniel Kahn Gillmor, Paul Hoffman, Simon Josefsson, Watson Ladd, Orit Levin, Ilari Liusvaara, Johannes Merkle, Bodo Moeller, Yoav Nir, Massimiliano Pala, Kenny Paterson, Patrick Pelletier, Tom Ritter, Joe St. Sauver, Joe Salowey, Rich Salz, Brian Smith, Sean Turner, and Aaron Zauner for their feedback and suggested improvements. Thanks to Brian Smith, who has provided a great resource in his "Proposal to Change the Default TLS Ciphersuites Offered by Browsers" <xref target='Smith2013'/>. Finally, thanks to all others who commented on the TLS, UTA, and other discussion lists but who are not mentioned here by name.</t>
+      <t>We would like to thank Uri Blumenthal, Viktor Dukhovni, Stephen Farrell, Daniel Kahn Gillmor, Paul Hoffman, Simon Josefsson, Watson Ladd, Orit Levin, Ilari Liusvaara, Johannes Merkle, Bodo Moeller, Yoav Nir, Massimiliano Pala, Kenny Paterson, Patrick Pelletier, Tom Ritter, Joe St. Sauver, Joe Salowey, Rich Salz, Brian Smith, Sean Turner, and Aaron Zauner for their feedback and suggested improvements. Thanks to Brian Smith, who has provided a great resource in his "Proposal to Change the Default TLS Ciphersuites Offered by Browsers" <xref target='Smith2013'/>. Finally, thanks to all others who commented on the TLS, UTA, and other discussion lists but who are not mentioned here by name. Ralph Holz is co-affiliated with NICTA, Australia and gratefully acknowledges their support.</t>
     </section>
 
   </middle>
