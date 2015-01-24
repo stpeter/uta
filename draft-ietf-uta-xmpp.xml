@@ -10,7 +10,7 @@
 <?rfc toc="yes"?>
 <?rfc tocdepth="4"?>
 
-<rfc category="std" docName="draft-ietf-uta-xmpp-04" ipr="trust200902" updates="6120">
+<rfc category="std" docName="draft-ietf-uta-xmpp-05" ipr="trust200902" updates="6120">
 
   <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
 
@@ -64,12 +64,13 @@
       </section>
 
       <section title="Authenticated Connections" anchor="rec-auth">
-        <t>Both the core XMPP specification <xref target='RFC6120'/> and the "CertID" specification <xref target='RFC6125'/> provide recommendations and requirements for certificate validation in the context of authenticated connections.  This document does not supersede those specifications.  Wherever possible, it is best to prefer authenticated connections (along with SASL <xref target='RFC4422'/>), as already stated in the core XMPP specification <xref target='RFC6120'/>.  In particular, clients MUST authenticate servers.  Because this document does not mandate that servers need to authenticate peer servers, unauthenticated server-to-server connections are allowed (consistent with current practice on the XMPP network).</t>
-        <t>This document does not modify the recommendations in <xref target='RFC6120'/> regarding the Subject Alternative Names (or other certificate details) that need to be supported for authentication of XMPP connections.</t>
+        <t>Both the core XMPP specification <xref target='RFC6120'/> and the "CertID" specification <xref target='RFC6125'/> provide recommendations and requirements for certificate validation in the context of authenticated connections.  This document does not supersede those specifications.  Wherever possible, it is best to prefer authenticated connections (along with SASL <xref target='RFC4422'/>), as already stated in the core XMPP specification <xref target='RFC6120'/>.  In particular, clients MUST authenticate servers and servers MUST authenticate clients.  This document does not mandate that servers need to authenticate peer servers (see next section).</t>
+        <t>This document does not modify the recommendations in <xref target='RFC6120'/> regarding the Subject Alternative Names (or other certificate details) that need to be supported for authentication of XMPP connections using PKIX certificates.</t>
+        <t>The Domain Name Associations (DNA) specification <xref target='I-D.ietf-xmpp-dna'/> describes a framework for XMPP server authentication methods, which include not only PKIX but also DNS-Based Authentication of Named Entities (DANE) as defined in <xref target='I-D.ietf-dane-srv'/> and PKIX over Secure HTTP (POSH) as defined in <xref target='I-D.ietf-xmpp-posh'/>.</t>
       </section>
 
       <section title="Unauthenticated Connections" anchor="rec-unauth">
-        <t>Given the pervasiveness of passive eavesdropping, even an unauthenticated connection might be better than an unencrypted connection (this is similar to the "better than nothing security" approach for IPsec <xref target='RFC5386'/>).  In particular, because of current deployment challenges for authenticated connections between XMPP servers (see <xref target='I-D.ietf-xmpp-dna'/> and <xref target='I-D.ietf-xmpp-posh'/> for details), it can be reasonable for XMPP server implementations to accept unauthenticated connections when the Server Dialback protocol <xref target='XEP-0220'/> is used for weak identity verification; this will at least enable encryption of server-to-server connections.  Unauthenticated connections include connections negotiated using anonymous Diffie-Hellman algorithms or using self-signed certificates, among other scenarios.</t>
+        <t>Given the pervasiveness of passive eavesdropping, even an unauthenticated connection might be better than an unencrypted connection (this is similar to the "better than nothing security" approach for IPsec <xref target='RFC5386'/>).  Unauthenticated connections include connections negotiated using anonymous Diffie-Hellman algorithms or using self-signed certificates, among other scenarios.  In particular, because of current deployment challenges for authenticated connections between XMPP servers (see <xref target='I-D.ietf-xmpp-dna'/> and <xref target='I-D.ietf-xmpp-posh'/> for details), it can be reasonable for XMPP server implementations to accept unauthenticated connections when Server Dialback keys <xref target='XEP-0220'/> are used; although such keys on their own provide only weak identity verification (made stronger through the use of DNSSEC <xref target='RFC4033'/>), this at least enables encryption of server-to-server connections.</t>
       </section>
 
       <section title="Server Name Indication" anchor="rec-sni">
@@ -96,7 +97,7 @@
     </section>
 
     <section title="Security Considerations" anchor="security">
-      <t>The use of TLS can help limit the information available for correlation to the network and transport layer headers as opposed to the application layer.  As typically deployed, XMPP technologies do not leave application-layer routing data (such as XMPP 'to' and 'from' addresses) at rest on intermediate systems, since there is only one hop between any two given XMPP servers.  As a result, encrypting all hops (sending client to sender's server, sender's server to recipient's server, recipient's server to recipient's client) can help to limit the amount of "metadata" that might leak.</t>
+      <t>The use of TLS can help limit the information available for correlation to the network and transport layer headers as opposed to the application layer.  As typically deployed, XMPP technologies do not leave application-layer routing data (such as XMPP 'to' and 'from' addresses) at rest on intermediate systems, since there is only one hop between any two given XMPP servers.  As a result, encrypting all hops (sender's client to sender's server, sender's server to recipient's server, recipient's server to recipient's client) can help to limit the amount of "metadata" that might leak.</t>
       <t>It is possible that XMPP servers themselves might be compromised. In that case, per-hop encryption would not protect XMPP communications, and even end-to-end encryption of (parts of) XMPP stanza payloads would leave addressing information and XMPP roster data in the clear.  By the same token, it is possible that XMPP clients (or the end-user devices on which such clients are installed) could also be compromised, leaving users utterly at the mercy of an adversary.</t>
       <t>This document and related actions to strengthen the security of the XMPP network are based on the assumption that XMPP servers and clients have not been subject to widespread compromise.  If this assumption is valid, then ubiquitous use of per-hop TLS channel encryption and more significant deployment of end-to-end object encryption technologies will serve to protect XMPP communications to a measurable degree, compared to the alternatives.</t>
     </section>
@@ -119,12 +120,12 @@
 <author initials='P' surname='Saint-Andre' fullname='Peter Saint-Andre'>
     <organization />
 </author>
-<date month='November' day='11' year='2014' />
+<date month='December' day='7' year='2014' />
 <abstract><t>Transport Layer Security (TLS) and Datagram Transport Security Layer (DTLS) are widely used to protect data exchanged over application protocols such as HTTP, SMTP, IMAP, POP, SIP, and XMPP.  Over the last few years, several serious attacks on TLS have emerged, including attacks on its most commonly used cipher suites and modes of operation.  This document provides recommendations for improving the security of both software implementations and deployed services that use TLS and DTLS.</t></abstract>
 </front>
-<seriesInfo name='Internet-Draft' value='draft-ietf-uta-tls-bcp-07' />
+<seriesInfo name='Internet-Draft' value='draft-ietf-uta-tls-bcp-08' />
 <format type='TXT'
-        target='http://www.ietf.org/internet-drafts/draft-ietf-uta-tls-bcp-07.txt' />
+        target='http://www.ietf.org/internet-drafts/draft-ietf-uta-tls-bcp-08.txt' />
 </reference>
 
 <reference anchor="RFC2119">
@@ -224,6 +225,27 @@
 
     <references title="Informative References">
 
+      <reference anchor="I-D.ietf-dane-srv">
+        <front>
+          <title>Using DNS-Based Authentication of Named Entities (DANE) TLSA records with SRV and MX records.</title>
+          <author initials="T" surname="Finch" fullname="Tony Finch">
+            <organization/>
+          </author>
+          <author initials="M" surname="Miller" fullname="Matthew Miller">
+            <organization/>
+          </author>
+          <author initials="P" surname="Saint-Andre" fullname="Peter Saint-Andre">
+            <organization/>
+          </author>
+          <date month="October" day="21" year="2014"/>
+          <abstract>
+            <t>The DANE specification (RFC 6698) describes how to use TLSA resource records in the DNS to associate a server's host name with its TLS certificate, where the association is secured with DNSSEC.  However, application protocols that use SRV records (RFC 2782) to indirectly name the target server host names for a service domain cannot apply the rules from RFC 6698.  Therefore this document provides guidelines that enable such protocols to locate and use TLSA records.</t>
+          </abstract>
+        </front>
+        <seriesInfo name="Internet-Draft" value="draft-ietf-dane-srv-08"/>
+        <format type="TXT" target="http://www.ietf.org/internet-drafts/draft-ietf-dane-srv-08.txt"/>
+      </reference>
+
 <reference anchor='I-D.ietf-uta-tls-attacks'>
 <front>
 <title>Summarizing Current Attacks on TLS and DTLS</title>
@@ -307,6 +329,26 @@
 <format type='TXT' octets='194313' target='http://www.rfc-editor.org/rfc/rfc3920.txt' />
 <format type='HTML' octets='281359' target='http://xml.resource.org/public/rfc/html/rfc3920.html' />
 <format type='XML' octets='234610' target='http://xml.resource.org/public/rfc/xml/rfc3920.xml' />
+</reference>
+
+<reference anchor='RFC4033'>
+<front>
+<title>DNS Security Introduction and Requirements</title>
+<author initials='R.' surname='Arends' fullname='R. Arends'>
+<organization /></author>
+<author initials='R.' surname='Austein' fullname='R. Austein'>
+<organization /></author>
+<author initials='M.' surname='Larson' fullname='M. Larson'>
+<organization /></author>
+<author initials='D.' surname='Massey' fullname='D. Massey'>
+<organization /></author>
+<author initials='S.' surname='Rose' fullname='S. Rose'>
+<organization /></author>
+<date year='2005' month='March' />
+<abstract>
+<t>The Domain Name System Security Extensions (DNSSEC) add data origin authentication and data integrity to the Domain Name System.  This document introduces these extensions and describes their capabilities and limitations.  This document also discusses the services that the DNS security extensions do and do not provide.  Last, this document describes the interrelationships between the documents that collectively describe DNSSEC. [STANDARDS-TRACK]</t></abstract></front>
+<seriesInfo name='RFC' value='4033' />
+<format type='TXT' octets='52445' target='http://www.rfc-editor.org/rfc/rfc4033.txt' />
 </reference>
 
 <reference anchor='RFC4422'>
