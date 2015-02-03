@@ -180,12 +180,12 @@ to their communications.
 	servers SHOULD prefer strict TLS configuration.
 	</t>
       <t>
-        In many application protocols, clients can be configured to
-        use TLS no matter whether the server offers TLS during a 
-        protocol exchange or advertises support for TLS (e.g., through
-        a flag indicating that TLS is required).  Application clients 
-        SHOULD use TLS by default, and disable this default only through 
-        explicit configuration by the user. 
+        In many application protocols, clients are implemented or can be configured 
+        so that they use TLS "by default", i.e., even if the server does not offer 
+        TLS during a protocol exchange or does not advertise support for TLS 
+        (e.g., through a flag indicating that TLS is required).  Application clients 
+        SHOULD use TLS by default, and disable this default only if explicitly 
+        configured to do so by the user. 
       </t>
       <t>
       HTTP client and server implementations MUST support the HTTP Strict Transport
@@ -247,7 +247,7 @@ to their communications.
       as defined in <xref target="RFC5746"/>.
       </t>
       <t>To counter the Triple Handshake attack, the recommended countermeasures from <xref target="triple-handshake"/> are adopted:
-      TLS clients SHOULD apply the same validation policy for all certificates received over a connection, bind the master secret to the full handshake, and bind the abbreviated session resumption handshake to the original full handshake.  In some usages, it may be simplest to refuse any change of certificates during renegotiation.
+      TLS clients SHOULD apply the same validation policy for all certificates received over a connection, bind the master secret to the full handshake, and bind the abbreviated session resumption handshake to the original full handshake.  In some usages, the most secure option might be to refuse any change of certificates during renegotiation.
       </t>
       </section>
 
@@ -280,13 +280,14 @@ to their communications.
 
       <section title="General Guidelines" anchor="rec-cipher-guidelines">
         <t>
-	Cryptographic algorithms weaken over time as cryptanalysis improves.  In other
-  words, algorithms that were once considered strong but are
-  now weak, need to be phased out over time and replaced with more secure
-  cipher suites to ensure that desired security properties still hold.
-  SSL/TLS has been in existence for almost 20 years
-  at this point and this section provides some much needed recommendations
-  concerning cipher suite selection:
+	Cryptographic algorithms weaken over time as cryptanalysis improves:  
+  algorithms that were once considered strong become weak. Such algorithms need 
+  to be phased out over time and replaced with more secure cipher suites. 
+  This helps to ensure that the desired security properties still hold.
+  SSL/TLS has been in existence for almost 20 years and many of the cipher
+  suites that have been recommended in various versions of SSL/TLS are now
+  considered weak or at least not as strong as desired. Therefore this section 
+  modernizes the recommendations concerning cipher suite selection:
 	</t>
         <t>
           <list style='symbols'>
@@ -346,8 +347,8 @@ Rationale: Cipher suites that offer between 112-bits and 128-bits of security
         <t>These cipher suites are supported only in TLS 1.2 because they
 	are authenticated encryption (AEAD) algorithms <xref target="RFC5116"/>.</t>
         <t>Typically, in order to prefer these suites, the order of suites needs to be explicitly configured in server software.  It would ideal if server software implementations were to prefer these suites by default.</t>
-        <t>Some devices have hardware support for AES-CCM but not AES-GCM.  There are even devices that do not
-	support public key cryptography at all. This BCP does not cover such devices.</t>
+        <t>Some devices have hardware support for AES-CCM but not AES-GCM, and there are even devices that do not
+	support public key cryptography at all. This BCP does not cover either class of devices.</t>
 
 	<section title="Implementation Details" anchor="detail-neg">
           <t>Clients SHOULD include TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 as the first proposal to any server, unless they have prior knowledge that the server cannot respond to a TLS 1.2 client_hello message.</t>
@@ -368,7 +369,7 @@ Rationale: Cipher suites that offer between 112-bits and 128-bits of security
       public key is added.
       </t>
      <t>With a key exchange based on modular Diffie-Hellman ("DHE" cipher suites), DH key lengths of at least 2048 bits are RECOMMENDED.</t>
-<t> Rationale: For various reasons, in practice DH keys are typically generated in lengths that are powers of two (e.g., 2^10 = 1024 bits, 2^11 = 2048 bits, 2^12 = 4096 bits). Because a DH key of 1228 bits would be roughly equivalent to only an 80-bit symmetric key <xref target='RFC3766'/>, it is better to use keys longer than that for the "DHE" family of cipher suites. A DH key of 1926 bits would be roughly equivalent to a 100-bit symmetric key <xref target='RFC3766'/> and a DH key of 2048 bits might be sufficient for at least the next 10&nbsp;years. See <xref target="detail-alt"/> for additional information on the use of modular Diffie-Hellman in TLS.
+<t> Rationale: For various reasons, in practice DH keys are typically generated in lengths that are powers of two (e.g., 2^10 = 1024 bits, 2^11 = 2048 bits, 2^12 = 4096 bits). Because a DH key of 1228 bits would be roughly equivalent to only an 80-bit symmetric key <xref target='RFC3766'/>, it is better to use keys longer than that for the "DHE" family of cipher suites. A DH key of 1926 bits would be roughly equivalent to a 100-bit symmetric key <xref target='RFC3766'/> and a DH key of 2048 bits might be sufficient for at least the next 10 years. See <xref target="detail-alt"/> for additional information on the use of modular Diffie-Hellman in TLS.
 </t>
 <t>As noted in <xref target='RFC3766'/>, correcting for the emergence of a TWIRL machine would imply that 1024-bit DH keys yield about 65 bits of equivalent strength and that a 2048-bit DH key would yield about 92 bits of equivalent strength.</t>
 <t>With regard to ECDH keys, the IANA named curve registry contains 160-bit elliptic curves which are considered to be roughly equivalent to only an 80-bit symmetric key <xref target='ECRYPT-II'/>.   Curves of less than 192-bits SHOULD NOT be used.</t>
@@ -416,8 +417,8 @@ Rationale: the extension does not apply to the AEAD
         <t>The deployment recommendations of this document address the operators of application layer services that are most commonly used on the Internet, including, but not limited to:</t>
         <t>
           <list style="symbols">
-            <t>Operators of web servers that wish to protect HTTP with TLS.</t>
-            <t>Operators of email servers who wish to protect the application-layer protocols with TLS (e.g., IMAP, POP3 or SMTP).</t>
+            <t>Operators of web services that wish to protect HTTP with TLS.</t>
+            <t>Operators of email services who wish to protect the application-layer protocols with TLS (e.g., IMAP, POP3 or SMTP).</t>
             <t>Operators of instant-messaging services who wish to protect their application-layer protocols with TLS (e.g., XMPP or IRC).</t>
           </list>
         </t>
@@ -511,7 +512,7 @@ Please refer to <xref target="RFC5246"/>, Section 11 for general security consid
         <t>
 Forward secrecy ensures in such cases that the session keys cannot be determined even by an attacker who obtains the long-term keys some time after the conversation. It also protects against an attacker who is in possession of the long-term keys, but remains passive during the conversation.</t>
         <t>
-Forward secrecy is generally achieved by using the Diffie-Hellman scheme to derive session keys. The Diffie-Hellman scheme has both parties maintain private secrets and send parameters over the network as modular powers over certain cyclic groups. The properties of the so-called Discrete Logarithm Problem (DLP) allow to derive the session keys without an eavesdropper being able to do so. There is currently no known attack against DLP if sufficiently large parameters are chosen. A variant of the Diffie-Hellman scheme uses Elliptic Curves instead of the originally proposed modular arithmetics.</t>
+Forward secrecy is generally achieved by using the Diffie-Hellman scheme to derive session keys. The Diffie-Hellman scheme has both parties maintain private secrets and send parameters over the network as modular powers over certain cyclic groups. The properties of the so-called Discrete Logarithm Problem (DLP) allow the parties to derive the session keys without an eavesdropper being able to do so. There is currently no known attack against DLP if sufficiently large parameters are chosen. A variant of the Diffie-Hellman scheme uses Elliptic Curves instead of the originally proposed modular arithmetics.</t>
         <t>Unfortunately, many TLS/DTLS cipher suites were defined that do not feature forward secrecy, e.g., TLS_RSA_WITH_AES_256_CBC_SHA256.  This document therefore advocates strict use of forward-secrecy-only ciphers.</t>
       </section>
       
@@ -533,7 +534,7 @@ Forward secrecy is generally achieved by using the Diffie-Hellman scheme to deri
       </t>
       </section>
       <section title="Certificate Revocation">
-      <t>Unfortunately, no mechanism exists at this time that we can recommend as a complete and efficient solution for the problem of checking the revocation status of common public key certificates (a.k.a. PKIX certificates, <xref target='RFC5280'/>).  The current state of the art is as follows:</t>
+      <t>The following considerations and recommendations represent the current state of the art regarding certificate revocation, even though no complete and efficient solution exists for the problem of checking the revocation status of common public key certificates (a.k.a. PKIX certificates, <xref target='RFC5280'/>):</t>
       <t>
       <list style='symbols'>
       <t>Although Certificate Revocation Lists (CRLs) are the most widely supported
@@ -563,7 +564,13 @@ Forward secrecy is generally achieved by using the Diffie-Hellman scheme to deri
          in order to boot up for the first time).</t>
       </list>
       </t>
-      <t>With regard to PKIX certificates, servers SHOULD support both OCSP <xref target='RFC6960'/> and OCSP stapling. To enable interoperability with the widest range of clients, servers SHOULD support both the status_request extension defined in <xref target='RFC6066'/> and the status_request_v2 extension defined in <xref target='RFC6961'/>. Servers also SHOULD support the OCSP stapling extension defined in <xref target='RFC6961'/> as a best practice given the current state of the art and as a foundation for a possible future solution.</t>
+      <t>With regard to PKIX certificates, servers SHOULD support the following as a best practice given the current state of the art and as a foundation for a possible future solution:
+      <list style='numbers'>
+        <t>OCSP <xref target='RFC6960'/></t>
+        <t>Both the status_request extension defined in <xref target='RFC6066'/> and the status_request_v2 extension defined in <xref target='RFC6961'/> (this might enable interoperability with the widest range of clients)</t>
+        <t>The OCSP stapling extension defined in <xref target='RFC6961'/></t>
+      </list>
+      </t>
       <t>The foregoing considerations do not apply to scenarios where the DANE-TLSA resource record <xref target='RFC6698'/> is used to signal to a client which certificate a server considers valid and good to use for TLS connections.</t>
       </section>
         
@@ -590,6 +597,7 @@ Forward secrecy is generally achieved by using the Diffie-Hellman scheme to deri
 <?rfc include="reference.RFC.6125.xml"?>
 <?rfc include="reference.RFC.6176.xml"?>
 <?rfc include="reference.RFC.6347.xml"?>
+<?rfc include="reference.I-D.ietf-tls-prohibiting-rc4.xml"?>
     </references>
 
     <references title="Informative References">
@@ -597,7 +605,6 @@ Forward secrecy is generally achieved by using the Diffie-Hellman scheme to deri
 <?rfc include="reference.I-D.ietf-dane-smtp-with-dane.xml"?>
 <?rfc include="reference.I-D.ietf-dane-srv.xml"?>
 <?rfc include="reference.I-D.ietf-tls-downgrade-scsv"?>
-<?rfc include="reference.I-D.ietf-tls-prohibiting-rc4.xml"?>
 <?rfc include="reference.I-D.ietf-uta-tls-attacks.xml"?>
 <?rfc include="reference.RFC.2246.xml"?>
 <?rfc include="reference.RFC.3602.xml"?>
