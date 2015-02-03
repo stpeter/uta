@@ -135,7 +135,7 @@ to their communications.
         <t>DTLS, an adaptation of TLS for UDP datagrams, was introduced when TLS 1.1 was published.  The following are the recommendations with respect to DTLS:</t>
  <t>
  <list style="symbols">
-<t>Implementations SHOULD NOT negotiate DTLS version 1.1 <xref target="RFC4347"/>.
+<t>Implementations SHOULD NOT negotiate DTLS version 1.0 <xref target="RFC4347"/>.
 <vspace blankLines='1'/>
   Version 1.0 of DTLS correlates to version 1.1 of TLS (see above).
 </t>
