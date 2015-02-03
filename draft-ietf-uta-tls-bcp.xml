@@ -135,7 +135,7 @@ to their communications.
         <t>DTLS, an adaptation of TLS for UDP datagrams, was introduced when TLS 1.1 was published.  The following are the recommendations with respect to DTLS:</t>
  <t>
  <list style="symbols">
-<t>Implementations MAY negotiate DTLS version 1.0 <xref target="RFC4347"/>.
+<t>Implementations SHOULD NOT negotiate DTLS version 1.1 <xref target="RFC4347"/>.
 <vspace blankLines='1'/>
   Version 1.0 of DTLS correlates to version 1.1 of TLS (see above).
 </t>
@@ -151,7 +151,7 @@ to their communications.
       <section title="Fallback to Lower Versions" anchor="rec-fallback">
       <t>
        Clients that “fall back" to lower versions of the protocol after the server
-  rejects higher versions of the protocol MUST NOT fall back to SSLv3.
+  rejects higher versions of the protocol MUST NOT fall back to SSLv3 or earlier.
 </t>
 <t>
   Rationale: Some client implementations revert to lower versions of TLS or even
@@ -246,7 +246,7 @@ to their communications.
       Where handshake renegotiation is implemented, both clients and servers MUST implement the renegotiation_info extension, 
       as defined in <xref target="RFC5746"/>.
       </t>
-      <t>To counter the Triple Handshake attack, we adopt the recommended countermeasures from <xref target="triple-handshake"/>:
+      <t>To counter the Triple Handshake attack, the recommended countermeasures from <xref target="triple-handshake"/> are adopted:
       TLS clients SHOULD apply the same validation policy for all certificates received over a connection, bind the master secret to the full handshake, and bind the abbreviated session resumption handshake to the original full handshake.  In some usages, it may be simplest to refuse any change of certificates during renegotiation.
       </t>
       </section>
@@ -281,7 +281,7 @@ to their communications.
       <section title="General Guidelines" anchor="rec-cipher-guidelines">
         <t>
 	Cryptographic algorithms weaken over time as cryptanalysis improves.  In other
-  words, as time progresses, algorithms that were once considered strong but are
+  words, algorithms that were once considered strong but are
   now weak, need to be phased out over time and replaced with more secure
   cipher suites to ensure that desired security properties still hold.
   SSL/TLS has been in existence for almost 20 years
@@ -295,13 +295,14 @@ to their communications.
                Rationale: The NULL cipher suites do not encrypt traffic and so provide
   no confidentiality services. Any entity in the network with access to the
   connection can view the plaintext of contents being exchanged by the client and
-  server.
+  server.  (Nevertheless, this document does not discourage software from
+  implementing NULL cipher suites, since they can be useful for testing and 
+  debugging.) 
             </t>
             <t>Implementations MUST NOT negotiate RC4 cipher suites. 
                <vspace blankLines='1'/>
                Rationale: The RC4 stream cipher has a variety of cryptographic weaknesses, as documented in <xref target='I-D.ietf-tls-prohibiting-rc4'/>.
-	       We note that this guideline does not apply to DTLS,
-	       which specifically forbids the use of RC4.
+	       Note that DTLS specifically forbids the use of RC4 already.
             </t>
 	    <t>Implementations MUST NOT negotiate cipher suites offering less than 112 bits of security, including the so-called "export-level" encryption (which provide 40 or 56 bits of security).
             <vspace blankLines='1'/>
@@ -370,7 +371,7 @@ Rationale: Cipher suites that offer between 112-bits and 128-bits of security
 <t> Rationale: For various reasons, in practice DH keys are typically generated in lengths that are powers of two (e.g., 2^10 = 1024 bits, 2^11 = 2048 bits, 2^12 = 4096 bits). Because a DH key of 1228 bits would be roughly equivalent to only an 80-bit symmetric key <xref target='RFC3766'/>, it is better to use keys longer than that for the "DHE" family of cipher suites. A DH key of 1926 bits would be roughly equivalent to a 100-bit symmetric key <xref target='RFC3766'/> and a DH key of 2048 bits might be sufficient for at least the next 10&nbsp;years. See <xref target="detail-alt"/> for additional information on the use of modular Diffie-Hellman in TLS.
 </t>
 <t>As noted in <xref target='RFC3766'/>, correcting for the emergence of a TWIRL machine would imply that 1024-bit DH keys yield about 65 bits of equivalent strength and that a 2048-bit DH key would yield about 92 bits of equivalent strength.</t>
-<t>With regard to ECDH keys, the IANA named curve registry contains 160-bit elliptic curves which are considered to be roughly equivalent to only an 80-bit symmetric key <xref target='ECRYPT-II'/>.   The use of curves of less than 192-bits is NOT RECOMMENDED.</t>
+<t>With regard to ECDH keys, the IANA named curve registry contains 160-bit elliptic curves which are considered to be roughly equivalent to only an 80-bit symmetric key <xref target='ECRYPT-II'/>.   Curves of less than 192-bits SHOULD NOT be used.</t>
 <t>When using RSA servers SHOULD authenticate using certificates with at least a 2048-bit modulus for the public key.  In addition, the use of the SHA-256 hash algorithm is RECOMMENDED (see <xref target="CAB-Baseline"/> for more details). Clients SHOULD indicate to servers that they request SHA-256, by using the "Signature Algorithms" extension defined in TLS&nbsp;1.2. </t>
       </section>
 
@@ -378,7 +379,7 @@ Rationale: Cipher suites that offer between 112-bits and 128-bits of security
       <t>Not all TLS implementations support both modular and elliptic curve Diffie-Hellman groups, as
       required by <xref target="rec-cipher"/>. Some implementations are severely limited in
       the length of DH values. When such implementations need to be accommodated,
-      we recommend using (in priority order):</t>
+      the following are RECOMMENDED (in priority order):</t>
         <t>
           <list style="numbers">
             <t>Elliptic Curve DHE with negotiated parameters <xref target='RFC5289'/></t>
@@ -395,8 +396,8 @@ Rationale: Cipher suites that offer between 112-bits and 128-bits of security
                  addition, several implementations do not perform appropriate validation of group parameters and are vulnerable to attacks referenced in Section 2.9 of <xref target='I-D.ietf-uta-tls-attacks'/></t>
           </list>
         </t>
-        <t>We note that with DHE and ECDHE cipher suites, the TLS master key only depends on the Diffie-Hellman parameters and not on the strength of the RSA certificate; moreover, 1024 bit modular DH parameters are generally considered insufficient at this time.</t>
-        <t>With modular ephemeral DH, deployers SHOULD carefully evaluate interoperability vs. security considerations when configuring their TLS endpoints.</t>
+        <t>Note that with DHE and ECDHE cipher suites, the TLS master key only depends on the Diffie-Hellman parameters and not on the strength of the RSA certificate; moreover, 1024 bit modular DH parameters are generally considered insufficient at this time.</t>
+        <t>With modular ephemeral DH, deployers ought to carefully evaluate interoperability vs. security considerations when configuring their TLS endpoints.</t>
       </section>
       
       <section title="Truncated HMAC">
@@ -431,15 +432,15 @@ Rationale: the extension does not apply to the AEAD
             </list>
           </t>
           <t>With regard to authentication, TLS enables authentication of one or both end-points in the communication. Although some TLS usage scenarios do not require authentication, those scenarios are not in scope for this document (a rationale for this decision is provided under <xref target="unauth-opp"/>).</t>
-          <t>If deployers deviate from the recommendations given in this document, they MUST verify that they do not need one of the foregoing security services.</t>
+          <t>If deployers deviate from the recommendations given in this document, they need to be aware that they might lose access to one of the foregoing security services.</t>
           <t>This document applies only to environments where confidentiality is required. It recommends algorithms and configuration options that enforce secrecy of the data-in-transit.</t>
           <t>This document also assumes that data integrity protection is always one of the goals of a deployment. In cases where integrity is not required, it does not make sense to employ TLS in the first place. There are attacks against confidentiality-only protection that utilize the lack of integrity to also break confidentiality (see for instance <xref target="DegabrieleP07"/> in the context of IPsec).</t>
-          <t>The intended audience covers those services that are most commonly used on the Internet. Typically, all communication between TLS clients and TLS servers requires all three of the above security services. This is particularly true where TLS clients are user agents like Web browsers or email software.</t>
-          <t>This document does not address the rarer deployment scenarios where one of the above three properties is not desired, such as the use case described under <xref target="unauth-opp"/> below.  Another example of an audience not needing confidentiality is the following: a monitored network where the authorities in charge of the respective traffic domain require full access to unencrypted (plaintext) traffic, and where users collaborate and send their traffic in the clear.</t>
+          <t>This document addresses itself to application protocols that are most commonly used on the Internet with TLS and DTLS. Typically, all communication between TLS clients and TLS servers requires all three of the above security services. This is particularly true where TLS clients are user agents like Web browsers or email software.</t>
+          <t>This document does not address the rarer deployment scenarios where one of the above three properties is not desired, such as the use case described under <xref target="unauth-opp"/> below.  As another scenario where confidentiality is not needed, consider a monitored network where the authorities in charge of the respective traffic domain require full access to unencrypted (plaintext) traffic, and where users collaborate and send their traffic in the clear.</t>
         </section>
         <section title="Unauthenticated TLS and Opportunistic Security" anchor="unauth-opp">
           <t>Several important applications use TLS to protect data between a TLS client and a TLS server, but do so without the TLS client necessarily verifying the server's certificate. This practice is often called "unauthenticated TLS".  The reader is referred to <xref target="I-D.ietf-dane-smtp-with-dane"/> for an example and an explanation of why this less secure practice will likely remain common in the context of SMTP (especially for MTA-to-MTA communications).  The practice is also encountered in similar contexts such as server-to-server traffic on the XMPP network (where multi-tenant hosting environments make it difficult for operators to obtain proper certificates for all of the domains they service).</t>
-          <t>Furthermore, in some scenarios the use of TLS itself is optional, i.e. the client decides dynamically ("opportunistically") whether to use TLS with a particular server or to connect in the clear.  This practice, often called "opportunistic security", and is described at length in Section 2 of <xref target="I-D.farrelll-mpls-opportunistic-encrypt"/>.</t>
+          <t>Furthermore, in some scenarios the use of TLS itself is optional, i.e. the client decides dynamically ("opportunistically") whether to use TLS with a particular server or to connect in the clear.  This practice, often called "opportunistic security", is described at length in <xref target="RFC7435"/>.</t>
           <t>It can be argued that the recommendations provided in this document ought to apply equally to unauthenticated TLS as well as authenticated TLS.  That would keep TLS implementations and deployments in sync, which is a desirable property given that servers can be used simultaneously for unauthenticated TLS and for authenticated TLS (indeed, a server cannot know whether a client might attempt authenticated or unauthenticated TLS). On the other hand, it has been argued that some of the recommendations in this document might be too strict for unauthenticated scenarios and that any security is better than no security at all (i.e., sending traffic in the clear), even if it means deploying outdated protocol versions and ciphers in unauthenticated scenarios.  The sense of the UTA Working Group was to complete work on this document about authenticated TLS and to initiate work on a separate document about unauthenticated TLS.</t>
           <t>In summary: this document does not apply to unauthenticated TLS use cases.</t>
         </section>
@@ -511,7 +512,7 @@ Please refer to <xref target="RFC5246"/>, Section 11 for general security consid
 Forward secrecy ensures in such cases that the session keys cannot be determined even by an attacker who obtains the long-term keys some time after the conversation. It also protects against an attacker who is in possession of the long-term keys, but remains passive during the conversation.</t>
         <t>
 Forward secrecy is generally achieved by using the Diffie-Hellman scheme to derive session keys. The Diffie-Hellman scheme has both parties maintain private secrets and send parameters over the network as modular powers over certain cyclic groups. The properties of the so-called Discrete Logarithm Problem (DLP) allow to derive the session keys without an eavesdropper being able to do so. There is currently no known attack against DLP if sufficiently large parameters are chosen. A variant of the Diffie-Hellman scheme uses Elliptic Curves instead of the originally proposed modular arithmetics.</t>
-        <t>Unfortunately, many TLS/DTLS cipher suites were defined that do not feature forward secrecy, e.g., TLS_RSA_WITH_AES_256_CBC_SHA256.  We thus advocate strict use of forward-secrecy-only ciphers.</t>
+        <t>Unfortunately, many TLS/DTLS cipher suites were defined that do not feature forward secrecy, e.g., TLS_RSA_WITH_AES_256_CBC_SHA256.  This document therefore advocates strict use of forward-secrecy-only ciphers.</t>
       </section>
       
       <section title="Diffie-Hellman Exponent Reuse">
@@ -569,7 +570,9 @@ Forward secrecy is generally achieved by using the Diffie-Hellman scheme to deri
     </section>
 
     <section title="Acknowledgments" anchor="d1e1127">
-      <t>We would like to thank Uri Blumenthal, Viktor Dukhovni, Stephen Farrell, Daniel Kahn Gillmor, Paul Hoffman, Simon Josefsson, Watson Ladd, Orit Levin, Ilari Liusvaara, Johannes Merkle, Bodo Moeller, Yoav Nir, Massimiliano Pala, Kenny Paterson, Patrick Pelletier, Tom Ritter, Joe St. Sauver, Joe Salowey, Rich Salz, Brian Smith, Sean Turner, and Aaron Zauner for their feedback and suggested improvements. Thanks to Brian Smith, who has provided a great resource in his "Proposal to Change the Default TLS Ciphersuites Offered by Browsers" <xref target='Smith2013'/>. Finally, thanks to all others who commented on the TLS, UTA, and other discussion lists but who are not mentioned here by name.</t>
+      <t>Thanks to RJ Atkinson, Uri Blumenthal, Viktor Dukhovni, Stephen Farrell, Daniel Kahn Gillmor, Paul Hoffman, Simon Josefsson, Watson Ladd, Orit Levin, Ilari Liusvaara, Johannes Merkle, Bodo Moeller, Yoav Nir, Massimiliano Pala, Kenny Paterson, Patrick Pelletier, Tom Ritter, Joe St. Sauver, Joe Salowey, Rich Salz, Brian Smith, Sean Turner, and Aaron Zauner for their feedback and suggested improvements. Thanks also to Brian Smith, who has provided a great resource in his "Proposal to Change the Default TLS Ciphersuites Offered by Browsers" <xref target='Smith2013'/>. Finally, thanks to all others who commented on the TLS, UTA, and other discussion lists but who are not mentioned here by name.</t>
+      <t>Robert Sparks reviewed the document on behalf of the General Area Review Team.</t>
+      <t>The authors gratefully acknowledge the assistance of Leif Johansson and Orit Levin as the working group chairs and Pete Resnick as the sponsoring Area Director.</t>
     </section>
 
   </middle>
@@ -591,7 +594,6 @@ Forward secrecy is generally achieved by using the Diffie-Hellman scheme to deri
 
     <references title="Informative References">
 
-<?rfc include="reference.I-D.farrelll-mpls-opportunistic-encrypt.xml"?>
 <?rfc include="reference.I-D.ietf-dane-smtp-with-dane.xml"?>
 <?rfc include="reference.I-D.ietf-dane-srv.xml"?>
 <?rfc include="reference.I-D.ietf-tls-downgrade-scsv"?>
@@ -614,6 +616,7 @@ Forward secrecy is generally achieved by using the Diffie-Hellman scheme to deri
 <?rfc include="reference.RFC.6960.xml"?>
 <?rfc include="reference.RFC.6961.xml"?>
 <?rfc include="reference.RFC.6989.xml"?>
+<?rfc include="reference.RFC.7435.xml"?>
 
 <reference anchor="POODLE" target="https://www.openssl.org/~bodo/ssl-poodle.pdf"><front><title>This POODLE Bites: Exploiting the SSL 3.0 Fallback</title><author initials="B." surname="Moeller" fullname="Bodo Moeller"/><author initials="T." surname="Duong" fullname="Thai Duong"/><author initials="K." surname="Kotowicz" fullname="Krzysztof Kotowicz"/><date year="2014"/></front></reference>
 <reference anchor="triple-handshake" target="https://secure-resumption.com/"><front><title>Triple Handshakes Considered Harmful:
