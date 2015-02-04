@@ -11,7 +11,7 @@
 <?rfc toc="yes"?>
 <?rfc tocdepth="4"?>
 
-<rfc docName="draft-ietf-uta-tls-bcp-08" ipr="trust200902" category="bcp">
+<rfc docName="draft-ietf-uta-tls-bcp-09" ipr="trust200902" category="bcp">
   <front>
     <title abbrev="TLS Recommendations">Recommendations for Secure Use of TLS and DTLS</title>
     <author initials="Y." surname="Sheffer" fullname="Yaron Sheffer">
@@ -47,7 +47,11 @@
     </author>
     <date/>
     <workgroup>UTA</workgroup>
-    <keyword>Internet-Draft</keyword>
+    <keyword>Transport Layer Security</keyword>
+    <keyword>TLS</keyword>
+    <keyword>DTLS</keyword>
+    <keyword>Secure Sockets Layer</keyword>
+    <keyword>SSL</keyword>
     <abstract>
       <t>Transport Layer Security (TLS) and Datagram Transport Layer Security (DTLS) are widely used to protect data exchanged over application protocols such as HTTP, SMTP, IMAP, POP, SIP, and XMPP.  Over the last few years, several serious attacks on TLS have emerged, including attacks on its most commonly used cipher suites and modes of operation.  This document provides recommendations for improving the security of deployed services that use TLS and DTLS. The recommendations are applicable to the majority of use cases.</t>
     </abstract>
@@ -320,7 +324,8 @@ Rationale: Cipher suites that offer between 112-bits and 128-bits of security
   is short enough to justify supporting stronger cipher suites at this time.
   128-bit ciphers are expected to remain secure for at least several years,
   and 256-bit ciphers "until the next fundamental technology breakthrough".
-  Note that
+  Note that, because of so-called "meet-in-the-middle" attacks
+  <xref target='Multiple-Encryption'/>
   some legacy cipher suites (e.g., 168-bit 3DES) have an effective
   key length which is smaller than their nominal key length (112
   bits in the case of 3DES).  Such cipher suites should be evaluated
@@ -354,7 +359,7 @@ Rationale: Cipher suites that offer between 112-bits and 128-bits of security
           <t>Clients SHOULD include TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 as the first proposal to any server, unless they have prior knowledge that the server cannot respond to a TLS 1.2 client_hello message.</t>
           <t>Servers SHOULD prefer this cipher suite whenever it is proposed, even if it is not the first proposal.</t>
           <t>Clients are of course free to offer stronger cipher suites, e.g., using AES-256; when they do, the server SHOULD prefer the stronger cipher suite unless there are compelling reasons (e.g., seriously degraded performance) to choose otherwise.</t>
-          <t>This document does not change the mandatory-to-implement TLS cipher suite(s) prescribed by TLS or application protocols using TLS. To maximize interoperability, RFC 5246 mandates implementation of the TLS_RSA_WITH_AES_128_CBC_SHA cipher suite, which is significantly weaker than the cipher suites recommended here. Implementers should consider the interoperability gain against the loss in security when deploying that cipher suite. Other application protocols specify other cipher suites as mandatory to implement (MTI).</t>
+          <t>This document does not change the mandatory-to-implement TLS cipher suite(s) prescribed by TLS or application protocols using TLS. To maximize interoperability, RFC 5246 mandates implementation of the TLS_RSA_WITH_AES_128_CBC_SHA cipher suite, which is significantly weaker than the cipher suites recommended here (the GCM mode does not suffer from the same weakness, caused by the order of MAC-then-Encrypt in TLS <xref target='Krawczyk2001'/>, since it uses an Authenticated Encryption with Associated Data (AEAD) mode of operation). Implementers should consider the interoperability gain against the loss in security when deploying that cipher suite. Other application protocols specify other cipher suites as mandatory to implement (MTI).</t>
           <t>Note that some profiles of TLS 1.2 use different cipher suites. For example, <xref target="RFC6460"/> defines a profile that uses the TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256 and TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384 cipher suites.</t>
           <t><xref target="RFC4492"/> allows clients and servers to negotiate ECDH parameters (curves).  Both clients and servers SHOULD include the "Supported Elliptic Curves" extension <xref target="RFC4492"/>.  For interoperability, clients and servers SHOULD support the NIST P-256 (secp256r1) curve <xref target="RFC4492"/>. In addition, clients SHOULD send an ec_point_formats extension with a single element, "uncompressed".</t>
         </section>
@@ -369,7 +374,7 @@ Rationale: Cipher suites that offer between 112-bits and 128-bits of security
       public key is added.
       </t>
      <t>With a key exchange based on modular Diffie-Hellman ("DHE" cipher suites), DH key lengths of at least 2048 bits are RECOMMENDED.</t>
-<t> Rationale: For various reasons, in practice DH keys are typically generated in lengths that are powers of two (e.g., 2^10 = 1024 bits, 2^11 = 2048 bits, 2^12 = 4096 bits). Because a DH key of 1228 bits would be roughly equivalent to only an 80-bit symmetric key <xref target='RFC3766'/>, it is better to use keys longer than that for the "DHE" family of cipher suites. A DH key of 1926 bits would be roughly equivalent to a 100-bit symmetric key <xref target='RFC3766'/> and a DH key of 2048 bits might be sufficient for at least the next 10 years. See <xref target="detail-alt"/> for additional information on the use of modular Diffie-Hellman in TLS.
+<t> Rationale: For various reasons, in practice DH keys are typically generated in lengths that are powers of two (e.g., 2^10 = 1024 bits, 2^11 = 2048 bits, 2^12 = 4096 bits). Because a DH key of 1228 bits would be roughly equivalent to only an 80-bit symmetric key <xref target='RFC3766'/>, it is better to use keys longer than that for the "DHE" family of cipher suites. A DH key of 1926 bits would be roughly equivalent to a 100-bit symmetric key <xref target='RFC3766'/> and a DH key of 2048 bits might be sufficient for at least the next 10 years <xref target='NIST.SP.800-56A'/>. See <xref target="detail-alt"/> for additional information on the use of modular Diffie-Hellman in TLS.
 </t>
 <t>As noted in <xref target='RFC3766'/>, correcting for the emergence of a TWIRL machine would imply that 1024-bit DH keys yield about 65 bits of equivalent strength and that a 2048-bit DH key would yield about 92 bits of equivalent strength.</t>
 <t>With regard to ECDH keys, the IANA named curve registry contains 160-bit elliptic curves which are considered to be roughly equivalent to only an 80-bit symmetric key <xref target='ECRYPT-II'/>.   Curves of less than 192-bits SHOULD NOT be used.</t>
@@ -636,10 +641,27 @@ Breaking and Fixing Authentication over TLS</title>
 <reference anchor="ECRYPT-II" target="http://www.ecrypt.eu.org/documents/D.SPA.20.pdf"><front><title>ECRYPT II Yearly Report on Algorithms and Keysizes (2011-2012)</title><author fullname="Nigel Smart (ed.)" initials="N." surname="Smart"></author><date year="2012"/></front></reference>
 <reference anchor="Heninger2012"><front><title>Mining Your Ps and Qs: Detection of Widespread Weak Keys in Network Devices</title><author initials="N." surname="Heninger" fullname="Nadia Heninger"/><author initials="Z." surname="Durumeric" fullname="Zakir Durumeric"/><author initials="E." surname="Wustrow" fullname="Eric Wustrow"/><author initials="J.A." surname="Halderman" fullname="J. Alex Halderman"/><date year="2012"/></front><seriesInfo name="Usenix Security Symposium" value="2012"/></reference>
 <reference anchor="Kleinjung2010" target="https://eprint.iacr.org/2010/006.pdf"><front><title>Factorization of a 768-Bit RSA Modulus</title><author initials="T." surname="Kleinjung" fullname="Thorsten Kleinjung"/><date year="2010"/></front><seriesInfo name="CRYPTO" value="10"/></reference>
+<reference anchor="Krawczyk2001" target="https://eprint.iacr.org/2001/045.pdf"><front>
+<title>The order of encryption and authentication for protecting communications (Or: how secure is SSL?)</title>
+<author initials="H." surname="Krawczyk" fullname="Hugo Krawczyk"/><date year="2001"/></front><seriesInfo name="CRYPTO" value="01"/></reference>
+<reference anchor="NIST.SP.800-56A" target="http://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-56Ar2.pdf"><front>
+<title>Recommendation for Pair-Wise Key Establishment Schemes Using Discrete Logarithm Cryptography</title>
+<author initials="E." surname="Barker" fullname="Elaine Barker"/>
+<author initials="L." surname="Chen" fullname="Lily Chen"/>
+<author initials="A." surname="Roginsky" fullname="Allen Roginsky"/>
+<author initials="M." surname="Smid" fullname="Miles Smid"/>
+<date year="2013"/></front><seriesInfo name="NIST Special Publication" value="800-56A"/></reference>
 <reference anchor="Soghoian2011"><front><title>Certified lies: Detecting and defeating government interception attacks against SSL.</title><author initials="C." surname="Soghoian" fullname="Christopher Soghoian"/><author initials="S." surname="Stamm" fullname="Sid Stamm"/><date year="2011"/></front><seriesInfo name="Proc. 15th Int. Conf. Financial Cryptography and Data Security" value=""/></reference>
 <reference anchor="PatersonRS11" target="http://dx.doi.org/10.1007/978-3-642-25385-0_20"><front><title>Tag size does matter: attacks and proofs for the TLS record protocol</title><author fullname="Kenneth G. Paterson" initials="K. G." surname="Paterson" /><author fullname="Thomas Ristenpart" initials="T." surname="Ristenpart" /><author fullname="Thomas Shrimpton" initials="T." surname="Shrimpton" /><date year="2011" /></front></reference>
 <reference anchor="DegabrieleP07" target="http://dx.doi.org/10.1109/SP.2007.8"><front><title>Attacking the IPsec standards in encryption-only configurations</title><author fullname="Jean Paul Degabriele" initials="J. P." surname="Degabriele" /><author fullname="Kenneth G. Paterson" initials="K. G." surname="Paterson" /><date year="2007" /></front></reference>
 <reference anchor="Smith2013" target="https://briansmith.org/browser-ciphersuites-01.html"><front><title>Proposal to Change the Default TLS Ciphersuites Offered by Browsers.</title><author initials="B." surname="Smith" fullname="Brian Smith"/><date year="2013"/></front></reference>
+<reference anchor="Multiple-Encryption" target="http://dl.acm.org/citation.cfm?id=358718"><front><title>On the security of multiple encryption</title>
+<author initials="R.C." surname="Merkle" fullname="Ralph C. Merkle"></author>
+<author initials="M.E." surname="Hellman" fullname="Martin E. Hellman"></author>
+<date year="1981"/></front>
+<seriesInfo name="Communications of the ACM" value="24"/>
+</reference>
+
 </references>
 
     <section title="Change Log" anchor="changes">
