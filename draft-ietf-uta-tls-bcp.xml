@@ -188,7 +188,7 @@ to their communications.
         TLS during an initial protocol exchange, and sometimes also provide a 
         way for the server to advertise support for TLS (e.g., through a flag 
         indicating that TLS is required); unfortunately, these indications are
-        sent before the communication channel is encrypted. A client MUST 
+        sent before the communication channel is encrypted. A client SHOULD 
         attempt to negotiate TLS even if these indications are not communicated 
         by the server.
       </t>
