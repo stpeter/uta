@@ -15,12 +15,12 @@
   <front>
     <title abbrev="TLS Recommendations">Recommendations for Secure Use of TLS and DTLS</title>
     <author initials="Y." surname="Sheffer" fullname="Yaron Sheffer">
-      <organization abbrev="Porticor">Porticor</organization>
+      <organization abbrev="Intuit">Intuit</organization>
       <address>
         <postal>
-          <street>29 HaHarash St.</street>
+          <street>4 HaHarash St.</street>
           <city>Hod HaSharon</city>
-          <code>4501303</code>
+          <code>4524075</code>
           <country>Israel</country>
         </postal>
         <email>yaronf.ietf@gmail.com</email>
