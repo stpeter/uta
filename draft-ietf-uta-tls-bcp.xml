@@ -576,7 +576,7 @@ Forward secrecy is generally achieved by using the Diffie-Hellman scheme to deri
         <t>The OCSP stapling extension defined in <xref target='RFC6961'/></t>
       </list>
       </t>
-      <t>The foregoing considerations do not apply to scenarios where the DANE-TLSA resource record <xref target='RFC6698'/> is used to signal to a client which certificate a server considers valid and good to use for TLS connections.</t>
+      <t>The considerations in this section do not apply to scenarios where the DANE-TLSA resource record <xref target='RFC6698'/> is used to signal to a client which certificate a server considers valid and good to use for TLS connections.</t>
       </section>
         
     </section>
