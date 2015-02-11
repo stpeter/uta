@@ -59,7 +59,7 @@
   <middle>
 
     <section title="Introduction" anchor="d1e381">
-      <t>Transport Layer Security (TLS) <xref target='RFC5246'/> and Datagram Transport Security Layer (DTLS) <xref target='RFC6347'/> are widely used to protect data exchanged over application protocols such as HTTP, SMTP, IMAP, POP, SIP, and XMPP.  Over the last few years, several serious attacks on TLS have emerged, including attacks on its most commonly used cipher suites and modes of operation.  For instance, both the AES-CBC <xref target='RFC3602'/> and RC4 <xref target='I-D.ietf-tls-prohibiting-rc4'/> encryption algorithms, which together are the most widely deployed ciphers, have been attacked in the context of TLS.  A companion document <xref target='I-D.ietf-uta-tls-attacks'/> provides detailed information about these attacks.</t>
+      <t>Transport Layer Security (TLS) <xref target='RFC5246'/> and Datagram Transport Security Layer (DTLS) <xref target='RFC6347'/> are widely used to protect data exchanged over application protocols such as HTTP, SMTP, IMAP, POP, SIP, and XMPP.  Over the last few years, several serious attacks on TLS have emerged, including attacks on its most commonly used cipher suites and modes of operation.  For instance, both the AES-CBC <xref target='RFC3602'/> and RC4 <xref target='I-D.ietf-tls-prohibiting-rc4'/> encryption algorithms, which together are the most widely deployed ciphers, have been attacked in the context of TLS.  A companion document <xref target='RFC7457'/> provides detailed information about these attacks.</t>
       <t>Because of these attacks, those who implement and deploy TLS and DTLS need updated guidance on how TLS can be used securely.  This document provides guidance for deployed services as well as for software implementations, assuming the implementer expects his or her code 
 to be deployed in environments defined in the following section. 
 In fact, this document calls for the deployment of algorithms that 
@@ -218,7 +218,7 @@ to their communications.
 	such as the CRIME attack.</t>
 	<t>Implementers should note that compression at higher protocol levels can allow an active attacker to extract cleartext
 	information from the connection. The BREACH attack is one such case. These issues can only be mitigated outside
-	of TLS and are thus out of scope of the current document. See Section 2.6 of <xref target="I-D.ietf-uta-tls-attacks"/> for 
+	of TLS and are thus out of scope of the current document. See Section 2.6 of <xref target="RFC7457"/> for 
 	further details.</t>
       </section>
 
@@ -399,7 +399,7 @@ Rationale: Cipher suites that offer between 112-bits and 128-bits of security
             <t>There are no standardized, widely implemented protocol mechanisms to negotiate the DH groups or parameter lengths supported by client and server.</t>
             <t>Many servers choose DH parameters of 1024 bits or fewer.</t>
             <t>There are widely deployed client implementations that reject received DH parameters if they are longer than 1024 bits.  In
-                 addition, several implementations do not perform appropriate validation of group parameters and are vulnerable to attacks referenced in Section 2.9 of <xref target='I-D.ietf-uta-tls-attacks'/></t>
+                 addition, several implementations do not perform appropriate validation of group parameters and are vulnerable to attacks referenced in Section 2.9 of <xref target='RFC7457'/></t>
           </list>
         </t>
         <t>Note that with DHE and ECDHE cipher suites, the TLS master key only depends on the Diffie-Hellman parameters and not on the strength of the RSA certificate; moreover, 1024 bit modular DH parameters are generally considered insufficient at this time.</t>
@@ -610,7 +610,6 @@ Forward secrecy is generally achieved by using the Diffie-Hellman scheme to deri
 <?rfc include="reference.I-D.ietf-dane-smtp-with-dane.xml"?>
 <?rfc include="reference.I-D.ietf-dane-srv.xml"?>
 <?rfc include="reference.I-D.ietf-tls-downgrade-scsv"?>
-<?rfc include="reference.I-D.ietf-uta-tls-attacks.xml"?>
 <?rfc include="reference.RFC.2246.xml"?>
 <?rfc include="reference.RFC.3602.xml"?>
 <?rfc include="reference.RFC.4346.xml"?>
@@ -629,6 +628,7 @@ Forward secrecy is generally achieved by using the Diffie-Hellman scheme to deri
 <?rfc include="reference.RFC.6961.xml"?>
 <?rfc include="reference.RFC.6989.xml"?>
 <?rfc include="reference.RFC.7435.xml"?>
+<?rfc include="reference.RFC.7457.xml"?>
 
 <reference anchor="POODLE" target="https://www.openssl.org/~bodo/ssl-poodle.pdf"><front><title>This POODLE Bites: Exploiting the SSL 3.0 Fallback</title><author initials="B." surname="Moeller" fullname="Bodo Moeller"/><author initials="T." surname="Duong" fullname="Thai Duong"/><author initials="K." surname="Kotowicz" fullname="Krzysztof Kotowicz"/><date year="2014"/></front></reference>
 <reference anchor="triple-handshake" target="https://secure-resumption.com/"><front><title>Triple Handshakes Considered Harmful:
