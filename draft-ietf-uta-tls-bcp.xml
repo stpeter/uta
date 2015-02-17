@@ -11,7 +11,7 @@
 <?rfc toc="yes"?>
 <?rfc tocdepth="4"?>
 
-<rfc docName="draft-ietf-uta-tls-bcp-09" ipr="trust200902" category="bcp">
+<rfc docName="draft-ietf-uta-tls-bcp-10" ipr="trust200902" category="bcp">
   <front>
     <title abbrev="TLS Recommendations">Recommendations for Secure Use of TLS and DTLS</title>
     <author initials="Y." surname="Sheffer" fullname="Yaron Sheffer">
@@ -53,15 +53,15 @@
     <keyword>Secure Sockets Layer</keyword>
     <keyword>SSL</keyword>
     <abstract>
-      <t>Transport Layer Security (TLS) and Datagram Transport Layer Security (DTLS) are widely used to protect data exchanged over application protocols such as HTTP, SMTP, IMAP, POP, SIP, and XMPP.  Over the last few years, several serious attacks on TLS have emerged, including attacks on its most commonly used cipher suites and modes of operation.  This document provides recommendations for improving the security of deployed services that use TLS and DTLS. The recommendations are applicable to the majority of use cases.</t>
+      <t>Transport Layer Security (TLS) and Datagram Transport Layer Security (DTLS) are widely used to protect data exchanged over application protocols such as HTTP, SMTP, IMAP, POP, SIP, and XMPP.  Over the last few years, several serious attacks on TLS have emerged, including attacks on its most commonly used cipher suites and their modes of operation.  This document provides recommendations for improving the security of deployed services that use TLS and DTLS. The recommendations are applicable to the majority of use cases.</t>
     </abstract>
   </front>
   <middle>
 
     <section title="Introduction" anchor="d1e381">
-      <t>Transport Layer Security (TLS) <xref target='RFC5246'/> and Datagram Transport Security Layer (DTLS) <xref target='RFC6347'/> are widely used to protect data exchanged over application protocols such as HTTP, SMTP, IMAP, POP, SIP, and XMPP.  Over the last few years, several serious attacks on TLS have emerged, including attacks on its most commonly used cipher suites and modes of operation.  For instance, both the AES-CBC <xref target='RFC3602'/> and RC4 <xref target='I-D.ietf-tls-prohibiting-rc4'/> encryption algorithms, which together are the most widely deployed ciphers, have been attacked in the context of TLS.  A companion document <xref target='RFC7457'/> provides detailed information about these attacks.</t>
+      <t>Transport Layer Security (TLS) <xref target='RFC5246'/> and Datagram Transport Security Layer (DTLS) <xref target='RFC6347'/> are widely used to protect data exchanged over application protocols such as HTTP, SMTP, IMAP, POP, SIP, and XMPP.  Over the last few years, several serious attacks on TLS have emerged, including attacks on its most commonly used cipher suites and their modes of operation.  For instance, both the AES-CBC <xref target='RFC3602'/> and RC4 <xref target='I-D.ietf-tls-prohibiting-rc4'/> encryption algorithms, which together have been the most widely deployed ciphers, have been attacked in the context of TLS.  A companion document <xref target='RFC7457'/> provides detailed information about these attacks and will help the reader understand the rationale behind the recommendations provided here.</t>
       <t>Because of these attacks, those who implement and deploy TLS and DTLS need updated guidance on how TLS can be used securely.  This document provides guidance for deployed services as well as for software implementations, assuming the implementer expects his or her code 
-to be deployed in environments defined in the following section. 
+to be deployed in environments defined in <xref target='applicability'/>. 
 In fact, this document calls for the deployment of algorithms that 
 are widely implemented but not yet widely deployed.  Concerning 
 deployment, this document targets a wide audience, namely all 
@@ -72,14 +72,14 @@ to their communications.
       <t>
          It is expected that the TLS 1.3 specification will resolve many of
          the vulnerabilities listed in this document. A system that deploys
-         TLS 1.3 will have fewer vulnerabilities than TLS 1.2 or below. This
+         TLS 1.3 should have fewer vulnerabilities than TLS 1.2 or below. This
          document is likely to be updated after TLS 1.3 gets noticeable
          deployment.
       </t>
       <t>
 	These are minimum recommendations for the use of TLS in the vast
         majority of implementation and deployment scenarios, with the 
-        exception of unauthenticated TLS (see <xref target='sec-app'/>). 
+        exception of unauthenticated TLS (see <xref target='applicability'/>). 
 	Other specifications that reference this document can have stricter
 	requirements related to one or more aspects of the protocol,
 	based on their particular circumstances (e.g., for use with a 
@@ -173,7 +173,7 @@ to their communications.
       
       <section title="Strict TLS">
       <t>
-      To prevent SSL Stripping:
+      The following recommendations are provided to help prevent SSL Stripping (the attack is summarized in Section 2.1 of <xref target='RFC7457'/>):
       
       <list style="symbols">
       <t>
@@ -212,7 +212,7 @@ to their communications.
       </section>
 
       <section title="Compression" anchor="rec-compress">
-        <t>Implementations and deployments SHOULD disable TLS-level compression (<xref target="RFC5246"/>, Section 6.2.2).</t>
+        <t>In order to help prevent compression-related attacks (summarized in Section 2.6 of <xref target='RFC7457'/>), implementations and deployments SHOULD disable TLS-level compression (<xref target="RFC5246"/>, Section 6.2.2).</t>
 	<t>
 	Rationale: TLS compression has been subject to security attacks,
 	such as the CRIME attack.</t>
@@ -259,6 +259,7 @@ to their communications.
       <section title="Server Name Indication">
       <t>
       TLS implementations MUST support the Server Name Indication (SNI) extension
+      defined in Section 3 of <xref target='RFC6066'/>
       for those higher level protocols which would benefit from it, including HTTPS.
       However, unlike implementation, the use of SNI in particular circumstances
       is a matter of local policy.
@@ -296,44 +297,65 @@ to their communications.
 	</t>
         <t>
           <list style='symbols'>
-            <t>Implementations MUST NOT negotiate the cipher suites with NULL encryption.
+            <t>Implementations MUST NOT negotiate the cipher suites with 
+               NULL encryption.
                <vspace blankLines='1'/>
-               Rationale: The NULL cipher suites do not encrypt traffic and so provide
-  no confidentiality services. Any entity in the network with access to the
-  connection can view the plaintext of contents being exchanged by the client and
-  server.  (Nevertheless, this document does not discourage software from
-  implementing NULL cipher suites, since they can be useful for testing and 
-  debugging.) 
+               Rationale: The NULL cipher suites do not encrypt traffic and 
+               so provide no confidentiality services. Any entity in the 
+               network with access to the connection can view the plaintext 
+               of contents being exchanged by the client and server.  
+               (Nevertheless, this document does not discourage software from
+               implementing NULL cipher suites, since they can be useful for 
+               testing and debugging.) 
             </t>
             <t>Implementations MUST NOT negotiate RC4 cipher suites. 
                <vspace blankLines='1'/>
-               Rationale: The RC4 stream cipher has a variety of cryptographic weaknesses, as documented in <xref target='I-D.ietf-tls-prohibiting-rc4'/>.
+               Rationale: The RC4 stream cipher has a variety of cryptographic 
+               weaknesses, as documented in <xref target='I-D.ietf-tls-prohibiting-rc4'/>.
 	       Note that DTLS specifically forbids the use of RC4 already.
             </t>
-	    <t>Implementations MUST NOT negotiate cipher suites offering less than 112 bits of security, including the so-called "export-level" encryption (which provide 40 or 56 bits of security).
-            <vspace blankLines='1'/>
-            Rationale: Based on <xref target='RFC3766'/>, at least 112 bits of security 
-            is needed.  40-bit and 56-bit security are considered insecure today.  
-            TLS 1.1 and 1.2 never negotiate 40-bit or 56-bit export ciphers.
-            </t>
-            <t>Implementations SHOULD NOT negotiate cipher suites that use algorithms offering less than 128 bits of security.
-	    
+	    <t>Implementations MUST NOT negotiate cipher suites offering less 
+               than 112 bits of security, including so-called "export-level" 
+               encryption (which provide 40 or 56 bits of security).
                <vspace blankLines='1'/>
-Rationale: Cipher suites that offer between 112-bits and 128-bits of security
-  are not considered weak at this time, however it is expected that their useful lifespan
-  is short enough to justify supporting stronger cipher suites at this time.
-  128-bit ciphers are expected to remain secure for at least several years,
-  and 256-bit ciphers "until the next fundamental technology breakthrough".
-  Note that, because of so-called "meet-in-the-middle" attacks
-  <xref target='Multiple-Encryption'/>
-  some legacy cipher suites (e.g., 168-bit 3DES) have an effective
-  key length which is smaller than their nominal key length (112
-  bits in the case of 3DES).  Such cipher suites should be evaluated
-   according to their effective key length.
+               Rationale: Based on <xref target='RFC3766'/>, at least 112 bits 
+               of security is needed.  40-bit and 56-bit security are considered 
+               insecure today.  TLS 1.1 and 1.2 never negotiate 40-bit or 56-bit 
+               export ciphers.
             </t>
-            <t>Implementations MUST support, and SHOULD prefer to negotiate, cipher suites offering forward secrecy, such as those in the Ephemeral Diffie-Hellman and Elliptic Curve Ephemeral Diffie-Hellman ("DHE" and "ECDHE") families.
+            <t>Implementations SHOULD NOT negotiate cipher suites that use 
+               algorithms offering less than 128 bits of security.
                <vspace blankLines='1'/>
-               Rationale: Forward secrecy (sometimes called "perfect forward secrecy") prevents the recovery of information that was encrypted with older session keys, thus limiting the amount of time during which attacks can be successful. See <xref target="sec-pfs"/> for a detailed discussion.
+               Rationale: Cipher suites that offer between 112-bits and 128-bits 
+               of security are not considered weak at this time, however it is 
+               expected that their useful lifespan is short enough to justify 
+               supporting stronger cipher suites at this time.  128-bit ciphers 
+               are expected to remain secure for at least several years, and 
+               256-bit ciphers "until the next fundamental technology 
+               breakthrough".  Note that, because of so-called 
+               "meet-in-the-middle" attacks <xref target='Multiple-Encryption'/>
+               some legacy cipher suites (e.g., 168-bit 3DES) have an effective 
+               key length which is smaller than their nominal key length (112 
+               bits in the case of 3DES).  Such cipher suites should be 
+               evaluated according to their effective key length.
+            </t>
+            <t>Implementations SHOULD NOT negotiate cipher suites based on 
+               RSA key transport, a.k.a. "static RSA".
+               <vspace blankLines='1'/>
+               Rationale: These cipher suites, which have assigned values starting 
+               with the string "TLS_RSA_WITH_*", have several drawbacks, especially
+               the fact that they do not support forward secrecy.
+            </t>
+            <t>Implementations MUST support and prefer to negotiate, cipher suites 
+               offering forward secrecy, such as those in the Ephemeral 
+               Diffie-Hellman and Elliptic Curve Ephemeral Diffie-Hellman ("DHE" 
+               and "ECDHE") families.
+               <vspace blankLines='1'/>
+               Rationale: Forward secrecy (sometimes called "perfect forward 
+               secrecy") prevents the recovery of information that was encrypted 
+               with older session keys, thus limiting the amount of time during 
+               which attacks can be successful. See <xref target="sec-pfs"/> for 
+               a detailed discussion.
             </t>
           </list>
         </t>
@@ -352,7 +374,7 @@ Rationale: Cipher suites that offer between 112-bits and 128-bits of security
         </t>
         <t>These cipher suites are supported only in TLS 1.2 because they
 	are authenticated encryption (AEAD) algorithms <xref target="RFC5116"/>.</t>
-        <t>Typically, in order to prefer these suites, the order of suites needs to be explicitly configured in server software.  It would be ideal if server software implementations were to prefer these suites by default.</t>
+        <t>Typically, in order to prefer these suites, the order of suites needs to be explicitly configured in server software (see <xref target='BETTERCRYPTO'/> for helpful deployment guidelines).  It would be ideal if server software implementations were to prefer these suites by default.</t>
         <t>Some devices have hardware support for AES-CCM but not AES-GCM, so they are unable to follow the foregoing recommendations regarding cipher suites.  There are even devices that do not support public key cryptography at all, but they are out of scope entirely.</t>
 
 	<section title="Implementation Details" anchor="detail-neg">
@@ -388,7 +410,7 @@ Rationale: Cipher suites that offer between 112-bits and 128-bits of security
       the following are RECOMMENDED (in priority order):</t>
         <t>
           <list style="numbers">
-            <t>Elliptic Curve DHE with negotiated parameters <xref target='RFC5289'/></t>
+            <t>Elliptic Curve DHE with a MAC algorithm stronger than HMAC-SHA1 <xref target='RFC5289'/></t>
             <t>TLS_DHE_RSA_WITH_AES_128_GCM_SHA256 <xref target="RFC5288"/>, with 2048-bit Diffie-Hellman parameters</t>
             <t>TLS_DHE_RSA_WITH_AES_128_GCM_SHA256, with 1024-bit parameters.</t>
           </list>
@@ -417,7 +439,7 @@ Rationale: the extension does not apply to the AEAD
       </section>
     </section>
     
-          <section title="Applicability Statement" anchor="sec-app">
+          <section title="Applicability Statement" anchor="applicability">
 
         <t>The deployment recommendations of this document address the operators of application layer services that are most commonly used on the Internet, including, but not limited to:</t>
         <t>
@@ -539,7 +561,7 @@ Forward secrecy is generally achieved by using the Diffie-Hellman scheme to deri
       </t>
       </section>
       <section title="Certificate Revocation">
-      <t>The following considerations and recommendations represent the current state of the art regarding certificate revocation, even though no complete and efficient solution exists for the problem of checking the revocation status of common public key certificates (a.k.a. PKIX certificates, <xref target='RFC5280'/>):</t>
+      <t>The following considerations and recommendations represent the current state of the art regarding certificate revocation, even though no complete and efficient solution exists for the problem of checking the revocation status of common public key certificates <xref target='RFC5280'/>:</t>
       <t>
       <list style='symbols'>
       <t>Although Certificate Revocation Lists (CRLs) are the most widely supported
@@ -569,7 +591,7 @@ Forward secrecy is generally achieved by using the Diffie-Hellman scheme to deri
          in order to boot up for the first time).</t>
       </list>
       </t>
-      <t>With regard to PKIX certificates, servers SHOULD support the following as a best practice given the current state of the art and as a foundation for a possible future solution:
+      <t>With regard to common public key certificates, servers SHOULD support the following as a best practice given the current state of the art and as a foundation for a possible future solution:
       <list style='numbers'>
         <t>OCSP <xref target='RFC6960'/></t>
         <t>Both the status_request extension defined in <xref target='RFC6066'/> and the status_request_v2 extension defined in <xref target='RFC6961'/> (this might enable interoperability with the widest range of clients)</t>
@@ -599,6 +621,7 @@ Forward secrecy is generally achieved by using the Diffie-Hellman scheme to deri
 <?rfc include="reference.RFC.5288.xml"?>
 <?rfc include="reference.RFC.5289.xml"?>
 <?rfc include="reference.RFC.5746.xml"?>
+<?rfc include="reference.RFC.6066.xml"?>
 <?rfc include="reference.RFC.6125.xml"?>
 <?rfc include="reference.RFC.6176.xml"?>
 <?rfc include="reference.RFC.6347.xml"?>
@@ -618,7 +641,6 @@ Forward secrecy is generally achieved by using the Diffie-Hellman scheme to deri
 <?rfc include="reference.RFC.5077.xml"?>
 <?rfc include="reference.RFC.5116.xml"?>
 <?rfc include="reference.RFC.5280.xml"?>
-<?rfc include="reference.RFC.6066.xml"?>
 <?rfc include="reference.RFC.6090.xml"?>
 <?rfc include="reference.RFC.6101.xml"?>
 <?rfc include="reference.RFC.6460.xml"?>
@@ -631,13 +653,18 @@ Forward secrecy is generally achieved by using the Diffie-Hellman scheme to deri
 <?rfc include="reference.RFC.7457.xml"?>
 
 <reference anchor="POODLE" target="https://www.openssl.org/~bodo/ssl-poodle.pdf"><front><title>This POODLE Bites: Exploiting the SSL 3.0 Fallback</title><author initials="B." surname="Moeller" fullname="Bodo Moeller"/><author initials="T." surname="Duong" fullname="Thai Duong"/><author initials="K." surname="Kotowicz" fullname="Krzysztof Kotowicz"/><date year="2014"/></front></reference>
+
 <reference anchor="triple-handshake" target="https://secure-resumption.com/"><front><title>Triple Handshakes Considered Harmful:
 Breaking and Fixing Authentication over TLS</title>
 <author initials="A." surname="Delignat-Lavaud" fullname="Antoine Delignat-Lavaud"></author>
 <author initials="K." surname="Bhargavan" fullname="Karthikeyan Bhargavan"></author>
 <author initials="A." surname="Pironti" fullname="Alfredo Pironti"></author><date year="2014"/>
 </front></reference>
+
+<reference anchor="BETTERCRYPTO" target="https://bettercrypto.org/static/applied-crypto-hardening.pdf"><front><title>Applied Crypto Hardening</title><author fullname="bettercrypto.org" initials="" surname="bettercrypto.org"></author><date year="2015"/></front></reference>
+
 <reference anchor="CAB-Baseline" target="https://www.cabforum.org/documents.html"><front><title>Baseline Requirements for the Issuance and Management of Publicly-Trusted Certificates Version 1.1.6</title><author fullname="CA/Browser Forum" initials="" surname="CA/Browser Forum"></author><date year="2013"/></front></reference>
+
 <reference anchor="ECRYPT-II" target="http://www.ecrypt.eu.org/documents/D.SPA.20.pdf"><front><title>ECRYPT II Yearly Report on Algorithms and Keysizes (2011-2012)</title><author fullname="Nigel Smart (ed.)" initials="N." surname="Smart"></author><date year="2012"/></front></reference>
 <reference anchor="Heninger2012"><front><title>Mining Your Ps and Qs: Detection of Widespread Weak Keys in Network Devices</title><author initials="N." surname="Heninger" fullname="Nadia Heninger"/><author initials="Z." surname="Durumeric" fullname="Zakir Durumeric"/><author initials="E." surname="Wustrow" fullname="Eric Wustrow"/><author initials="J.A." surname="Halderman" fullname="J. Alex Halderman"/><date year="2012"/></front><seriesInfo name="Usenix Security Symposium" value="2012"/></reference>
 <reference anchor="Kleinjung2010" target="https://eprint.iacr.org/2010/006.pdf"><front><title>Factorization of a 768-Bit RSA Modulus</title><author initials="T." surname="Kleinjung" fullname="Thorsten Kleinjung"/><date year="2010"/></front><seriesInfo name="CRYPTO" value="10"/></reference>
