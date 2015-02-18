@@ -331,8 +331,8 @@ to their communications.
                expected that their useful lifespan is short enough to justify 
                supporting stronger cipher suites at this time.  128-bit ciphers 
                are expected to remain secure for at least several years, and 
-               256-bit ciphers "until the next fundamental technology 
-               breakthrough".  Note that, because of so-called 
+               256-bit ciphers until the next fundamental technology 
+               breakthrough.  Note that, because of so-called 
                "meet-in-the-middle" attacks <xref target='Multiple-Encryption'/>
                some legacy cipher suites (e.g., 168-bit 3DES) have an effective 
                key length which is smaller than their nominal key length (112 
@@ -381,7 +381,7 @@ to their communications.
           <t>Clients SHOULD include TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 as the first proposal to any server, unless they have prior knowledge that the server cannot respond to a TLS 1.2 client_hello message.</t>
           <t>Servers SHOULD prefer this cipher suite over weaker cipher suites whenever it is proposed, even if it is not the first proposal.</t>
           <t>Clients are of course free to offer stronger cipher suites, e.g., using AES-256; when they do, the server SHOULD prefer the stronger cipher suite unless there are compelling reasons (e.g., seriously degraded performance) to choose otherwise.</t>
-          <t>This document does not change the mandatory-to-implement TLS cipher suite(s) prescribed by TLS or application protocols using TLS. To maximize interoperability, RFC 5246 mandates implementation of the TLS_RSA_WITH_AES_128_CBC_SHA cipher suite, which is significantly weaker than the cipher suites recommended here (the GCM mode does not suffer from the same weakness, caused by the order of MAC-then-Encrypt in TLS <xref target='Krawczyk2001'/>, since it uses an Authenticated Encryption with Associated Data (AEAD) mode of operation). Implementers should consider the interoperability gain against the loss in security when deploying that cipher suite. Other application protocols specify other cipher suites as mandatory to implement (MTI).</t>
+          <t>This document does not change the mandatory-to-implement TLS cipher suite(s) prescribed by TLS. To maximize interoperability, RFC 5246 mandates implementation of the TLS_RSA_WITH_AES_128_CBC_SHA cipher suite, which is significantly weaker than the cipher suites recommended here (the GCM mode does not suffer from the same weakness, caused by the order of MAC-then-Encrypt in TLS <xref target='Krawczyk2001'/>, since it uses an Authenticated Encryption with Associated Data (AEAD) mode of operation). Implementers should consider the interoperability gain against the loss in security when deploying that cipher suite. Other application protocols specify other cipher suites as mandatory to implement (MTI).</t>
           <t>Note that some profiles of TLS 1.2 use different cipher suites. For example, <xref target="RFC6460"/> defines a profile that uses the TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256 and TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384 cipher suites.</t>
           <t><xref target="RFC4492"/> allows clients and servers to negotiate ECDH parameters (curves).  Both clients and servers SHOULD include the "Supported Elliptic Curves" extension <xref target="RFC4492"/>.  For interoperability, clients and servers SHOULD support the NIST P-256 (secp256r1) curve <xref target="RFC4492"/>. In addition, clients SHOULD send an ec_point_formats extension with a single element, "uncompressed".</t>
         </section>
@@ -441,14 +441,17 @@ Rationale: the extension does not apply to the AEAD
     
           <section title="Applicability Statement" anchor="applicability">
 
-        <t>The deployment recommendations of this document address the operators of application layer services that are most commonly used on the Internet, including, but not limited to:</t>
+        <t>The recommendations of this document primarily apply to the implementation and deployment of application protocols that are most commonly used with TLS and DTLS on the Internet today.  Examples include, but are not limited to:</t>
         <t>
           <list style="symbols">
-            <t>Operators of web services that wish to protect HTTP with TLS.</t>
-            <t>Operators of email services who wish to protect the application-layer protocols with TLS (e.g., IMAP, POP3 or SMTP).</t>
-            <t>Operators of instant-messaging services who wish to protect their application-layer protocols with TLS (e.g., XMPP or IRC).</t>
+            <t>Web software and services that wish to protect HTTP traffic with TLS.</t>
+            <t>Email software and services that wish to protect IMAP, POP3, or SMTP traffic with TLS.</t>
+            <t>Instant-messaging software and services that wish to protect XMPP or IRC traffic with TLS.</t>
+            <t>Realtime media software and services that wish to protect SRTP traffic with DTLS.</t>
           </list>
         </t>
+        <t>This document does not modify the implementation and deployment recommendations (e.g., mandatory-to-implement cipher suites) prescribed by existing application protocols that employ TLS or DTLS.  If the community that uses such an application protocol wishes to modernize its usage of TLS or DTLS to be consistent with the best practices recommended here, it needs to publish a document that explicitly updates the existing application protocol definition (one example of such a document is <xref target='I-D.ietf-uta-xmpp'/>).</t>
+        <t>Designers of new application protocols developed through the Internet Standards Process are expected to conform to the best practices recommended here, unless they provide documentation of compelling reasons that would prevent such conformance (e.g., widespread deployment on constrained devices that lack support for the necessary algorithms).</t>
 
         <section title="Security Services">
           <t>This document provides recommendations for an audience that wishes to secure their communication with TLS to achieve the following:</t>
@@ -606,6 +609,7 @@ Forward secrecy is generally achieved by using the Diffie-Hellman scheme to deri
     <section title="Acknowledgments" anchor="d1e1127">
       <t>Thanks to RJ Atkinson, Uri Blumenthal, Viktor Dukhovni, Stephen Farrell, Daniel Kahn Gillmor, Paul Hoffman, Simon Josefsson, Watson Ladd, Orit Levin, Ilari Liusvaara, Johannes Merkle, Bodo Moeller, Yoav Nir, Massimiliano Pala, Kenny Paterson, Patrick Pelletier, Tom Ritter, Joe St. Sauver, Joe Salowey, Rich Salz, Brian Smith, Sean Turner, and Aaron Zauner for their feedback and suggested improvements. Thanks also to Brian Smith, who has provided a great resource in his "Proposal to Change the Default TLS Ciphersuites Offered by Browsers" <xref target='Smith2013'/>. Finally, thanks to all others who commented on the TLS, UTA, and other discussion lists but who are not mentioned here by name.</t>
       <t>Robert Sparks and Dave Waltermire provided helpful reviews on behalf of the General Area Review Team and the Security Directorate, respectively.</t>
+      <t>During IESG review, Alissa Cooper, Spencer Dawkins, Stephen Farrell, and Pete Resnick provided comments that led to further improvements.</t>
       <t>The authors gratefully acknowledge the assistance of Leif Johansson and Orit Levin as the working group chairs and Pete Resnick as the sponsoring Area Director.</t>
     </section>
 
@@ -633,6 +637,7 @@ Forward secrecy is generally achieved by using the Diffie-Hellman scheme to deri
 <?rfc include="reference.I-D.ietf-dane-smtp-with-dane.xml"?>
 <?rfc include="reference.I-D.ietf-dane-srv.xml"?>
 <?rfc include="reference.I-D.ietf-tls-downgrade-scsv"?>
+<?rfc include="reference.I-D.ietf-uta-xmpp"?>
 <?rfc include="reference.RFC.2246.xml"?>
 <?rfc include="reference.RFC.3602.xml"?>
 <?rfc include="reference.RFC.4346.xml"?>
