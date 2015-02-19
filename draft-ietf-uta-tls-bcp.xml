@@ -450,7 +450,7 @@ Rationale: the extension does not apply to the AEAD
             <t>Realtime media software and services that wish to protect SRTP traffic with DTLS.</t>
           </list>
         </t>
-        <t>This document does not modify the implementation and deployment recommendations (e.g., mandatory-to-implement cipher suites) prescribed by existing application protocols that employ TLS or DTLS.  If the community that uses such an application protocol wishes to modernize its usage of TLS or DTLS to be consistent with the best practices recommended here, it needs to publish a document that explicitly updates the existing application protocol definition (one example of such a document is <xref target='I-D.ietf-uta-xmpp'/>).</t>
+        <t>This document does not modify the implementation and deployment recommendations (e.g., mandatory-to-implement cipher suites) prescribed by existing application protocols that employ TLS or DTLS.  If the community that uses such an application protocol wishes to modernize its usage of TLS or DTLS to be consistent with the best practices recommended here, it needs to explicitly update the existing application protocol definition (one example is <xref target='I-D.ietf-uta-xmpp'/>, which updates <xref target='RFC6120'/>).</t>
         <t>Designers of new application protocols developed through the Internet Standards Process are expected to conform to the best practices recommended here, unless they provide documentation of compelling reasons that would prevent such conformance (e.g., widespread deployment on constrained devices that lack support for the necessary algorithms).</t>
 
         <section title="Security Services">
@@ -648,6 +648,7 @@ Forward secrecy is generally achieved by using the Diffie-Hellman scheme to deri
 <?rfc include="reference.RFC.5280.xml"?>
 <?rfc include="reference.RFC.6090.xml"?>
 <?rfc include="reference.RFC.6101.xml"?>
+<?rfc include="reference.RFC.6120.xml"?>
 <?rfc include="reference.RFC.6460.xml"?>
 <?rfc include="reference.RFC.6698.xml"?>
 <?rfc include="reference.RFC.6797.xml"?>
