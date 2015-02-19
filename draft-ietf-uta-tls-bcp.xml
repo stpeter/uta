@@ -114,13 +114,13 @@ to their communications.
             </t>
             <t>Implementations MUST NOT negotiate SSL version 3.
                <vspace blankLines='1'/>
-               Rationale: SSLv3 <xref target='RFC6101'/> was an improvement over SSLv2 and plugged some significant security holes, but did not support strong cipher suites. SSLv3 does not support TLS extensions, some of which (e.g., renegotiation_info) are security-critical.  In addition, with the emergence of the POODLE attack <xref target='POODLE'/>, SSLv3 is now widely recognized as fundamentally insecure.
+               Rationale: SSLv3 <xref target='RFC6101'/> was an improvement over SSLv2 and plugged some significant security holes, but did not support strong cipher suites. SSLv3 does not support TLS extensions, some of which (e.g., renegotiation_info) are security-critical.  In addition, with the emergence of the POODLE attack <xref target='POODLE'/>, SSLv3 is now widely recognized as fundamentally insecure.  See <xref target='I-D.ietf-tls-sslv3-diediedie'/> for further details.
             </t>
-            <t>Implementations SHOULD NOT negotiate TLS version 1.0 <xref target='RFC2246'/>.
+            <t>Implementations SHOULD NOT negotiate TLS version 1.0 <xref target='RFC2246'/> unless no higher version is available in the negotiation.
                <vspace blankLines='1'/>
                Rationale: TLS 1.0 (published in 1999) does not support many modern, strong cipher suites. In addition, TLS 1.0 lacks a per-record IV for CBC-based cipher suites and does not warn against common padding errors.
             </t>
-            <t>Implementations SHOULD NOT negotiate TLS version 1.1 <xref target='RFC4346'/>.
+            <t>Implementations SHOULD NOT negotiate TLS version 1.1 <xref target='RFC4346'/> unless no higher version is available in the negotiation.
                <vspace blankLines='1'/>
                Rationale: TLS 1.1 (published in 2006) is a security improvement over TLS 1.0, but still does not support certain stronger cipher suites.
             </t>
@@ -145,7 +145,7 @@ to their communications.
 </t>
 <t>Implementations MUST support, and prefer to negotiate, DTLS version 1.2 <xref target="RFC6347"/>.
 <vspace blankLines='1'/>
-  Version 1.2 of DTLS correlates to Version 1.2 of TLS 1.2 (see above).
+  Version 1.2 of DTLS correlates to Version 1.2 of TLS (see above).
   (There is no Version 1.1 of DTLS.)
 </t>
 </list>
@@ -199,7 +199,7 @@ to their communications.
       willing to accept TLS-only clients.
       </t>
       <t>
-      When applicable, Web servers SHOULD use HSTS to indicate that they are willing to accept TLS-only clients.
+      Web servers SHOULD use HSTS to indicate that they are willing to accept TLS-only clients, unless they are deployed in such a way that using HSTS would in fact weaken overall security (e.g., it can be problematic to use HSTS with self-signed certificates, as described in Section 11.3 of <xref target="RFC6797"/>).
       </t>
       </list>
       </t>
@@ -212,7 +212,7 @@ to their communications.
       </section>
 
       <section title="Compression" anchor="rec-compress">
-        <t>In order to help prevent compression-related attacks (summarized in Section 2.6 of <xref target='RFC7457'/>), implementations and deployments SHOULD disable TLS-level compression (<xref target="RFC5246"/>, Section 6.2.2).</t>
+        <t>In order to help prevent compression-related attacks (summarized in Section 2.6 of <xref target='RFC7457'/>), implementations and deployments SHOULD disable TLS-level compression (<xref target="RFC5246"/>, Section 6.2.2), unless the application protocol in question has been shown not to be open to such attacks.</t>
 	<t>
 	Rationale: TLS compression has been subject to security attacks,
 	such as the CRIME attack.</t>
@@ -252,7 +252,7 @@ to their communications.
       as defined in <xref target="RFC5746"/>.
       </t>
       <t>To counter the Triple Handshake attack, the recommended countermeasures from <xref target="triple-handshake"/> are adopted:
-      TLS clients SHOULD apply the same validation policy for all certificates received over a connection, bind the master secret to the full handshake, and bind the abbreviated session resumption handshake to the original full handshake.  In some usages, the most secure option might be to refuse any change of certificates during renegotiation.
+      TLS clients SHOULD apply the same validation policy for all certificates received over a connection, SHOULD bind the master secret to the full handshake (one emerging approach is documented in <xref target='I-D.ietf-tls-session-hash'/>), and if possible SHOULD bind the abbreviated session resumption handshake to the original full handshake (although no standardized method for this has been defined as yet).  Although some of these methods are still under development, those who implement and deploy TLS are advised to watch for further improvements in these technologies.  If none of these countermeasures are available, the most secure option is to refuse any change of certificates during renegotiation.
       </t>
       </section>
 
@@ -379,7 +379,7 @@ to their communications.
 
 	<section title="Implementation Details" anchor="detail-neg">
           <t>Clients SHOULD include TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 as the first proposal to any server, unless they have prior knowledge that the server cannot respond to a TLS 1.2 client_hello message.</t>
-          <t>Servers SHOULD prefer this cipher suite over weaker cipher suites whenever it is proposed, even if it is not the first proposal.</t>
+          <t>Servers MUST prefer this cipher suite over weaker cipher suites whenever it is proposed, even if it is not the first proposal.</t>
           <t>Clients are of course free to offer stronger cipher suites, e.g., using AES-256; when they do, the server SHOULD prefer the stronger cipher suite unless there are compelling reasons (e.g., seriously degraded performance) to choose otherwise.</t>
           <t>This document does not change the mandatory-to-implement TLS cipher suite(s) prescribed by TLS. To maximize interoperability, RFC 5246 mandates implementation of the TLS_RSA_WITH_AES_128_CBC_SHA cipher suite, which is significantly weaker than the cipher suites recommended here (the GCM mode does not suffer from the same weakness, caused by the order of MAC-then-Encrypt in TLS <xref target='Krawczyk2001'/>, since it uses an Authenticated Encryption with Associated Data (AEAD) mode of operation). Implementers should consider the interoperability gain against the loss in security when deploying that cipher suite. Other application protocols specify other cipher suites as mandatory to implement (MTI).</t>
           <t>Note that some profiles of TLS 1.2 use different cipher suites. For example, <xref target="RFC6460"/> defines a profile that uses the TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256 and TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384 cipher suites.</t>
@@ -609,7 +609,7 @@ Forward secrecy is generally achieved by using the Diffie-Hellman scheme to deri
     <section title="Acknowledgments" anchor="d1e1127">
       <t>Thanks to RJ Atkinson, Uri Blumenthal, Viktor Dukhovni, Stephen Farrell, Daniel Kahn Gillmor, Paul Hoffman, Simon Josefsson, Watson Ladd, Orit Levin, Ilari Liusvaara, Johannes Merkle, Bodo Moeller, Yoav Nir, Massimiliano Pala, Kenny Paterson, Patrick Pelletier, Tom Ritter, Joe St. Sauver, Joe Salowey, Rich Salz, Brian Smith, Sean Turner, and Aaron Zauner for their feedback and suggested improvements. Thanks also to Brian Smith, who has provided a great resource in his "Proposal to Change the Default TLS Ciphersuites Offered by Browsers" <xref target='Smith2013'/>. Finally, thanks to all others who commented on the TLS, UTA, and other discussion lists but who are not mentioned here by name.</t>
       <t>Robert Sparks and Dave Waltermire provided helpful reviews on behalf of the General Area Review Team and the Security Directorate, respectively.</t>
-      <t>During IESG review, Alissa Cooper, Spencer Dawkins, Stephen Farrell, and Pete Resnick provided comments that led to further improvements.</t>
+      <t>During IESG review, Richard Barnes, Alissa Cooper, Spencer Dawkins, Stephen Farrell, Barry Leiba, Kathleen Moriarty, and Pete Resnick provided comments that led to further improvements.</t>
       <t>The authors gratefully acknowledge the assistance of Leif Johansson and Orit Levin as the working group chairs and Pete Resnick as the sponsoring Area Director.</t>
     </section>
 
@@ -621,6 +621,7 @@ Forward secrecy is generally achieved by using the Diffie-Hellman scheme to deri
 <?rfc include="reference.RFC.2818.xml"?>
 <?rfc include="reference.RFC.3766.xml"?>
 <?rfc include="reference.RFC.4492.xml"?>
+<?rfc include="reference.RFC.4949.xml"?>
 <?rfc include="reference.RFC.5246.xml"?>
 <?rfc include="reference.RFC.5288.xml"?>
 <?rfc include="reference.RFC.5289.xml"?>
@@ -637,12 +638,13 @@ Forward secrecy is generally achieved by using the Diffie-Hellman scheme to deri
 <?rfc include="reference.I-D.ietf-dane-smtp-with-dane.xml"?>
 <?rfc include="reference.I-D.ietf-dane-srv.xml"?>
 <?rfc include="reference.I-D.ietf-tls-downgrade-scsv"?>
+<?rfc include="reference.I-D.ietf-tls-session-hash"?>
+<?rfc include="reference.I-D.ietf-tls-sslv3-diediedie"?>
 <?rfc include="reference.I-D.ietf-uta-xmpp"?>
 <?rfc include="reference.RFC.2246.xml"?>
 <?rfc include="reference.RFC.3602.xml"?>
 <?rfc include="reference.RFC.4346.xml"?>
 <?rfc include="reference.RFC.4347.xml"?>
-<?rfc include="reference.RFC.4949.xml"?>
 <?rfc include="reference.RFC.5077.xml"?>
 <?rfc include="reference.RFC.5116.xml"?>
 <?rfc include="reference.RFC.5280.xml"?>
