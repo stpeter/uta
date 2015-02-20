@@ -59,7 +59,7 @@
   <middle>
 
     <section title="Introduction" anchor="d1e381">
-      <t>Transport Layer Security (TLS) <xref target='RFC5246'/> and Datagram Transport Security Layer (DTLS) <xref target='RFC6347'/> are widely used to protect data exchanged over application protocols such as HTTP, SMTP, IMAP, POP, SIP, and XMPP.  Over the last few years, several serious attacks on TLS have emerged, including attacks on its most commonly used cipher suites and their modes of operation.  For instance, both the AES-CBC <xref target='RFC3602'/> and RC4 <xref target='I-D.ietf-tls-prohibiting-rc4'/> encryption algorithms, which together have been the most widely deployed ciphers, have been attacked in the context of TLS.  A companion document <xref target='RFC7457'/> provides detailed information about these attacks and will help the reader understand the rationale behind the recommendations provided here.</t>
+      <t>Transport Layer Security (TLS) <xref target='RFC5246'/> and Datagram Transport Security Layer (DTLS) <xref target='RFC6347'/> are widely used to protect data exchanged over application protocols such as HTTP, SMTP, IMAP, POP, SIP, and XMPP.  Over the last few years, several serious attacks on TLS have emerged, including attacks on its most commonly used cipher suites and their modes of operation.  For instance, both the AES-CBC <xref target='RFC3602'/> and RC4 <xref target='RFC7465'/> encryption algorithms, which together have been the most widely deployed ciphers, have been attacked in the context of TLS.  A companion document <xref target='RFC7457'/> provides detailed information about these attacks and will help the reader understand the rationale behind the recommendations provided here.</t>
       <t>Because of these attacks, those who implement and deploy TLS and DTLS need updated guidance on how TLS can be used securely.  This document provides guidance for deployed services as well as for software implementations, assuming the implementer expects his or her code 
 to be deployed in environments defined in <xref target='applicability'/>. 
 In fact, this document calls for the deployment of algorithms that 
@@ -247,12 +247,20 @@ to their communications.
       </section>
       
       <section title="TLS Renegotiation">
-      <t>
-      Where handshake renegotiation is implemented, both clients and servers MUST implement the renegotiation_info extension, 
-      as defined in <xref target="RFC5746"/>.
+      <t>Where handshake renegotiation is implemented, both clients and servers 
+         MUST implement the renegotiation_info extension, as defined in 
+         <xref target="RFC5746"/>.
       </t>
-      <t>To counter the Triple Handshake attack, the recommended countermeasures from <xref target="triple-handshake"/> are adopted:
-      TLS clients SHOULD apply the same validation policy for all certificates received over a connection, SHOULD bind the master secret to the full handshake (one emerging approach is documented in <xref target='I-D.ietf-tls-session-hash'/>), and if possible SHOULD bind the abbreviated session resumption handshake to the original full handshake (although no standardized method for this has been defined as yet).  Although some of these methods are still under development, those who implement and deploy TLS are advised to watch for further improvements in these technologies.  If none of these countermeasures are available, the most secure option is to refuse any change of certificates during renegotiation.
+      <t>The most secure option for countering the Triple Handshake attack is to 
+         refuse any change of certificates during renegotiation.  In addition, TLS 
+         clients SHOULD apply the same validation policy for all certificates 
+         received over a connection.  The <xref target="triple-handshake"/> 
+         document suggests several other possible countermeasures, such as binding
+         the master secret to the full handshake (see <xref target='I-D.ietf-tls-session-hash'/>)
+         and binding the abbreviated session resumption handshake to the original 
+         full handshake.  Although the latter two techniques are still under development 
+         and thus do not qualify as current practices, those who implement and deploy 
+         TLS are advised to watch for further development of appropriate countermeasures.
       </t>
       </section>
 
@@ -311,7 +319,7 @@ to their communications.
             <t>Implementations MUST NOT negotiate RC4 cipher suites. 
                <vspace blankLines='1'/>
                Rationale: The RC4 stream cipher has a variety of cryptographic 
-               weaknesses, as documented in <xref target='I-D.ietf-tls-prohibiting-rc4'/>.
+               weaknesses, as documented in <xref target='RFC7465'/>.
 	       Note that DTLS specifically forbids the use of RC4 already.
             </t>
 	    <t>Implementations MUST NOT negotiate cipher suites offering less 
@@ -374,14 +382,14 @@ to their communications.
         </t>
         <t>These cipher suites are supported only in TLS 1.2 because they
 	are authenticated encryption (AEAD) algorithms <xref target="RFC5116"/>.</t>
-        <t>Typically, in order to prefer these suites, the order of suites needs to be explicitly configured in server software (see <xref target='BETTERCRYPTO'/> for helpful deployment guidelines).  It would be ideal if server software implementations were to prefer these suites by default.</t>
+        <t>Typically, in order to prefer these suites, the order of suites needs to be explicitly configured in server software (see <xref target='BETTERCRYPTO'/> for helpful deployment guidelines, but note that its recommendations differ from the current document in some details).  It would be ideal if server software implementations were to prefer these suites by default.</t>
         <t>Some devices have hardware support for AES-CCM but not AES-GCM, so they are unable to follow the foregoing recommendations regarding cipher suites.  There are even devices that do not support public key cryptography at all, but they are out of scope entirely.</t>
 
 	<section title="Implementation Details" anchor="detail-neg">
           <t>Clients SHOULD include TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 as the first proposal to any server, unless they have prior knowledge that the server cannot respond to a TLS 1.2 client_hello message.</t>
           <t>Servers MUST prefer this cipher suite over weaker cipher suites whenever it is proposed, even if it is not the first proposal.</t>
           <t>Clients are of course free to offer stronger cipher suites, e.g., using AES-256; when they do, the server SHOULD prefer the stronger cipher suite unless there are compelling reasons (e.g., seriously degraded performance) to choose otherwise.</t>
-          <t>This document does not change the mandatory-to-implement TLS cipher suite(s) prescribed by TLS. To maximize interoperability, RFC 5246 mandates implementation of the TLS_RSA_WITH_AES_128_CBC_SHA cipher suite, which is significantly weaker than the cipher suites recommended here (the GCM mode does not suffer from the same weakness, caused by the order of MAC-then-Encrypt in TLS <xref target='Krawczyk2001'/>, since it uses an Authenticated Encryption with Associated Data (AEAD) mode of operation). Implementers should consider the interoperability gain against the loss in security when deploying that cipher suite. Other application protocols specify other cipher suites as mandatory to implement (MTI).</t>
+          <t>This document does not change the mandatory-to-implement TLS cipher suite(s) prescribed by TLS. To maximize interoperability, RFC 5246 mandates implementation of the TLS_RSA_WITH_AES_128_CBC_SHA cipher suite, which is significantly weaker than the cipher suites recommended here (the GCM mode does not suffer from the same weakness, caused by the order of MAC-then-Encrypt in TLS <xref target='Krawczyk2001'/>, since it uses an Authenticated Encryption with Associated Data (AEAD) mode of operation). Implementers should consider the interoperability gain against the loss in security when deploying the TLS_RSA_WITH_AES_128_CBC_SHA cipher suite. Other application protocols specify other cipher suites as mandatory to implement (MTI).</t>
           <t>Note that some profiles of TLS 1.2 use different cipher suites. For example, <xref target="RFC6460"/> defines a profile that uses the TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256 and TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384 cipher suites.</t>
           <t><xref target="RFC4492"/> allows clients and servers to negotiate ECDH parameters (curves).  Both clients and servers SHOULD include the "Supported Elliptic Curves" extension <xref target="RFC4492"/>.  For interoperability, clients and servers SHOULD support the NIST P-256 (secp256r1) curve <xref target="RFC4492"/>. In addition, clients SHOULD send an ec_point_formats extension with a single element, "uncompressed".</t>
         </section>
@@ -410,7 +418,7 @@ to their communications.
       the following are RECOMMENDED (in priority order):</t>
         <t>
           <list style="numbers">
-            <t>Elliptic Curve DHE with a MAC algorithm stronger than HMAC-SHA1 <xref target='RFC5289'/></t>
+            <t>Elliptic Curve DHE with appropriately negotiated parameters (e.g., the curve to be used) and a MAC algorithm stronger than HMAC-SHA1 <xref target='RFC5289'/></t>
             <t>TLS_DHE_RSA_WITH_AES_128_GCM_SHA256 <xref target="RFC5288"/>, with 2048-bit Diffie-Hellman parameters</t>
             <t>TLS_DHE_RSA_WITH_AES_128_GCM_SHA256, with 1024-bit parameters.</t>
           </list>
@@ -630,7 +638,7 @@ Forward secrecy is generally achieved by using the Diffie-Hellman scheme to deri
 <?rfc include="reference.RFC.6125.xml"?>
 <?rfc include="reference.RFC.6176.xml"?>
 <?rfc include="reference.RFC.6347.xml"?>
-<?rfc include="reference.I-D.ietf-tls-prohibiting-rc4.xml"?>
+<?rfc include="reference.RFC.7465.xml"?>
     </references>
 
     <references title="Informative References">
