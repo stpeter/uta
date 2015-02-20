@@ -11,7 +11,7 @@
 <?rfc toc="yes"?>
 <?rfc tocdepth="4"?>
 
-<rfc docName="draft-ietf-uta-tls-bcp-10" ipr="trust200902" category="bcp">
+<rfc docName="draft-ietf-uta-tls-bcp-11" ipr="trust200902" category="bcp">
   <front>
     <title abbrev="TLS Recommendations">Recommendations for Secure Use of TLS and DTLS</title>
     <author initials="Y." surname="Sheffer" fullname="Yaron Sheffer">
@@ -354,7 +354,7 @@ to their communications.
                with the string "TLS_RSA_WITH_*", have several drawbacks, especially
                the fact that they do not support forward secrecy.
             </t>
-            <t>Implementations MUST support and prefer to negotiate, cipher suites 
+            <t>Implementations MUST support and prefer to negotiate cipher suites 
                offering forward secrecy, such as those in the Ephemeral 
                Diffie-Hellman and Elliptic Curve Ephemeral Diffie-Hellman ("DHE" 
                and "ECDHE") families.
@@ -403,16 +403,16 @@ to their communications.
       and one for server authentication. Where a client certificate is used, a third 
       public key is added.
       </t>
-     <t>With a key exchange based on modular Diffie-Hellman ("DHE" cipher suites), DH key lengths of at least 2048 bits are RECOMMENDED.</t>
-<t> Rationale: For various reasons, in practice DH keys are typically generated in lengths that are powers of two (e.g., 2^10 = 1024 bits, 2^11 = 2048 bits, 2^12 = 4096 bits). Because a DH key of 1228 bits would be roughly equivalent to only an 80-bit symmetric key <xref target='RFC3766'/>, it is better to use keys longer than that for the "DHE" family of cipher suites. A DH key of 1926 bits would be roughly equivalent to a 100-bit symmetric key <xref target='RFC3766'/> and a DH key of 2048 bits might be sufficient for at least the next 10 years <xref target='NIST.SP.800-56A'/>. See <xref target="detail-alt"/> for additional information on the use of modular Diffie-Hellman in TLS.
+     <t>With a key exchange based on modular exponential (modp) Diffie-Hellman groups ("DHE" cipher suites), DH key lengths of at least 2048 bits are RECOMMENDED.</t>
+<t> Rationale: For various reasons, in practice DH keys are typically generated in lengths that are powers of two (e.g., 2^10 = 1024 bits, 2^11 = 2048 bits, 2^12 = 4096 bits). Because a DH key of 1228 bits would be roughly equivalent to only an 80-bit symmetric key <xref target='RFC3766'/>, it is better to use keys longer than that for the "DHE" family of cipher suites. A DH key of 1926 bits would be roughly equivalent to a 100-bit symmetric key <xref target='RFC3766'/> and a DH key of 2048 bits might be sufficient for at least the next 10 years <xref target='NIST.SP.800-56A'/>. See <xref target="detail-alt"/> for additional information on the use of modp Diffie-Hellman in TLS.
 </t>
 <t>As noted in <xref target='RFC3766'/>, correcting for the emergence of a TWIRL machine would imply that 1024-bit DH keys yield about 65 bits of equivalent strength and that a 2048-bit DH key would yield about 92 bits of equivalent strength.</t>
 <t>With regard to ECDH keys, the IANA named curve registry contains 160-bit elliptic curves which are considered to be roughly equivalent to only an 80-bit symmetric key <xref target='ECRYPT-II'/>.   Curves of less than 192-bits SHOULD NOT be used.</t>
 <t>When using RSA servers SHOULD authenticate using certificates with at least a 2048-bit modulus for the public key.  In addition, the use of the SHA-256 hash algorithm is RECOMMENDED (see <xref target="CAB-Baseline"/> for more details). Clients SHOULD indicate to servers that they request SHA-256, by using the "Signature Algorithms" extension defined in TLS&nbsp;1.2. </t>
       </section>
 
-	<section title="Modular vs. Elliptic Curve DH Cipher Suites" anchor="detail-alt">
-      <t>Not all TLS implementations support both modular and elliptic curve Diffie-Hellman groups, as
+	<section title="Modular Exponential vs. Elliptic Curve DH Cipher Suites" anchor="detail-alt">
+      <t>Not all TLS implementations support both modular exponential (modp) and elliptic curve (EC) Diffie-Hellman groups, as
       required by <xref target="rec-cipher"/>. Some implementations are severely limited in
       the length of DH values. When such implementations need to be accommodated,
       the following are RECOMMENDED (in priority order):</t>
@@ -423,7 +423,7 @@ to their communications.
             <t>TLS_DHE_RSA_WITH_AES_128_GCM_SHA256, with 1024-bit parameters.</t>
           </list>
         </t>
-        <t>Rationale: Although Elliptic Curve Cryptography is widely deployed there are some communities where its uptake has been limited for several reasons, including its complexity compared to modular arithmetic and longstanding perceptions of IPR concerns (which, for the most part, have now been resolved <xref target='RFC6090'/>).  Note that ECDHE cipher suites exist for both RSA and ECDSA certificates so moving to ECDHE cipher suites does not require moving away from RSA based certificates.  On the other hand, there are two related issues hindering effective use of modular Diffie-Hellman cipher suites in TLS:</t>
+        <t>Rationale: Although Elliptic Curve Cryptography is widely deployed there are some communities where its uptake has been limited for several reasons, including its complexity compared to modular arithmetic and longstanding perceptions of IPR concerns (which, for the most part, have now been resolved <xref target='RFC6090'/>).  Note that ECDHE cipher suites exist for both RSA and ECDSA certificates so moving to ECDHE cipher suites does not require moving away from RSA based certificates.  On the other hand, there are two related issues hindering effective use of modp Diffie-Hellman cipher suites in TLS:</t>
         <t>
           <list style="symbols">
             <t>There are no standardized, widely implemented protocol mechanisms to negotiate the DH groups or parameter lengths supported by client and server.</t>
@@ -432,8 +432,8 @@ to their communications.
                  addition, several implementations do not perform appropriate validation of group parameters and are vulnerable to attacks referenced in Section 2.9 of <xref target='RFC7457'/></t>
           </list>
         </t>
-        <t>Note that with DHE and ECDHE cipher suites, the TLS master key only depends on the Diffie-Hellman parameters and not on the strength of the RSA certificate; moreover, 1024 bit modular DH parameters are generally considered insufficient at this time.</t>
-        <t>With modular ephemeral DH, deployers ought to carefully evaluate interoperability vs. security considerations when configuring their TLS endpoints.</t>
+        <t>Note that with DHE and ECDHE cipher suites, the TLS master key only depends on the Diffie-Hellman parameters and not on the strength of the RSA certificate; moreover, 1024 bit modp DH parameters are generally considered insufficient at this time.</t>
+        <t>With modp ephemeral DH, deployers ought to carefully evaluate interoperability vs. security considerations when configuring their TLS endpoints.</t>
       </section>
       
       <section title="Truncated HMAC">
@@ -470,21 +470,19 @@ Rationale: the extension does not apply to the AEAD
               <t>Authentication: an end-point of the TLS communication is authenticated as the intended entity to communicate with.</t>
             </list>
           </t>
-          <t>With regard to authentication, TLS enables authentication of one or both end-points in the communication. Although some TLS usage scenarios do not require authentication, those scenarios are not in scope for this document (a rationale for this decision is provided under <xref target="unauth-opp"/>).</t>
+          <t>With regard to authentication, TLS enables authentication of one or both end-points in the communication.  In the context of opportunistic security <xref target='RFC7435'/>, TLS is sometimes used without authentication. As discussed in <xref target='oppsec'/>, considerations for opportunistic security are not in scope for this document.</t>
           <t>If deployers deviate from the recommendations given in this document, they need to be aware that they might lose access to one of the foregoing security services.</t>
           <t>This document applies only to environments where confidentiality is required. It recommends algorithms and configuration options that enforce secrecy of the data-in-transit.</t>
           <t>This document also assumes that data integrity protection is always one of the goals of a deployment. In cases where integrity is not required, it does not make sense to employ TLS in the first place. There are attacks against confidentiality-only protection that utilize the lack of integrity to also break confidentiality (see for instance <xref target="DegabrieleP07"/> in the context of IPsec).</t>
           <t>This document addresses itself to application protocols that are most commonly used on the Internet with TLS and DTLS. Typically, all communication between TLS clients and TLS servers requires all three of the above security services. This is particularly true where TLS clients are user agents like Web browsers or email software.</t>
-          <t>This document does not address the rarer deployment scenarios where one of the above three properties is not desired, such as the use case described under <xref target="unauth-opp"/> below.  As another scenario where confidentiality is not needed, consider a monitored network where the authorities in charge of the respective traffic domain require full access to unencrypted (plaintext) traffic, and where users collaborate and send their traffic in the clear.</t>
+          <t>This document does not address the rarer deployment scenarios where one of the above three properties is not desired, such as the use case described under <xref target="oppsec"/> below.  As another scenario where confidentiality is not needed, consider a monitored network where the authorities in charge of the respective traffic domain require full access to unencrypted (plaintext) traffic, and where users collaborate and send their traffic in the clear.</t>
         </section>
-        <section title="Unauthenticated TLS and Opportunistic Security" anchor="unauth-opp">
-          <t>Several important applications use TLS to protect data between a TLS client and a TLS server, but do so without the TLS client necessarily verifying the server's certificate. This practice is often called "unauthenticated TLS".  The reader is referred to <xref target="I-D.ietf-dane-smtp-with-dane"/> for an example and an explanation of why this less secure practice will likely remain common in the context of SMTP (especially for MTA-to-MTA communications).  The practice is also encountered in similar contexts such as server-to-server traffic on the XMPP network (where multi-tenant hosting environments make it difficult for operators to obtain proper certificates for all of the domains they service).</t>
-          <t>Furthermore, in some scenarios the use of TLS itself is optional, i.e. the client decides dynamically ("opportunistically") whether to use TLS with a particular server or to connect in the clear.  This practice, often called "opportunistic security", is described at length in <xref target="RFC7435"/>.</t>
-          <t>It can be argued that the recommendations provided in this document ought to apply equally to unauthenticated TLS as well as authenticated TLS.  That would keep TLS implementations and deployments in sync, which is a desirable property given that servers can be used simultaneously for unauthenticated TLS and for authenticated TLS (indeed, a server cannot know whether a client might attempt authenticated or unauthenticated TLS). On the other hand, it has been argued that some of the recommendations in this document might be too strict for unauthenticated scenarios and that any security is better than no security at all (i.e., sending traffic in the clear), even if it means deploying outdated protocol versions and ciphers in unauthenticated scenarios.  The sense of the UTA Working Group was to complete work on this document about authenticated TLS and to initiate work on a separate document about unauthenticated TLS.</t>
-          <t>In summary: this document does not apply to unauthenticated TLS use cases.</t>
+        <section title="Opportunistic Security" anchor="oppsec">
+          <t>There are several important scenarios in which the use of TLS is optional, i.e., the client decides dynamically ("opportunistically") whether to use TLS with a particular server or to connect in the clear.  This practice, often called "opportunistic security", is described at length in <xref target='RFC7435'/> and is often motivated by a desire for backward compatibility with legacy deployments.</t>
+          <t>In these scenarios, some of the recommendations in this document might be too strict, since adhering to them could cause fallback to cleartext, a worse outcome than using TLS with an outdated protocol version or cipher suite.</t>
+          <t>This document specifies best practices for TLS in general.  A separate document containing recommendations for the use of TLS with opportunistic security is to be completed in the future.</t>
         </section>
       </section>
-
 
     <section title="IANA Considerations" anchor="sec_IANA_Considerations">
       <t>This document requests no actions of IANA. [Note to RFC Editor: please remove this whole section before publication.]</t>
