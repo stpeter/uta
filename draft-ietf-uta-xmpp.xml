@@ -10,7 +10,7 @@
 <?rfc toc="yes"?>
 <?rfc tocdepth="4"?>
 
-<rfc category="std" docName="draft-ietf-uta-xmpp-05" ipr="trust200902" updates="6120">
+<rfc category="std" docName="draft-ietf-uta-xmpp-06" ipr="trust200902" updates="6120">
 
   <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
 
@@ -39,7 +39,6 @@
 
     <section title="Introduction" anchor='intro'>
       <t>The Extensible Messaging and Presence Protocol (XMPP) <xref target='RFC6120'/> (along with its precursor, the so-called "Jabber protocol") has used Transport Layer Security (TLS) <xref target='RFC5246'/> (along with its precursor, Secure Sockets Layer or SSL) since 1999.  Both <xref target='RFC6120'/> and its predecessor <xref target='RFC3920'/> provided recommendations regarding the use of TLS in XMPP.  In order to address the evolving threat model on the Internet today, this document provides stronger recommendations.</t>
-      <t><list style='empty'><t>NOTE: Unless explicitly noted otherwise, all of the recommendations specified in <xref target='I-D.ietf-uta-tls-bcp'/> apply to XMPP.  In the main, this document merely provides supplementary information; those who implement and deploy XMPP technologies are expected to follow the recommendations of <xref target='I-D.ietf-uta-tls-bcp'/>.</t></list></t>
       <t>This document updates <xref target='RFC6120'/>.</t>
     </section>
 
@@ -50,9 +49,11 @@
 
     <section title="Recommendations" anchor="rec">
 
+      <t>XMPP implementations and deployments MUST follow the recommendations provided in <xref target='I-D.ietf-uta-tls-bcp'/> unless explicitly noted otherwise herein, and this document updates the recommendations <xref target='RFC6120'/> with regard to the use of TLS in XMPP.  Instead of repeating the recommendations of <xref target='I-D.ietf-uta-tls-bcp'/> here, this document mostly provides supplementary regarding secure implementation and deployment of XMPP technologies.</t>
+
       <section title="Support for TLS" anchor="rec-support">
         <t>Support for TLS (specifically, the XMPP profile of STARTTLS) is mandatory for XMPP implementations, as already specified in <xref target='RFC6120'/> and its predecessor <xref target='RFC3920'/>.</t>
-        <t>The server (i.e., the XMPP receiving entity) to which a client or peer server (i.e., the XMPP initiating entity) connects might not offer a stream feature of &lt;starttls xmlns='urn:ietf:params:xml:ns:xmpp-tls'/&gt;.  Although in general this stream feature indicates that the server supports XMPP 1.0 and therefore supports TLS, it is possible that this stream feature might be stripped out by an attacker (see Section 2.1 of <xref target='I-D.ietf-uta-tls-attacks'/>).  Therefore, the initiating entity SHOULD proceed with the stream negotiation even if the receiving entity does not advertise support for TLS.  Similarly, although a receiving entity SHOULD include the &lt;required/&gt; child element to indicate that negotiation of TLS is mandatory, an initiating entity MUST NOT depend on receiving the &lt;required/&gt; flag in determining whether TLS will be enforced for the stream.</t>
+        <t>The server (i.e., the XMPP receiving entity) to which a client or peer server (i.e., the XMPP initiating entity) connects might not offer a stream feature of &lt;starttls xmlns='urn:ietf:params:xml:ns :xmpp-tls'/&gt;.  Although in general this stream feature indicates that the server supports XMPP 1.0 and therefore supports TLS, it is possible that this stream feature might be stripped out by an attacker (see Section 2.1 of <xref target='RFC7457'/>).  Similarly, the &lt;required/&gt; child element of the &lt;starttls/&gt; stream feature is used to indicate that negotiation of TLS is mandatory, but could also be stripped out by an attacker.  Therefore, the initiating entity MUST NOT be deterred from attempting TLS negotiation even if the receiving entity does not advertise support for TLS.  Instead, the initiating entity SHOULD (based on local policy) proceed with the stream negotiation and attempt to negotiate TLS.</t>
       </section>
 
       <section title="Compression" anchor="rec-compress">
@@ -64,13 +65,10 @@
       </section>
 
       <section title="Authenticated Connections" anchor="rec-auth">
-        <t>Both the core XMPP specification <xref target='RFC6120'/> and the "CertID" specification <xref target='RFC6125'/> provide recommendations and requirements for certificate validation in the context of authenticated connections.  This document does not supersede those specifications.  Wherever possible, it is best to prefer authenticated connections (along with SASL <xref target='RFC4422'/>), as already stated in the core XMPP specification <xref target='RFC6120'/>.  In particular, clients MUST authenticate servers and servers MUST authenticate clients.  This document does not mandate that servers need to authenticate peer servers (see next section).</t>
-        <t>This document does not modify the recommendations in <xref target='RFC6120'/> regarding the Subject Alternative Names (or other certificate details) that need to be supported for authentication of XMPP connections using PKIX certificates.</t>
-        <t>The Domain Name Associations (DNA) specification <xref target='I-D.ietf-xmpp-dna'/> describes a framework for XMPP server authentication methods, which include not only PKIX but also DNS-Based Authentication of Named Entities (DANE) as defined in <xref target='I-D.ietf-dane-srv'/> and PKIX over Secure HTTP (POSH) as defined in <xref target='I-D.ietf-xmpp-posh'/>.</t>
-      </section>
-
-      <section title="Unauthenticated Connections" anchor="rec-unauth">
-        <t>Given the pervasiveness of passive eavesdropping, even an unauthenticated connection might be better than an unencrypted connection (this is similar to the "better than nothing security" approach for IPsec <xref target='RFC5386'/>).  Unauthenticated connections include connections negotiated using anonymous Diffie-Hellman algorithms or using self-signed certificates, among other scenarios.  In particular, because of current deployment challenges for authenticated connections between XMPP servers (see <xref target='I-D.ietf-xmpp-dna'/> and <xref target='I-D.ietf-xmpp-posh'/> for details), it can be reasonable for XMPP server implementations to accept unauthenticated connections when Server Dialback keys <xref target='XEP-0220'/> are used; although such keys on their own provide only weak identity verification (made stronger through the use of DNSSEC <xref target='RFC4033'/>), this at least enables encryption of server-to-server connections.</t>
+        <t>Both the core XMPP specification <xref target='RFC6120'/> and the "CertID" specification <xref target='RFC6125'/> provide recommendations and requirements for certificate validation in the context of authenticated connections.  This document does not supersede those specifications (e.g., it does not modify the recommendations in <xref target='RFC6120'/> regarding the Subject Alternative Names or other certificate details that need to be supported for authentication of XMPP connections using PKIX certificates).</t>
+        <t>Wherever possible, it is best to prefer authenticated connections (along with SASL <xref target='RFC4422'/>), as already stated in the core XMPP specification <xref target='RFC6120'/>.  In particular, clients MUST authenticate servers and servers MUST authenticate clients.</t>
+        <t>This document does not mandate that servers need to authenticate peer servers, although such authentication is strongly preferred and servers SHOULD authenticate each other.  Unfortunately, in multi-tenanted environments it can be extremely difficult to obtain or deploy PKIX certificates with the proper Subject Alternative Names (see <xref target='I-D.ietf-xmpp-dna'/> and <xref target='I-D.ietf-xmpp-posh'/> for details).  To overcome that difficulty, the Domain Name Associations (DNA) specification <xref target='I-D.ietf-xmpp-dna'/> describes a framework for XMPP server authentication methods, which include not only PKIX but also DNS-Based Authentication of Named Entities (DANE) as defined in <xref target='I-D.ietf-dane-srv'/> and PKIX over Secure HTTP (POSH) as defined in <xref target='I-D.ietf-xmpp-posh'/>.  These methods can provide a basis for server identity verification when appropriate PKIX certificates cannot be obtained or deployed.</t>
+        <t>Given the pervasiveness of eavesdropping <xref target='RFC7258'/> even an unauthenticated connection might be better than an unencrypted connection in these scenarios (this is similar to the "better than nothing security" approach for IPsec <xref target='RFC5386'/>).  Unauthenticated connections include connections negotiated using anonymous Diffie-Hellman algorithms or using self-signed certificates, among others.  In particular for XMPP server-to-server interactions, it can be reasonable for XMPP server implementations to accept unauthenticated but encrypted connections when Server Dialback keys <xref target='XEP-0220'/> are used; such keys on their own provide only weak identity verification (made stronger through the use of DNSSEC <xref target='RFC4033'/>), but this at least enables encryption of server-to-server connections.  The Domain Name Associations (DNA) prooftypes described above are intended to mitigate the residual need for unauthenticated connections in these scenarios.</t>
       </section>
 
       <section title="Server Name Indication" anchor="rec-sni">
@@ -81,8 +79,8 @@
         <t>It is strongly encouraged that XMPP clients provide ways for end users (and that XMPP servers provide ways for administrators) to complete the following tasks:</t>
         <t>
           <list style='symbols'>
-            <t>Determine if a client-to-server or server-to-server connection is encrypted and authenticated.</t>
-            <t>Determine the version of TLS used for a client-to-server or server-to-server connection.</t>
+            <t>Determine if a given incoming or outgoing XML stream is encrypted or authenticated (or both) using TLS.</t>
+            <t>Determine the version of TLS used for encryption of a given stream.</t>
             <t>Inspect the certificate offered by an XMPP server.</t>
             <t>Determine the cipher suite used to encrypt a connection.</t>
             <t>Be warned if the certificate changes for a given server.</t>
@@ -100,6 +98,7 @@
       <t>The use of TLS can help limit the information available for correlation to the network and transport layer headers as opposed to the application layer.  As typically deployed, XMPP technologies do not leave application-layer routing data (such as XMPP 'to' and 'from' addresses) at rest on intermediate systems, since there is only one hop between any two given XMPP servers.  As a result, encrypting all hops (sender's client to sender's server, sender's server to recipient's server, recipient's server to recipient's client) can help to limit the amount of "metadata" that might leak.</t>
       <t>It is possible that XMPP servers themselves might be compromised. In that case, per-hop encryption would not protect XMPP communications, and even end-to-end encryption of (parts of) XMPP stanza payloads would leave addressing information and XMPP roster data in the clear.  By the same token, it is possible that XMPP clients (or the end-user devices on which such clients are installed) could also be compromised, leaving users utterly at the mercy of an adversary.</t>
       <t>This document and related actions to strengthen the security of the XMPP network are based on the assumption that XMPP servers and clients have not been subject to widespread compromise.  If this assumption is valid, then ubiquitous use of per-hop TLS channel encryption and more significant deployment of end-to-end object encryption technologies will serve to protect XMPP communications to a measurable degree, compared to the alternatives.</t>
+      <t>This document covers only communication over the XMPP network and does not take into account gateways to non-XMPP networks.  As an example, for security considerations related to gateways between XMPP and the Session Initiation Protocol (SIP) see <xref target='RFC7247'/> and <xref target='I-D.ietf-stox-im'/>.</t>
     </section>
 
   </middle>
@@ -120,12 +119,12 @@
 <author initials='P' surname='Saint-Andre' fullname='Peter Saint-Andre'>
     <organization />
 </author>
-<date month='December' day='7' year='2014' />
+<date month='February' day='20' year='2015' />
 <abstract><t>Transport Layer Security (TLS) and Datagram Transport Security Layer (DTLS) are widely used to protect data exchanged over application protocols such as HTTP, SMTP, IMAP, POP, SIP, and XMPP.  Over the last few years, several serious attacks on TLS have emerged, including attacks on its most commonly used cipher suites and modes of operation.  This document provides recommendations for improving the security of both software implementations and deployed services that use TLS and DTLS.</t></abstract>
 </front>
-<seriesInfo name='Internet-Draft' value='draft-ietf-uta-tls-bcp-08' />
+<seriesInfo name='Internet-Draft' value='draft-ietf-uta-tls-bcp-11' />
 <format type='TXT'
-        target='http://www.ietf.org/internet-drafts/draft-ietf-uta-tls-bcp-08.txt' />
+        target='http://www.ietf.org/internet-drafts/draft-ietf-uta-tls-bcp-11.txt' />
 </reference>
 
 <reference anchor="RFC2119">
@@ -237,33 +236,33 @@
           <author initials="P" surname="Saint-Andre" fullname="Peter Saint-Andre">
             <organization/>
           </author>
-          <date month="October" day="21" year="2014"/>
+          <date month="March" day="23" year="2015"/>
           <abstract>
             <t>The DANE specification (RFC 6698) describes how to use TLSA resource records in the DNS to associate a server's host name with its TLS certificate, where the association is secured with DNSSEC.  However, application protocols that use SRV records (RFC 2782) to indirectly name the target server host names for a service domain cannot apply the rules from RFC 6698.  Therefore this document provides guidelines that enable such protocols to locate and use TLSA records.</t>
           </abstract>
         </front>
-        <seriesInfo name="Internet-Draft" value="draft-ietf-dane-srv-08"/>
-        <format type="TXT" target="http://www.ietf.org/internet-drafts/draft-ietf-dane-srv-08.txt"/>
+        <seriesInfo name="Internet-Draft" value="draft-ietf-dane-srv-12"/>
+        <format type="TXT" target="http://www.ietf.org/internet-drafts/draft-ietf-dane-srv-12.txt"/>
       </reference>
 
-<reference anchor='I-D.ietf-uta-tls-attacks'>
+<reference anchor='I-D.ietf-stox-im'>
 <front>
-<title>Summarizing Current Attacks on TLS and DTLS</title>
-<author initials='Y' surname='Sheffer' fullname='Yaron Sheffer'>
-    <organization />
-</author>
-<author initials='R' surname='Holz' fullname='Ralph Holz'>
-    <organization />
-</author>
+<title>Interworking between the Session Initiation Protocol (SIP) and the Extensible Messaging and Presence Protocol (XMPP): Instant Messaging</title>
 <author initials='P' surname='Saint-Andre' fullname='Peter Saint-Andre'>
     <organization />
 </author>
-<date month='October' day='23' year='2014' />
-<abstract><t>Over the last few years there have been several serious attacks on TLS, including attacks on its most commonly used ciphers and modes of operation.  This document summarizes these attacks, with the goal of motivating generic and protocol-specific recommendations on the usage of TLS and DTLS.</t></abstract>
+<author initials='A' surname='Houri' fullname='Avshalom Houri'>
+    <organization />
+</author>
+<author initials='J' surname='Hildebrand' fullname='Joe Hildebrand'>
+    <organization />
+</author>
+<date month='March' day='5' year='2015' />
+<abstract><t>This document defines a bidirectional protocol mapping for the exchange of single instant messages between the Session Initiation Protocol (SIP) and the Extensible Messaging and Presence Protocol (XMPP).</t></abstract>
 </front>
-<seriesInfo name='Internet-Draft' value='draft-ietf-uta-tls-attacks-05' />
+<seriesInfo name='Internet-Draft' value='draft-ietf-stox-im-13' />
 <format type='TXT'
-        target='http://www.ietf.org/internet-drafts/draft-ietf-uta-tls-attacks-05.txt' />
+        target='http://www.ietf.org/internet-drafts/draft-ietf-stox-im-13.txt' />
 </reference>
 
 <reference anchor='I-D.ietf-xmpp-dna'>
@@ -275,12 +274,12 @@
 <author initials='M' surname='Miller' fullname='Matthew Miller'>
     <organization />
 </author>
-<date month='October' day='23' year='2014' />
+<date month='March' day='24' year='2015' />
 <abstract><t>This document improves the security of the Extensible Messaging and Presence Protocol (XMPP) in two ways.  First, it specifies how "prooftypes" can establish a strong association between a domain name and an XML stream.  Second, it describes how to securely delegate a source domain to a derived domain, which is especially important in virtual hosting environments.</t></abstract>
 </front>
-<seriesInfo name='Internet-Draft' value='draft-ietf-xmpp-dna-08' />
+<seriesInfo name='Internet-Draft' value='draft-ietf-xmpp-dna-10' />
 <format type='TXT'
-        target='http://www.ietf.org/internet-drafts/draft-ietf-xmpp-dna-08.txt' />
+        target='http://www.ietf.org/internet-drafts/draft-ietf-xmpp-dna-10.txt' />
 </reference>
 
       <reference anchor="I-D.ietf-xmpp-posh">
@@ -292,13 +291,13 @@
           <author initials="P" surname="Saint-Andre" fullname="Peter Saint-Andre">
             <organization/>
           </author>
-          <date month="October" day="10" year="2014"/>
+          <date month="February" day="23" year="2015"/>
           <abstract>
             <t>Experience has shown that it is extremely difficult to deploy proper PKIX certificates for TLS in multi-tenanted environments, since certification authorities will not issue certificates for hosted domains to hosting services, hosted domains do not want hosting services to hold their private keys, and hosting services wish to avoid liability for holding those keys.  As a result, domains hosted in multi-tenanted environments often deploy non-HTTP applications such as email and instant messaging using certificates that identify the hosting service, not the hosted domain.  Such deployments force end users and peer services to accept a certificate with an improper identifier, resulting in obvious security implications.  This document defines two methods that make it easier to deploy certificates for proper server identity checking in non-HTTP application protocols.  The first method enables the TLS client associated with a user agent or peer application server to obtain the end-entity certificate of a hosted domain over secure HTTP as an alternative to standard PKIX techniques.  The second method enables a hosted domain to securely delegate a non-HTTP application to a hosting service using redirects provided by HTTPS itself or by a pointer in a file served over HTTPS at the hosted domain.  While this approach was developed for use in the Extensible Messaging and Presence Protocol (XMPP) as a Domain Name Association prooftype, it can be applied to any non-HTTP application protocol.</t>
           </abstract>
         </front>
-        <seriesInfo name="Internet-Draft" value="draft-ietf-xmpp-posh-02"/>
-        <format type="TXT" target="http://www.ietf.org/internet-drafts/draft-ietf-xmpp-posh-02.txt"/>
+        <seriesInfo name="Internet-Draft" value="draft-ietf-xmpp-posh-04"/>
+        <format type="TXT" target="http://www.ietf.org/internet-drafts/draft-ietf-xmpp-posh-04.txt"/>
       </reference>
 
 <reference anchor='RFC3920'>
@@ -389,6 +388,53 @@
 <t>This document provides specifications for existing TLS extensions.  It is a companion document for RFC 5246, "The Transport Layer Security (TLS) Protocol Version 1.2".  The extensions specified are server_name, max_fragment_length, client_certificate_url, trusted_ca_keys, truncated_hmac, and status_request. [STANDARDS-TRACK]</t></abstract></front>
 <seriesInfo name='RFC' value='6066' />
 <format type='TXT' octets='55079' target='http://www.rfc-editor.org/rfc/rfc6066.txt' />
+</reference>
+
+<reference anchor='RFC7247'>
+<front>
+<title>Interworking between the Session Initiation Protocol (SIP) and the Extensible Messaging and Presence Protocol (XMPP): Architecture, Addresses, and Error Handling</title>
+<author initials='P.' surname='Saint-Andre' fullname='P. Saint-Andre'>
+<organization /></author>
+<author initials='A.' surname='Houri' fullname='A. Houri'>
+<organization /></author>
+<author initials='J.' surname='Hildebrand' fullname='J. Hildebrand'>
+<organization /></author>
+<date year='2014' month='May' />
+<abstract>
+<t>As a foundation for the definition of bidirectional protocol mappings between the Session Initiation Protocol (SIP) and the Extensible Messaging and Presence Protocol (XMPP), this document specifies the architectural assumptions underlying such mappings as well as the mapping of addresses and error conditions.</t></abstract></front>
+<seriesInfo name='RFC' value='7247' />
+<format type='TXT' octets='57218' target='http://www.rfc-editor.org/rfc/rfc7247.txt' />
+</reference>
+
+<reference anchor='RFC7258'>
+<front>
+<title>Pervasive Monitoring Is an Attack</title>
+<author initials='S.' surname='Farrell' fullname='S. Farrell'>
+<organization /></author>
+<author initials='H.' surname='Tschofenig' fullname='H. Tschofenig'>
+<organization /></author>
+<date year='2014' month='May' />
+<abstract>
+<t>Pervasive monitoring is a technical attack that should be mitigated in the design of IETF protocols, where possible.</t></abstract></front>
+<seriesInfo name='BCP' value='188' />
+<seriesInfo name='RFC' value='7258' />
+<format type='TXT' octets='13396' target='http://www.rfc-editor.org/rfc/rfc7258.txt' />
+</reference>
+
+<reference anchor='RFC7457'>
+<front>
+<title>Summarizing Known Attacks on Transport Layer Security (TLS) and Datagram TLS (DTLS)</title>
+<author initials='Y.' surname='Sheffer' fullname='Y. Sheffer'>
+<organization /></author>
+<author initials='R.' surname='Holz' fullname='R. Holz'>
+<organization /></author>
+<author initials='P.' surname='Saint-Andre' fullname='P. Saint-Andre'>
+<organization /></author>
+<date year='2015' month='February' />
+<abstract>
+<t>Over the last few years, there have been several serious attacks on Transport Layer Security (TLS), including attacks on its most commonly used ciphers and modes of operation.  This document summarizes these attacks, with the goal of motivating generic and protocol-specific recommendations on the usage of TLS and Datagram TLS (DTLS).</t></abstract></front>
+<seriesInfo name='RFC' value='7457' />
+<format type='TXT' octets='28614' target='http://www.rfc-editor.org/rfc/rfc7457.txt' />
 </reference>
 
 <reference anchor="XEP-0138">
@@ -507,6 +553,8 @@
 
     <section title="Acknowledgements">
       <t>The authors would like to thank the following individuals for their input: Dave Cridland, Philipp Hancke, Olle Johansson, Steve Kille, Tobias Markmann, Matt Miller, and Rene Treffer.</t>
+      <t>Roni Even caught several important issues in his review on behalf of the General Area Review Team.</t>
+      <t>Thanks to Leif Johansson and Orit Levin as chairs of the UTA WG, Ben Campbell and Joe Hildebrand as chairs of the XMPP WG, and Stephen Farrell as the sponsoring Area Director.</t>
     </section>
 
   </back>
