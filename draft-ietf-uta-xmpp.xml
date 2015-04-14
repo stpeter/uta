@@ -79,7 +79,7 @@
         <t>It is strongly encouraged that XMPP clients provide ways for end users (and that XMPP servers provide ways for administrators) to complete the following tasks:</t>
         <t>
           <list style='symbols'>
-            <t>Determine if a given incoming or outgoing XML stream is encrypted using TLS. 
+            <t>Determine if a given incoming or outgoing XML stream is encrypted using TLS.</t>
             <t>Determine the version of TLS used for encryption of a given stream.</t>
             <t>If authenticated encryption is used, determine how the connection was authenticated or verified (e.g., via PKI, DANE, POSH, or Server Dialback).</t>
             <t>Inspect the certificate offered by an XMPP server.</t>
