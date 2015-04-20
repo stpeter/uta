@@ -66,8 +66,15 @@
 
       <section title="Authenticated Connections" anchor="rec-auth">
         <t>Both the core XMPP specification <xref target='RFC6120'/> and the "CertID" specification <xref target='RFC6125'/> provide recommendations and requirements for certificate validation in the context of authenticated connections.  This document does not supersede those specifications (e.g., it does not modify the recommendations in <xref target='RFC6120'/> regarding the Subject Alternative Names or other certificate details that need to be supported for authentication of XMPP connections using PKIX certificates).</t>
-        <t>Wherever possible, it is best to prefer authenticated connections (along with SASL <xref target='RFC4422'/>), as already stated in the core XMPP specification <xref target='RFC6120'/>.  In particular, clients MUST authenticate servers and servers MUST authenticate clients.</t>
-        <t>This document does not mandate that servers need to authenticate peer servers, although such authentication is strongly preferred and servers SHOULD authenticate each other.  Unfortunately, in multi-tenanted environments it can be extremely difficult to obtain and deploy PKIX certificates with the proper Subject Alternative Names (see <xref target='I-D.ietf-xmpp-dna'/> and <xref target='I-D.ietf-xmpp-posh'/> for details).  To overcome that difficulty, the Domain Name Associations (DNA) specification <xref target='I-D.ietf-xmpp-dna'/> describes a framework for XMPP server authentication methods, which include not only PKIX but also DNS-Based Authentication of Named Entities (DANE) as defined in <xref target='I-D.ietf-dane-srv'/> and PKIX over Secure HTTP (POSH) as defined in <xref target='I-D.ietf-xmpp-posh'/>.  These methods can provide a basis for server identity verification when appropriate PKIX certificates cannot be obtained and deployed.</t>
+        <t>Wherever possible, it is best to prefer authenticated connections (along with SASL <xref target='RFC4422'/>), as already stated in the core XMPP specification <xref target='RFC6120'/>.  In particular:</t>
+        <t>
+          <list style='symbols'>
+            <t>Clients MUST authenticate servers.</t>
+            <t>Servers MUST authenticate clients.</t>
+            <t>Servers SHOULD authenticate other servers.</t>
+          </list>
+        </t>
+        <t>This document does not mandate that servers need to authenticate peer servers, although such authentication is strongly preferred.  Unfortunately, in multi-tenanted environments it can be extremely difficult to obtain and deploy PKIX certificates with the proper Subject Alternative Names (see <xref target='I-D.ietf-xmpp-dna'/> and <xref target='I-D.ietf-xmpp-posh'/> for details).  To overcome that difficulty, the Domain Name Associations (DNA) specification <xref target='I-D.ietf-xmpp-dna'/> describes a framework for XMPP server authentication methods, which include not only PKIX but also DNS-Based Authentication of Named Entities (DANE) as defined in <xref target='I-D.ietf-dane-srv'/> and PKIX over Secure HTTP (POSH) as defined in <xref target='I-D.ietf-xmpp-posh'/>.  These methods can provide a basis for server identity verification when appropriate PKIX certificates cannot be obtained and deployed.</t>
         <t>Given the pervasiveness of eavesdropping <xref target='RFC7258'/>, even an unauthenticated connection might be better than an unencrypted connection in these scenarios (this is similar to the "better than nothing security" approach for IPsec <xref target='RFC5386'/>).  Unauthenticated connections include connections negotiated using anonymous Diffie-Hellman mechanisms or using self-signed certificates, among others.  In particular for XMPP server-to-server interactions, it can be reasonable for XMPP server implementations to accept unauthenticated but encrypted connections when Server Dialback keys <xref target='XEP-0220'/> are used; such keys on their own provide only weak identity verification (made stronger through the use of DNSSEC <xref target='RFC4033'/>), but this at least enables encryption of server-to-server connections.  The DNA prooftypes described above are intended to mitigate the residual need for unauthenticated connections in these scenarios.</t>
       </section>
 
@@ -555,11 +562,10 @@
     <section title="Acknowledgements">
       <t>The authors would like to thank the following individuals for their input: Dave Cridland, Philipp Hancke, Olle Johansson, Steve Kille, Tobias Markmann, Matt Miller, and Rene Treffer.</t>
       <t>Roni Even caught several important issues in his review on behalf of the General Area Review Team.</t>
-      <t>Spencer Dawkins provided helpful input during IESG review.</t>
+      <t>Spencer Dawkins and Barry Leiba provided helpful input during IESG review.</t>
       <t>Thanks to Leif Johansson and Orit Levin as chairs of the UTA WG, Ben Campbell and Joe Hildebrand as chairs of the XMPP WG, and Stephen Farrell as the sponsoring Area Director.</t>
     </section>
 
   </back>
 
 </rfc>
-
