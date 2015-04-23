@@ -10,7 +10,7 @@
 <?rfc toc="yes"?>
 <?rfc tocdepth="4"?>
 
-<rfc category="std" docName="draft-ietf-uta-xmpp-06" ipr="trust200902" updates="6120">
+<rfc category="std" docName="draft-ietf-uta-xmpp-07" ipr="trust200902" updates="6120">
 
   <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
 
@@ -244,13 +244,13 @@
           <author initials="P" surname="Saint-Andre" fullname="Peter Saint-Andre">
             <organization/>
           </author>
-          <date month="March" day="23" year="2015"/>
+          <date month="April" day="15" year="2015"/>
           <abstract>
             <t>The DANE specification (RFC 6698) describes how to use TLSA resource records in the DNS to associate a server's host name with its TLS certificate, where the association is secured with DNSSEC.  However, application protocols that use SRV records (RFC 2782) to indirectly name the target server host names for a service domain cannot apply the rules from RFC 6698.  Therefore this document provides guidelines that enable such protocols to locate and use TLSA records.</t>
           </abstract>
         </front>
-        <seriesInfo name="Internet-Draft" value="draft-ietf-dane-srv-12"/>
-        <format type="TXT" target="http://www.ietf.org/internet-drafts/draft-ietf-dane-srv-12.txt"/>
+        <seriesInfo name="Internet-Draft" value="draft-ietf-dane-srv-13"/>
+        <format type="TXT" target="http://www.ietf.org/internet-drafts/draft-ietf-dane-srv-13.txt"/>
       </reference>
 
 <reference anchor='I-D.ietf-stox-im'>
